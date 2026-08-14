@@ -167,7 +167,7 @@
 
   /* ---------- Table ---------- */
   .table-wrap{overflow-x:auto;margin-bottom:8px;}
-  table{width:100%;border-collapse:collapse;min-width:1160px;}
+  table{width:100%;border-collapse:collapse;min-width:1210px;}
   thead th{
     text-align:left;
     font-family:'IBM Plex Mono',monospace;
@@ -194,6 +194,7 @@
   .num-muted{color:#a79f8f;font-weight:400;}
   .num-mid{color:var(--sage);font-weight:600;}
   .state-cell{font-weight:600;}
+  .id-cell{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--brass);white-space:nowrap;}
   .status-badge{
     font-family:'IBM Plex Mono',monospace;
     font-size:10.5px;
@@ -434,6 +435,8 @@
   .mp-card:last-child{border-bottom:1px solid var(--line);}
   .mp-row1{display:flex;align-items:center;justify-content:space-between;gap:10px;}
   .mp-state{font-family:'IBM Plex Sans',sans-serif;font-size:15px;font-weight:600;color:var(--paper);}
+  .mp-state .mp-id{font-family:'IBM Plex Mono',monospace;color:var(--brass);}
+  .mp-state .mp-id-sep{color:var(--paper-dim);font-weight:400;}
   .mp-row2{
     font-family:'IBM Plex Mono',monospace;
     font-size:11.5px;
@@ -595,12 +598,49 @@
     select#sortSelect{width:100%;min-width:0;}
     .count-note{margin-left:0;order:99;width:100%;padding-bottom:0;padding-top:4px;}
   }
+
+  .artemis-mark{
+    display:block;
+    width:64px;
+    height:auto;
+    margin:0 0 14px 0;
+    animation:artemis-fade-in .5s ease-out;
+  }
+  @media (max-width:640px){
+    .artemis-mark{width:52px;margin-bottom:12px;}
+  }
+  .artemis-faq-mark{
+    display:block;
+    width:28px;
+    height:auto;
+    margin:0 auto 16px;
+    opacity:.45;
+    animation:artemis-fade-in .5s ease-out;
+  }
+  .artemis-footer-mark{
+    display:block;
+    width:28px;
+    height:auto;
+    margin:48px auto 0;
+    opacity:.55;
+    animation:artemis-fade-in .5s ease-out;
+  }
+  @keyframes artemis-fade-in{
+    from{opacity:0;}
+  }
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+<link rel="icon" href="/assets/artemis-favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/assets/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="48x48" href="/assets/artemis-favicon-48.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/assets/artemis-favicon-32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/assets/artemis-favicon-16.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png">
 </head>
 <body>
 <div class="page">
 
+  <img class="artemis-mark" src="/assets/artemis-mark.svg" alt="" aria-hidden="true">
   <h1>The Open Book</h1>
   <p class="lede">Here's every buy-and-hold rental I've closed on, have under contract, or am currently analyzing — some I bought for my own portfolio, some I helped an investor buy. No flips, no wholesale deals, just properties meant to be held and rented. <b>A lower number here doesn't mean a weaker deal</b> — a Texas property banking on long-term growth and a stable Oklahoma rental can both be right, for different reasons. The operating numbers are real; the appreciation assumptions are forecasts. Neither tells the whole story. Click any row for the actual numbers behind it.</p>
 
@@ -619,8 +659,8 @@
   </div>
 
   <div class="legend-row">
-    <span class="legend-swatch"><span class="legend-dot actual"></span> Actual — real cash flow and loan paydown</span>
-    <span class="legend-swatch"><span class="legend-dot predicted"></span> Predicted — my appreciation guess, not guaranteed</span>
+    <span class="legend-swatch"><span class="legend-dot actual"></span> Operating figures — actual for closed properties, underwritten for pipeline properties</span>
+    <span class="legend-swatch"><span class="legend-dot predicted"></span> Forecast — appreciation assumption, not guaranteed</span>
   </div>
   <p class="click-hint">Click any orange Appreciation box in the table below to see exactly how that number breaks down for that property.</p>
 
@@ -651,6 +691,7 @@
       <thead>
         <tr>
           <th style="width:20px;"></th>
+          <th style="width:56px;">ID</th>
           <th>State</th>
           <th>Status
             <span class="info-dot" tabindex="0">i<span class="tip">Closed = owned and rented. Under Contract = in the buying process. Proposed = analyzed, not yet purchased.</span></span>
@@ -678,8 +719,8 @@
             <span class="info-dot" tabindex="0">i<span class="tip">My best guess for this property's yearly value growth — from analyzing the market, not a guarantee. Leverage multiplies it: financing most of the purchase means you gain on the full price, not just your own cash. Click the box below for the exact math on any property.</span></span>
           </th>
           <th>Modeled Return
-            <span class="info-dot" tabindex="0">i<span class="tip">Modeled Return combines cash-on-cash return, principal paydown, and the appreciation assumption. Green components are actual; orange components depend on forecast appreciation.</span></span>
-            <span class="th-modeled-sub">Actual + Forecast</span>
+            <span class="info-dot" tabindex="0">i<span class="tip">Modeled Return combines cash-on-cash return, principal paydown, and the appreciation assumption. Green components are actual for closed properties (underwritten for pipeline properties); orange components depend on forecast appreciation.</span></span>
+            <span class="th-modeled-sub">Actual/Underwritten + Forecast</span>
           </th>
         </tr>
       </thead>
@@ -720,6 +761,7 @@
   </div>
 
   <div class="faq-section">
+    <img class="artemis-faq-mark" src="/assets/artemis-mark.svg" alt="" aria-hidden="true">
     <h2 class="faq-heading">Questions Investors Ask</h2>
     <p class="faq-sub">The real questions I get, answered the way I'd answer them over coffee — not the polished version.</p>
 
@@ -836,6 +878,8 @@
     </details>
   </div>
 
+  <img class="artemis-footer-mark" src="/assets/artemis-mark.svg" alt="" aria-hidden="true">
+
   </div>
 
 <script>
@@ -892,6 +936,7 @@ function rowToRecord(row){
     leverage: num(row["leverage multiplier"]),
     apprContribution: num(row["Leveraged appriciation"]),
     totalReturn: num(row["Total returns this year"]),
+    daysToRentStart: row["Days from closing to first tenant"],
     detail: {
       rate: num(row["Intrest rate"]),
       points: num(row["Points"]),
@@ -910,6 +955,78 @@ const STATUS_LABEL = {closed:"Closed", under_contract:"Under Contract", proposed
 const fmt$ = n => "$" + Math.round(n).toLocaleString("en-US");
 const fmtPct = n => n.toFixed(2).replace(/\.?0+$/,"") + "%";
 const fmt1 = n => n.toFixed(1).replace(/\.0$/,"");
+
+// Turns a full state name into its two-letter abbreviation, e.g. "Arkansas" -> "AR".
+// Falls back gracefully if a sheet ever uses a state this map doesn't know.
+const STATE_ABBR = {alabama:"AL",alaska:"AK",arizona:"AZ",arkansas:"AR",california:"CA",colorado:"CO",connecticut:"CT",delaware:"DE",florida:"FL",georgia:"GA",hawaii:"HI",idaho:"ID",illinois:"IL",indiana:"IN",iowa:"IA",kansas:"KS",kentucky:"KY",louisiana:"LA",maine:"ME",maryland:"MD",massachusetts:"MA",michigan:"MI",minnesota:"MN",mississippi:"MS",missouri:"MO",montana:"MT",nebraska:"NE",nevada:"NV","new hampshire":"NH","new jersey":"NJ","new mexico":"NM","new york":"NY","north carolina":"NC","north dakota":"ND",ohio:"OH",oklahoma:"OK",oregon:"OR",pennsylvania:"PA","rhode island":"RI","south carolina":"SC","south dakota":"SD",tennessee:"TN",texas:"TX",utah:"UT",vermont:"VT",virginia:"VA",washington:"WA","west virginia":"WV",wisconsin:"WI",wyoming:"WY","district of columbia":"DC"};
+function stateAbbrev(stateName){
+  const key = String(stateName||"").trim().toLowerCase();
+  if(STATE_ABBR[key]) return STATE_ABBR[key];
+  const s = String(stateName||"").trim();
+  return (s.length<=3 ? s : s.slice(0,2)).toUpperCase();
+}
+
+// Assigns each property a permanent ID (STATE-## chronological within state).
+// Runs once, right after the sheet loads — sorting/filtering afterward never
+// touches d.id, so an ID stays attached to its property no matter how the
+// table is currently sorted or filtered, and IDs are never recycled.
+function assignPropertyIds(data){
+  const byState = {};
+  data.forEach(d=>{ (byState[d.state] = byState[d.state] || []).push(d); });
+  Object.keys(byState).forEach(state=>{
+    const list = byState[state].slice().sort((a,b)=> String(a.date||"").localeCompare(String(b.date||"")));
+    list.forEach((d,i)=>{ d.id = `${stateAbbrev(state)}-${String(i+1).padStart(2,"0")}`; });
+  });
+}
+
+// Website label reads "Days from closing to rent start" even though the source
+// column is "Days from closing to first tenant" — only the display changes.
+function rentStartDaysLabel(d){
+  const closed = d.status === "closed";
+  if(!closed) return "Not yet leased";
+  const value = d.daysToRentStart;
+  if(value === null || value === undefined || String(value).trim() === ""){
+    return "Data pending";
+  }
+  const n = Number(value);
+  if(!Number.isFinite(n)) return "Data pending";
+  return n === 1 ? "1 day" : `${n} days`;
+}
+
+// $0 of capex reads as "None" rather than "$0" — presentation only, the
+// underlying numeric value (used in calculations) is never touched.
+function formatCapex(value){
+  const n = Number(value);
+  if(Number.isFinite(n) && n === 0) return "None";
+  return fmt$(n);
+}
+
+// Operating figures (cash-on-cash, cash flow, principal paydown) are real
+// "actual" numbers only once a property has closed — before that they're
+// underwriting projections, so the label used across the page follows status.
+function operatingLabel(d){
+  return d.status === "closed" ? "actual" : "underwritten";
+}
+
+// Shared heading text for a property's expanded underwriting/details panel,
+// used on both desktop and mobile so the wording always matches.
+function detailHeadingText(d){
+  const dateTag = d.status === "proposed" ? "Analyzed" : "Closing Date";
+  const desc = d.status === "closed" ? "actual operating details" : "projected underwriting";
+  return `${d.id} · ${dateTag}: ${d.label} · ${d.state} — ${desc}`;
+}
+
+const RENT_START_TOOLTIP = "Calendar days from closing until the first day the tenant began owing rent — not the date the lease was signed.";
+
+// The "Days from closing to rent start" line for the desktop receipt grid.
+function daysToRentStartReceiptLineHTML(d){
+  return `<div class="receipt-line"><span class="rl-label">Days from closing to rent start<span class="info-dot" tabindex="0">i<span class="tip">${RENT_START_TOOLTIP}</span></span></span><span class="rl-fill"></span><span class="rl-val">${rentStartDaysLabel(d)}</span></div>`;
+}
+
+// The same line, styled for the mobile detail list.
+function daysToRentStartMobileLineHTML(d){
+  return `<div class="mp-detail-line"><span class="mp-dl-label">Days from closing to rent start<span class="info-dot" tabindex="0">i<span class="tip">${RENT_START_TOOLTIP}</span></span></span><span class="mp-dl-val">${rentStartDaysLabel(d)}</span></div>`;
+}
 
 // One shared $-to-pixel scale for the leverage bars, based on the priciest
 // property in the whole dataset — so a bar's length always means the same
@@ -1011,15 +1128,17 @@ function sortRows(rows){
 function detailReceiptLinesHTML(d){
   const det = d.detail;
   return `
+    <div class="receipt-title">${detailHeadingText(d)}</div>
     <div class="mp-detail-line"><span class="mp-dl-label">Interest rate</span><span class="mp-dl-val">${det.rate}%</span></div>
     <div class="mp-detail-line"><span class="mp-dl-label">Points</span><span class="mp-dl-val">${det.points}%</span></div>
     <div class="mp-detail-line"><span class="mp-dl-label">Base rent (pre-vacancy)</span><span class="mp-dl-val">${fmt$(det.rentBase)}/mo</span></div>
+    ${daysToRentStartMobileLineHTML(d)}
     <div class="mp-detail-line"><span class="mp-dl-label">Mortgage P&amp;I</span><span class="mp-dl-val">${fmt$(det.mortPI)}/mo</span></div>
     <div class="mp-detail-line"><span class="mp-dl-label">Property tax</span><span class="mp-dl-val">${fmt$(det.taxY)}/yr</span></div>
     <div class="mp-detail-line"><span class="mp-dl-label">Insurance</span><span class="mp-dl-val">${fmt$(det.insY)}/yr</span></div>
     <div class="mp-detail-line"><span class="mp-dl-label">HOA</span><span class="mp-dl-val">${fmt$(det.hoaY)}/yr</span></div>
     <div class="mp-detail-line"><span class="mp-dl-label">Closing costs</span><span class="mp-dl-val">${fmt$(det.closing)}</span></div>
-    <div class="mp-detail-line"><span class="mp-dl-label">Capex (fence/fan/fridge)</span><span class="mp-dl-val">${fmt$(det.capex)}</span></div>
+    <div class="mp-detail-line"><span class="mp-dl-label">Capex (fence/fan/fridge)</span><span class="mp-dl-val">${formatCapex(det.capex)}</span></div>
     <div class="mp-detail-line predicted"><span class="mp-dl-label">Appreciation assumption (predicted)</span><span class="mp-dl-val">${fmt1(d.apprPct)}%/yr</span></div>
     <div class="mp-detail-line predicted"><span class="mp-dl-label">Leverage multiplier (predicted)</span><span class="mp-dl-val">${d.leverage}x</span></div>
   `;
@@ -1071,7 +1190,7 @@ function renderMobile(rows){
     card.className = "mp-card";
     card.innerHTML = `
       <div class="mp-row1">
-        <span class="mp-state">${d.state}</span>
+        <span class="mp-state"><span class="mp-id">${d.id}</span><span class="mp-id-sep"> · </span>${d.state}</span>
         <span class="status-badge status-${d.status}">${STATUS_LABEL[d.status]}</span>
       </div>
       <div class="mp-row2">${fmt$(d.price)} purchase · ${fmt$(d.invested)} invested</div>
@@ -1089,7 +1208,7 @@ function renderMobile(rows){
         <span class="mp-modeled-label">Modeled Return</span>
         <span class="mp-modeled-val">${fmtPct(d.totalReturn)}</span>
       </div>
-      <div class="mp-modeled-split"><span class="mp-a">${fmt1(actualPct)}%</span> <span class="mp-a-w">actual</span> + <span class="mp-f">${fmt1(predictedPct)}%</span> <span class="mp-f-w">forecast</span></div>
+      <div class="mp-modeled-split"><span class="mp-a">${fmt1(actualPct)}%</span> <span class="mp-a-w">${operatingLabel(d)}</span> + <span class="mp-f">${fmt1(predictedPct)}%</span> <span class="mp-f-w">forecast</span></div>
       <div class="mp-bar"><span class="tr-actual" style="width:${actualShare}%"></span><span class="tr-predicted" style="width:${predictedShare}%"></span></div>
       <div class="mp-actions">
         <button class="mp-action underwriting">View underwriting →</button>
@@ -1123,6 +1242,7 @@ function render(){
     tr.className = "data-row";
     tr.innerHTML = `
       <td><span class="chevron">▶</span></td>
+      <td class="id-cell">${d.id}</td>
       <td class="state-cell">${d.state}</td>
       <td><span class="status-badge status-${d.status}">${STATUS_LABEL[d.status]}</span></td>
       <td class="num num-muted">${fmt$(d.price)}</td>
@@ -1143,8 +1263,8 @@ function render(){
         <div class="tr-wrap">
           <span class="tr-num">${fmtPct(d.totalReturn)}</span>
           <span class="tr-modeled-label">Modeled</span>
-          <span class="tr-split"><span class="tr-a-num">${fmt1(actualPct)}%</span> <span class="tr-a-word">actual</span> <span class="tr-plus">+</span> <span class="tr-f-num">${fmt1(predictedPct)}%</span> <span class="tr-f-word">forecast</span></span>
-          <div class="tr-bar" title="${Math.round(actualShare)}% actual, ${Math.round(predictedShare)}% forecast">
+          <span class="tr-split"><span class="tr-a-num">${fmt1(actualPct)}%</span> <span class="tr-a-word">${operatingLabel(d)}</span> <span class="tr-plus">+</span> <span class="tr-f-num">${fmt1(predictedPct)}%</span> <span class="tr-f-word">forecast</span></span>
+          <div class="tr-bar" title="${Math.round(actualShare)}% ${operatingLabel(d)}, ${Math.round(predictedShare)}% forecast">
             <span class="tr-actual" style="width:${actualShare}%"></span>
             <span class="tr-predicted" style="width:${predictedShare}%"></span>
           </div>
@@ -1153,27 +1273,26 @@ function render(){
     `;
     const levTr = document.createElement("tr");
     levTr.className = "detail-row";
-    levTr.innerHTML = `<td colspan="12">${leverageDetailHTML(d)}</td>`;
+    levTr.innerHTML = `<td colspan="13">${leverageDetailHTML(d)}</td>`;
 
     const detailTr = document.createElement("tr");
     detailTr.className = "detail-row";
     const det = d.detail;
-    const dateTag = d.status === "proposed" ? "Analyzed" : "Closing Date";
-    const receiptDesc = d.status === "proposed" ? "the analysis behind the listing — not yet purchased" : "the actual numbers";
     detailTr.innerHTML = `
-      <td colspan="12">
+      <td colspan="13">
         <div class="receipt">
-          <div class="receipt-title">${dateTag}: ${d.label} · ${d.state} — ${receiptDesc}</div>
+          <div class="receipt-title">${detailHeadingText(d)}</div>
           <div class="receipt-grid">
             <div class="receipt-line"><span class="rl-label">Interest rate</span><span class="rl-fill"></span><span class="rl-val">${det.rate}%</span></div>
             <div class="receipt-line"><span class="rl-label">Points</span><span class="rl-fill"></span><span class="rl-val">${det.points}%</span></div>
             <div class="receipt-line"><span class="rl-label">Base rent (pre-vacancy)</span><span class="rl-fill"></span><span class="rl-val">${fmt$(det.rentBase)}/mo</span></div>
+            ${daysToRentStartReceiptLineHTML(d)}
             <div class="receipt-line"><span class="rl-label">Mortgage P&amp;I</span><span class="rl-fill"></span><span class="rl-val">${fmt$(det.mortPI)}/mo</span></div>
             <div class="receipt-line"><span class="rl-label">Property tax</span><span class="rl-fill"></span><span class="rl-val">${fmt$(det.taxY)}/yr</span></div>
             <div class="receipt-line"><span class="rl-label">Insurance</span><span class="rl-fill"></span><span class="rl-val">${fmt$(det.insY)}/yr</span></div>
             <div class="receipt-line"><span class="rl-label">HOA</span><span class="rl-fill"></span><span class="rl-val">${fmt$(det.hoaY)}/yr</span></div>
             <div class="receipt-line"><span class="rl-label">Closing costs</span><span class="rl-fill"></span><span class="rl-val">${fmt$(det.closing)}</span></div>
-            <div class="receipt-line"><span class="rl-label">Capex (fence/fan/fridge)</span><span class="rl-fill"></span><span class="rl-val">${fmt$(det.capex)}</span></div>
+            <div class="receipt-line"><span class="rl-label">Capex (fence/fan/fridge)</span><span class="rl-fill"></span><span class="rl-val">${formatCapex(det.capex)}</span></div>
             <div class="receipt-line predicted-line"><span class="rl-label">Appreciation assumption (predicted)</span><span class="rl-fill"></span><span class="rl-val">${fmt1(d.apprPct)}%/yr</span></div>
             <div class="receipt-line predicted-line"><span class="rl-label">Leverage multiplier (predicted)</span><span class="rl-fill"></span><span class="rl-val">${d.leverage}x</span></div>
           </div>
@@ -1212,6 +1331,7 @@ function loadData(){
     skipEmptyLines: true,
     complete: function(results){
       DATA = results.data.map(rowToRecord).filter(d=>d.state && !isNaN(d.price) && d.price > 0);
+      assignPropertyIds(DATA);
       console.log(`Loaded ${DATA.length} properties from your sheet.`);
       console.log("First row from your sheet, as parsed:", DATA[0]);
       activeStates = new Set(DATA.map(d=>d.state));
