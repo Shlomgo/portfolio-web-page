@@ -27,7 +27,8 @@
     -webkit-font-smoothing:antialiased;
     line-height:1.5;
   }
-  .page{max-width:1220px;margin:0 auto;padding:56px 24px 80px;}
+  html,body{max-width:100%;}
+  .page{max-width:1380px;margin:0 auto;padding:56px 32px 80px;}
 
   /* ---------- Masthead ---------- */
   h1{
@@ -166,8 +167,30 @@
   }
 
   /* ---------- Table ---------- */
-  .table-wrap{overflow-x:auto;margin-bottom:8px;}
-  table{width:100%;border-collapse:collapse;min-width:1210px;}
+  .table-wrap{width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch;margin-bottom:8px;}
+  table{width:100%;border-collapse:collapse;min-width:1240px;}
+  .table-scroll-hint{
+    display:none;
+    font-family:'IBM Plex Mono',monospace;
+    font-size:11px;
+    color:var(--paper-dim);
+    margin:0 0 8px;
+  }
+  @media (max-width:1270px){
+    .table-scroll-hint{display:block;}
+  }
+  @media (max-width:760px){
+    .table-scroll-hint{display:none;}
+  }
+  th.id-col,
+  td.id-col{width:52px;min-width:52px;white-space:nowrap;}
+  th.appreciation-col,
+  td.appreciation-col{min-width:115px;}
+  th.modeled-return-col,
+  td.modeled-return-col{min-width:120px;width:120px;}
+  .num,
+  .property-id,
+  td[data-numeric="true"]{white-space:nowrap;}
   thead th{
     text-align:left;
     font-family:'IBM Plex Mono',monospace;
@@ -350,8 +373,17 @@
   }
   .receipt-grid{
     display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(270px,1fr));
-    gap:6px 40px;
+    grid-template-columns:repeat(4, minmax(0,1fr));
+    gap:8px 38px;
+  }
+  @media (max-width:1150px){
+    .receipt-grid{grid-template-columns:repeat(3,minmax(0,1fr));}
+  }
+  @media (max-width:850px){
+    .receipt-grid{grid-template-columns:repeat(2,minmax(0,1fr));}
+  }
+  @media (max-width:560px){
+    .receipt-grid{grid-template-columns:1fr;}
   }
   .receipt-line{
     display:flex;
@@ -583,6 +615,9 @@
   .faq-body li:last-child{margin-bottom:0;}
 
   /* ---------- Footer ---------- */
+  @media (max-width:900px){
+    .page{padding-left:20px;padding-right:20px;}
+  }
   @media (max-width:640px){
     .page{padding:36px 16px 60px;}
     .count-note{margin-left:0;}
@@ -601,13 +636,16 @@
 
   .artemis-mark{
     display:block;
-    width:64px;
+    width:82px;
     height:auto;
     margin:0 0 14px 0;
     animation:artemis-fade-in .5s ease-out;
   }
+  @media (max-width:900px){
+    .artemis-mark{width:72px;}
+  }
   @media (max-width:640px){
-    .artemis-mark{width:52px;margin-bottom:12px;}
+    .artemis-mark{width:62px;margin-bottom:12px;}
   }
   .artemis-faq-mark{
     display:block;
@@ -619,11 +657,18 @@
   }
   .artemis-footer-mark{
     display:block;
-    width:28px;
+    width:42px;
     height:auto;
-    margin:48px auto 0;
-    opacity:.55;
+    margin:48px auto 8px;
+    opacity:.62;
     animation:artemis-fade-in .5s ease-out;
+  }
+  @media (max-width:640px){
+    .artemis-footer-mark{
+      width:36px;
+      margin-top:40px;
+      opacity:.62;
+    }
   }
   @keyframes artemis-fade-in{
     from{opacity:0;}
@@ -686,12 +731,13 @@
   </div>
 
   <div class="desktop-table">
+  <p class="table-scroll-hint">Scroll horizontally to see all columns →</p>
   <div class="table-wrap">
     <table>
       <thead>
         <tr>
           <th style="width:20px;"></th>
-          <th style="width:56px;">ID</th>
+          <th class="id-col">ID</th>
           <th>State</th>
           <th>Status
             <span class="info-dot" tabindex="0">i<span class="tip">Closed = owned and rented. Under Contract = in the buying process. Proposed = analyzed, not yet purchased.</span></span>
@@ -715,10 +761,10 @@
           <th>Principal
             <span class="info-dot" tabindex="0">i<span class="tip">Part of your mortgage payment that pays down the loan balance — it's money going into your equity through your mortgage account, not an expense.</span></span>
           </th>
-          <th class="th-predicted">Appreciation*
+          <th class="th-predicted appreciation-col">Appreciation*
             <span class="info-dot" tabindex="0">i<span class="tip">My best guess for this property's yearly value growth — from analyzing the market, not a guarantee. Leverage multiplies it: financing most of the purchase means you gain on the full price, not just your own cash. Click the box below for the exact math on any property.</span></span>
           </th>
-          <th>Modeled Return
+          <th class="modeled-return-col">Modeled Return
             <span class="info-dot" tabindex="0">i<span class="tip">Modeled Return combines cash-on-cash return, principal paydown, and the appreciation assumption. Green components are actual for closed properties (underwritten for pipeline properties); orange components depend on forecast appreciation.</span></span>
             <span class="th-modeled-sub">Actual/Underwritten + Forecast</span>
           </th>
@@ -1242,7 +1288,7 @@ function render(){
     tr.className = "data-row";
     tr.innerHTML = `
       <td><span class="chevron">▶</span></td>
-      <td class="id-cell">${d.id}</td>
+      <td class="id-cell id-col">${d.id}</td>
       <td class="state-cell">${d.state}</td>
       <td><span class="status-badge status-${d.status}">${STATUS_LABEL[d.status]}</span></td>
       <td class="num num-muted">${fmt$(d.price)}</td>
@@ -1252,14 +1298,14 @@ function render(){
       <td class="num num-mid">${fmt$(d.cashflow)}</td>
       <td class="num num-mid">${fmtPct(d.coc)}</td>
       <td class="num num-mid">${fmt$(d.principal)}</td>
-      <td>
+      <td class="appreciation-col">
         <div class="predicted-cell">
           <span class="pv">+${fmt1(d.apprContribution)}%</span>
           <span class="ps">${fmt1(d.apprPct)}% mkt × ${d.leverage}x</span>
           <span class="pc-caret">▸</span>
         </div>
       </td>
-      <td>
+      <td class="modeled-return-col">
         <div class="tr-wrap">
           <span class="tr-num">${fmtPct(d.totalReturn)}</span>
           <span class="tr-modeled-label">Modeled</span>
