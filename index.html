@@ -959,7 +959,7 @@ document.addEventListener("click", (e)=>{
   if(dot) dot.classList.toggle("open");
 });
 
-let activeStates = new Set(DATA.map(d=>d.state));
+let activeStates = new Set();
 let activeStatuses = new Set(["closed"]);
 let sortMode = "date_asc";
 
@@ -1211,8 +1211,10 @@ function loadData(){
     header: true,
     skipEmptyLines: true,
     complete: function(results){
-      DATA = results.data.map(rowToRecord);
+      DATA = results.data.map(rowToRecord).filter(d=>d.state && !isNaN(d.price) && d.price > 0);
+      console.log(`Loaded ${DATA.length} properties from your sheet.`);
       console.log("First row from your sheet, as parsed:", DATA[0]);
+      activeStates = new Set(DATA.map(d=>d.state));
       LEV_SCALE = LEV_MAX_PX / Math.max(...DATA.map(d=>d.price));
       buildChips();
       render();
