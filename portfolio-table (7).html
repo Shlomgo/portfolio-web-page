@@ -1,0 +1,1232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Open Book — Portfolio Track Record</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#14171c;
+    --ink-2:#1c2026;
+    --paper:#ece4d3;
+    --paper-dim:#a79f8f;
+    --brass:#b6905a;
+    --sage:#7f9c6e;
+    --rust:#c1633f;
+    --line:#3a3f47;
+    --radius:2px;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--ink);
+    color:var(--paper);
+    font-family:'IBM Plex Sans', sans-serif;
+    -webkit-font-smoothing:antialiased;
+    line-height:1.5;
+  }
+  .page{max-width:1220px;margin:0 auto;padding:56px 24px 80px;}
+
+  /* ---------- Masthead ---------- */
+  h1{
+    font-family:'Fraunces',serif;
+    font-weight:500;
+    font-size:clamp(34px,5vw,54px);
+    line-height:1.05;
+    margin:0 0 18px;
+    color:var(--paper);
+  }
+  .lede{
+    font-size:17px;
+    max-width:660px;
+    color:#cfc7b6;
+    margin:0 0 40px;
+  }
+  .lede b{color:var(--paper);font-weight:600;}
+
+  /* ---------- Ledger note (assumptions) ---------- */
+  .ledger-note{
+    border:1px solid var(--line);
+    border-left:3px solid var(--brass);
+    padding:20px 24px;
+    margin-bottom:20px;
+    background:rgba(182,144,90,0.05);
+    font-size:14.5px;
+    line-height:1.6;
+    color:#d8d0c0;
+  }
+  .ledger-note strong{color:var(--paper);}
+  .ledger-note p{max-width:760px;margin:0 0 12px;}
+  .ledger-note p:last-child{margin-bottom:0;}
+  .ledger-note .label{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:11px;
+    letter-spacing:.1em;
+    text-transform:uppercase;
+    color:var(--brass);
+    display:block;
+    margin-bottom:10px;
+  }
+  details.methodology-more{margin-top:12px;}
+  details.methodology-more summary{
+    cursor:pointer;
+    color:var(--brass);
+    font-family:'IBM Plex Mono',monospace;
+    font-size:12px;
+    letter-spacing:.03em;
+    list-style:none;
+  }
+  details.methodology-more summary::-webkit-details-marker{display:none;}
+  details.methodology-more[open] summary{margin-bottom:12px;}
+  .methodology-more-body p{max-width:760px;margin:0 0 12px;}
+  .methodology-more-body p:last-child{margin-bottom:0;}
+
+  /* ---------- Legend (actual vs predicted) ---------- */
+  .legend-row{
+    display:flex;
+    flex-wrap:wrap;
+    gap:10px 28px;
+    align-items:center;
+    margin-bottom:28px;
+    font-family:'IBM Plex Mono',monospace;
+    font-size:12px;
+    color:#cfc7b6;
+  }
+  .legend-swatch{display:inline-flex;align-items:center;gap:8px;}
+  .legend-dot{width:11px;height:11px;border-radius:2px;flex-shrink:0;}
+  .legend-dot.actual{background:var(--sage);}
+  .legend-dot.predicted{
+    background:repeating-linear-gradient(135deg, var(--rust), var(--rust) 2px, rgba(193,99,63,0.3) 2px, rgba(193,99,63,0.3) 4px);
+    border:1px solid var(--rust);
+  }
+  .click-hint{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:12px;
+    color:var(--paper-dim);
+    margin:-16px 0 24px;
+  }
+
+  /* ---------- Controls ---------- */
+  .controls{
+    display:flex;
+    flex-wrap:wrap;
+    gap:24px;
+    align-items:flex-end;
+    margin-bottom:22px;
+    padding-bottom:22px;
+    border-bottom:1px solid var(--line);
+  }
+  .control-group{display:flex;flex-direction:column;gap:8px;}
+  .control-label{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:10.5px;
+    letter-spacing:.1em;
+    text-transform:uppercase;
+    color:var(--paper-dim);
+  }
+  .chips{display:flex;flex-wrap:wrap;gap:6px;}
+  .chip{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:12px;
+    padding:6px 11px;
+    border:1px solid var(--line);
+    border-radius:100px;
+    background:transparent;
+    color:var(--paper-dim);
+    font-weight:400;
+    cursor:pointer;
+    transition:all .15s ease;
+  }
+  .chip:hover{border-color:rgba(182,144,90,.65);color:#d8d0c0;}
+  .chip.active{
+    background:rgba(182,144,90,.10);
+    border-color:rgba(182,144,90,.55);
+    color:#d6c19e;
+    font-weight:500;
+  }
+  select#sortSelect{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:12.5px;
+    background:var(--ink-2);
+    color:var(--paper);
+    border:1px solid var(--line);
+    padding:8px 12px;
+    border-radius:2px;
+    min-width:230px;
+  }
+  .count-note{
+    margin-left:auto;
+    font-family:'IBM Plex Mono',monospace;
+    font-size:12px;
+    color:var(--paper-dim);
+    align-self:flex-end;
+    padding-bottom:9px;
+  }
+
+  /* ---------- Table ---------- */
+  .table-wrap{overflow-x:auto;margin-bottom:8px;}
+  table{width:100%;border-collapse:collapse;min-width:1160px;}
+  thead th{
+    text-align:left;
+    font-family:'IBM Plex Mono',monospace;
+    font-size:10.5px;
+    letter-spacing:.05em;
+    text-transform:uppercase;
+    color:var(--paper-dim);
+    font-weight:500;
+    padding:0 8px 10px;
+    border-bottom:1px solid var(--line);
+    white-space:nowrap;
+  }
+  thead th.th-predicted{color:var(--rust);}
+  thead th .th-inner{display:flex;align-items:center;gap:5px;}
+  tbody td{
+    padding:11px 8px;
+    border-bottom:1px solid rgba(58,63,71,.6);
+    font-size:13.5px;
+    vertical-align:middle;
+  }
+  tbody tr.data-row{cursor:pointer;transition:background .12s ease;}
+  tbody tr.data-row:hover{background:rgba(182,144,90,0.06);}
+  .num{font-family:'IBM Plex Mono',monospace;white-space:nowrap;}
+  .num-muted{color:#a79f8f;font-weight:400;}
+  .num-mid{color:var(--sage);font-weight:600;}
+  .state-cell{font-weight:600;}
+  .status-badge{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:10.5px;
+    padding:3px 8px;
+    border-radius:100px;
+    display:inline-block;
+    white-space:nowrap;
+  }
+  .status-closed{background:rgba(127,156,110,0.16);color:var(--sage);border:1px solid rgba(127,156,110,0.4);}
+  .status-under_contract{background:rgba(182,144,90,0.16);color:var(--brass);border:1px solid rgba(182,144,90,0.4);}
+  .status-proposed{background:rgba(255,255,255,0.06);color:var(--paper-dim);border:1px solid var(--line);}
+  .chevron{
+    display:inline-block;
+    transition:transform .15s ease;
+    color:var(--paper-dim);
+    font-size:11px;
+    width:14px;
+  }
+  tr.data-row.open .chevron{transform:rotate(90deg);color:var(--brass);}
+
+  /* info tooltip */
+  .info-dot{
+    width:13px;height:13px;border-radius:50%;
+    border:1px solid var(--paper-dim);
+    background:none;color:var(--paper-dim);
+    font-family:'IBM Plex Mono',monospace;
+    font-size:9px;line-height:1;
+    display:inline-flex;align-items:center;justify-content:center;
+    cursor:help;position:relative;flex-shrink:0;
+  }
+  th.th-predicted .info-dot{border-color:var(--rust);color:var(--rust);}
+  .info-dot .tip{
+    position:absolute;
+    bottom:calc(100% + 8px);
+    left:50%;
+    transform:translateX(-50%) translateY(4px);
+    width:225px;
+    background:var(--ink-2);
+    border:1px solid var(--brass);
+    color:#d8d0c0;
+    font-family:'IBM Plex Sans',sans-serif;
+    font-size:12.5px;
+    line-height:1.45;
+    text-transform:none;
+    letter-spacing:normal;
+    padding:10px 12px;
+    border-radius:3px;
+    opacity:0;
+    visibility:hidden;
+    transition:opacity .15s ease, transform .15s ease;
+    z-index:20;
+    white-space:normal;
+    pointer-events:none;
+    box-shadow:0 8px 24px rgba(0,0,0,.4);
+    font-weight:400;
+  }
+  th.th-predicted .info-dot .tip{border-color:var(--rust);}
+  .info-dot:hover .tip,.info-dot:focus .tip,.info-dot.open .tip{
+    opacity:1;visibility:visible;transform:translateX(-50%) translateY(0);
+  }
+
+  /* predicted appreciation cell */
+  .predicted-cell{
+    display:inline-flex;
+    flex-direction:column;
+    align-items:flex-start;
+    gap:1px;
+    padding:4px 20px 4px 8px;
+    border:1px dashed var(--rust);
+    border-radius:3px;
+    background:rgba(193,99,63,0.08);
+    line-height:1.3;
+    position:relative;
+    cursor:pointer;
+    transition:background .12s ease;
+  }
+  .predicted-cell:hover,.predicted-cell.open{background:rgba(193,99,63,0.18);}
+  .predicted-cell .pc-caret{
+    position:absolute;right:6px;bottom:5px;
+    font-size:9px;color:#c99a86;opacity:.75;
+    transition:transform .15s ease;
+  }
+  .predicted-cell.open .pc-caret{transform:rotate(90deg);}
+  .predicted-cell .pv{
+    font-family:'IBM Plex Mono',monospace;
+    font-weight:600;
+    font-style:italic;
+    color:var(--rust);
+    font-size:13px;
+    white-space:nowrap;
+  }
+  .predicted-cell .ps{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:10px;
+    color:#c99a86;
+    white-space:nowrap;
+  }
+
+  /* modeled return: number + actual/forecast breakdown + bar */
+  .tr-wrap{display:flex;flex-direction:column;gap:3px;align-items:flex-start;}
+  .tr-num{font-family:'IBM Plex Mono',monospace;font-weight:600;font-size:15.5px;color:var(--paper);white-space:nowrap;}
+  .tr-modeled-label{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:8.5px;
+    letter-spacing:.08em;
+    text-transform:uppercase;
+    color:var(--paper-dim);
+  }
+  .tr-split{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:9.5px;
+    white-space:nowrap;
+    margin-top:1px;
+  }
+  .tr-split .tr-a-num{color:var(--sage);font-weight:600;}
+  .tr-split .tr-a-word{color:rgba(127,156,110,.65);}
+  .tr-split .tr-plus{color:var(--paper-dim);}
+  .tr-split .tr-f-num{color:var(--rust);font-weight:600;}
+  .tr-split .tr-f-word{color:rgba(193,99,63,.7);}
+  .tr-bar{width:82px;height:5px;border-radius:3px;overflow:hidden;display:flex;background:rgba(255,255,255,0.06);margin-top:2px;}
+  .tr-actual{height:100%;background:var(--sage);}
+  .tr-predicted{
+    height:100%;
+    background:repeating-linear-gradient(135deg, var(--rust), var(--rust) 2px, rgba(193,99,63,0.35) 2px, rgba(193,99,63,0.35) 4px);
+  }
+  .th-modeled-sub{
+    display:block;
+    font-family:'IBM Plex Mono',monospace;
+    font-size:9px;
+    letter-spacing:.05em;
+    text-transform:uppercase;
+    color:var(--rust);
+    font-weight:400;
+    margin-top:2px;
+  }
+
+  /* detail / ledger receipt row */
+  tr.detail-row{display:none;}
+  tr.detail-row.open{display:table-row;}
+  tr.detail-row td{padding:0;border-bottom:1px solid rgba(58,63,71,.6);}
+  .receipt{
+    background:rgba(0,0,0,.18);
+    padding:20px 28px 22px;
+    font-family:'IBM Plex Mono',monospace;
+    font-size:13px;
+  }
+  .receipt-title{
+    color:var(--brass);
+    font-size:10.5px;
+    letter-spacing:.1em;
+    text-transform:uppercase;
+    margin-bottom:12px;
+  }
+  .receipt-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(270px,1fr));
+    gap:6px 40px;
+  }
+  .receipt-line{
+    display:flex;
+    align-items:flex-start;
+    gap:6px;
+    color:#c9c1b0;
+    border-bottom:1px dotted rgba(167,159,143,.35);
+    padding:3px 0;
+    min-width:0;
+  }
+  .receipt-line .rl-label{white-space:normal;overflow-wrap:break-word;}
+  .receipt-line .rl-fill{flex:1;min-width:8px;}
+  .receipt-line .rl-val{color:var(--paper);font-weight:500;white-space:nowrap;flex-shrink:0;}
+  .receipt-line.predicted-line{border-bottom:1px dashed rgba(193,99,63,.55);}
+  .receipt-line.predicted-line .rl-label{color:#c99a86;}
+  .receipt-line.predicted-line .rl-val{color:var(--rust);font-style:italic;}
+
+  /* ---------- Decline note ---------- */
+  .decline-note{
+    margin-top:26px;
+    font-size:14px;
+    color:#cfc7b6;
+    padding-top:18px;
+    border-top:1px solid var(--line);
+  }
+  .decline-note b{color:var(--paper);}
+  details.why{margin-top:10px;}
+  details.why summary{
+    cursor:pointer;
+    color:var(--brass);
+    font-family:'IBM Plex Mono',monospace;
+    font-size:12.5px;
+    letter-spacing:.03em;
+  }
+  details.why[open] summary{margin-bottom:14px;}
+  .why-body{
+    font-size:13.5px;
+    color:#c9c1b0;
+    max-width:680px;
+  }
+  .curve-wrap{margin:16px 0;}
+  .curve-caption{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:10.5px;
+    color:var(--paper-dim);
+    letter-spacing:.04em;
+  }
+
+  /* ---------- Leverage explainer ---------- */
+  .lev-wrap{margin:18px 0 6px;display:flex;flex-direction:column;gap:18px;}
+  .lev-row{display:flex;align-items:center;gap:16px;flex-wrap:wrap;}
+  .lev-label{width:150px;flex-shrink:0;font-size:13px;color:#c9c1b0;}
+  .lev-label b{color:var(--paper);display:block;font-size:13.5px;}
+  .lev-track{position:relative;height:22px;background:rgba(255,255,255,0.05);border-radius:2px;}
+  .lev-base{position:absolute;top:0;left:0;height:100%;background:rgba(182,144,90,0.18);border:1px solid rgba(182,144,90,0.4);border-radius:2px;box-sizing:border-box;}
+  .lev-gain{position:absolute;top:0;height:100%;background:var(--brass);border-radius:0 2px 2px 0;}
+  .lev-tag{font-family:'IBM Plex Mono',monospace;font-size:12.5px;color:var(--brass);white-space:nowrap;font-weight:600;}
+  .lev-tag span{color:var(--paper-dim);font-weight:400;}
+  .lev-punch{font-size:13.5px;color:#c9c1b0;max-width:680px;margin-top:2px;}
+  .lev-punch b{color:var(--paper);}
+  .lev-copy{font-size:13.5px;line-height:1.6;color:#c9c1b0;max-width:680px;margin:0 0 10px;}
+  .lev-copy b{color:var(--paper);}
+  .lev-driver{
+    display:inline-block;
+    font-family:'IBM Plex Mono',monospace;
+    font-size:12.5px;
+    color:var(--brass);
+    border:1px solid rgba(182,144,90,.5);
+    background:rgba(182,144,90,.08);
+    border-radius:3px;
+    padding:6px 10px;
+    margin:2px 0 14px;
+  }
+
+  /* ---------- Mobile property list ---------- */
+  .mobile-property-list{display:none;}
+  .mp-card{
+    border-top:1px solid var(--line);
+    padding:18px 2px 20px;
+  }
+  .mp-card:last-child{border-bottom:1px solid var(--line);}
+  .mp-row1{display:flex;align-items:center;justify-content:space-between;gap:10px;}
+  .mp-state{font-family:'IBM Plex Sans',sans-serif;font-size:15px;font-weight:600;color:var(--paper);}
+  .mp-row2{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:11.5px;
+    color:var(--paper-dim);
+    margin-top:8px;
+  }
+  .mp-metrics{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:10px 16px;
+    margin-top:14px;
+  }
+  .mp-metric-label{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:9px;
+    letter-spacing:.08em;
+    text-transform:uppercase;
+    color:var(--paper-dim);
+    display:block;
+    margin-bottom:3px;
+  }
+  .mp-metric-val{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:17px;
+    font-weight:600;
+    color:var(--sage);
+  }
+  .mp-modeled{
+    margin-top:14px;
+    display:flex;
+    align-items:baseline;
+    justify-content:space-between;
+    font-family:'IBM Plex Mono',monospace;
+  }
+  .mp-modeled-label{
+    font-size:10.5px;
+    letter-spacing:.06em;
+    text-transform:uppercase;
+    color:var(--paper-dim);
+  }
+  .mp-modeled-val{font-size:17px;font-weight:600;color:var(--paper);}
+  .mp-modeled-split{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:11px;
+    margin-top:3px;
+  }
+  .mp-modeled-split .mp-a{color:var(--sage);font-weight:600;}
+  .mp-modeled-split .mp-a-w{color:rgba(127,156,110,.65);}
+  .mp-modeled-split .mp-f{color:var(--rust);font-weight:600;}
+  .mp-modeled-split .mp-f-w{color:rgba(193,99,63,.7);}
+  .mp-bar{width:100%;max-width:180px;height:6px;border-radius:3px;overflow:hidden;display:flex;background:rgba(255,255,255,0.06);margin-top:8px;}
+  .mp-bar .tr-actual, .mp-bar .tr-predicted{height:100%;}
+  .mp-actions{
+    display:flex;
+    gap:22px;
+    margin-top:14px;
+  }
+  .mp-action{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:11.5px;
+    background:none;
+    border:none;
+    padding:0;
+    cursor:pointer;
+  }
+  .mp-action.underwriting{color:var(--brass);}
+  .mp-action.forecast{color:var(--rust);}
+  .mp-detail{display:none;margin-top:14px;font-family:'IBM Plex Mono',monospace;font-size:12.5px;}
+  .mp-detail.open{display:block;}
+  .mp-detail-line{
+    display:flex;
+    justify-content:space-between;
+    gap:10px;
+    border-bottom:1px dotted rgba(167,159,143,.35);
+    padding:6px 0;
+    color:#c9c1b0;
+  }
+  .mp-detail-line.predicted{border-bottom:1px dashed rgba(193,99,63,.55);}
+  .mp-detail-line.predicted .mp-dl-label{color:#c99a86;}
+  .mp-detail-line.predicted .mp-dl-val{color:var(--rust);font-style:italic;}
+  .mp-detail-line .mp-dl-val{color:var(--paper);font-weight:500;white-space:nowrap;}
+  .mp-lev .lev-label{width:auto;}
+  .mp-lev .lev-row{flex-direction:column;align-items:flex-start;gap:6px;}
+  .mp-lev .lev-track{width:100% !important;max-width:100%;}
+
+  /* ---------- FAQ ---------- */
+  .faq-section{
+    margin-top:52px;
+    padding-top:32px;
+    border-top:1px solid var(--line);
+  }
+  .faq-heading{
+    font-family:'Fraunces',serif;
+    font-weight:500;
+    font-size:clamp(24px,3vw,32px);
+    color:var(--paper);
+    margin:0 0 8px;
+  }
+  .faq-sub{
+    font-size:14px;
+    color:var(--paper-dim);
+    max-width:640px;
+    margin:0 0 28px;
+  }
+  details.faq-item{
+    border-top:1px solid var(--line);
+    padding:16px 0;
+  }
+  details.faq-item:last-child{border-bottom:1px solid var(--line);}
+  details.faq-item summary{
+    cursor:pointer;
+    list-style:none;
+    font-family:'IBM Plex Sans',sans-serif;
+    font-weight:600;
+    font-size:15.5px;
+    color:var(--paper);
+    display:flex;
+    align-items:baseline;
+    gap:10px;
+  }
+  details.faq-item summary::-webkit-details-marker{display:none;}
+  details.faq-item summary::before{
+    content:"+";
+    font-family:'IBM Plex Mono',monospace;
+    color:var(--brass);
+    font-weight:400;
+    flex-shrink:0;
+    width:14px;
+  }
+  details.faq-item[open] summary::before{content:"–";}
+  details.faq-item[open] summary{margin-bottom:14px;}
+  .faq-body{
+    font-size:14.5px;
+    line-height:1.65;
+    color:#c9c1b0;
+    max-width:720px;
+    padding-left:24px;
+  }
+  .faq-body p{margin:0 0 12px;}
+  .faq-body p:last-child{margin-bottom:0;}
+  .faq-body strong{color:var(--paper);}
+  .faq-body ul{margin:0 0 12px;padding-left:20px;}
+  .faq-body li{margin-bottom:8px;}
+  .faq-body li:last-child{margin-bottom:0;}
+
+  /* ---------- Footer ---------- */
+  @media (max-width:640px){
+    .page{padding:36px 16px 60px;}
+    .count-note{margin-left:0;}
+  }
+
+  @media (max-width:760px){
+    .desktop-table{display:none;}
+    .mobile-property-list{display:block;}
+    h1{font-size:38px;}
+    .controls{align-items:flex-start;}
+    .control-group{width:100%;}
+    .chips{flex-wrap:wrap;}
+    select#sortSelect{width:100%;min-width:0;}
+    .count-note{margin-left:0;order:99;width:100%;padding-bottom:0;padding-top:4px;}
+  }
+</style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+</head>
+<body>
+<div class="page">
+
+  <h1>The Open Book</h1>
+  <p class="lede">Here's every buy-and-hold rental I've closed on, have under contract, or am currently analyzing — some I bought for my own portfolio, some I helped an investor buy. No flips, no wholesale deals, just properties meant to be held and rented. <b>A lower number here doesn't mean a weaker deal</b> — a Texas property banking on long-term growth and a stable Oklahoma rental can both be right, for different reasons. The operating numbers are real; the appreciation assumptions are forecasts. Neither tells the whole story. Click any row for the actual numbers behind it.</p>
+
+  <div class="ledger-note">
+    <span class="label">What's already accounted for</span>
+    <p>Every cash flow figure below already subtracts a <strong>10% property management fee</strong> and an average vacancy allowance — these aren't "if everything goes perfectly" numbers. Every home here is new construction, so there's typically nothing to repair in the first couple of years beyond the builder's warranty.</p>
+    <p><strong>Not included:</strong> leasing fees, repairs, tenant-turnover costs, or future capital reserves.</p>
+    <details class="methodology-more">
+      <summary>Methodology, appreciation &amp; return framing →</summary>
+      <div class="methodology-more-body">
+        <p><strong>Also not shown:</strong> tax benefits like depreciation, which can meaningfully boost real returns for many investors — but depend entirely on your individual situation, so that's a conversation for your CPA, not this table.</p>
+        <p><strong>On appreciation:</strong> The appreciation rate is my underwriting assumption for that specific submarket—not a historical market average or a guarantee. It's set deliberately at the <strong>low end</strong> of what a long-term hold there should average, not a best-case number. It's still a forecast, not a closed transaction, which is why it's marked in orange everywhere it shows up below.</p>
+        <p><strong>One more framing note:</strong> Modeled Return is labeled "this year," but two of its three ingredients — appreciation and the vacancy already built into rent — are long-run averages, not a literal trailing-12-month report. That's on purpose: any single real year is too noisy to underwrite from (one vacant month or one hot comp can swing it), so the stabilized long-run figure is the more honest input for a snapshot. Cash flow and principal paydown are the only two pieces pulled straight from that property's actual year.</p>
+      </div>
+    </details>
+  </div>
+
+  <div class="legend-row">
+    <span class="legend-swatch"><span class="legend-dot actual"></span> Actual — real cash flow and loan paydown</span>
+    <span class="legend-swatch"><span class="legend-dot predicted"></span> Predicted — my appreciation guess, not guaranteed</span>
+  </div>
+  <p class="click-hint">Click any orange Appreciation box in the table below to see exactly how that number breaks down for that property.</p>
+
+  <div class="controls">
+    <div class="control-group">
+      <span class="control-label">State</span>
+      <div class="chips" id="stateChips"></div>
+    </div>
+    <div class="control-group">
+      <span class="control-label">Status</span>
+      <div class="chips" id="statusChips"></div>
+    </div>
+    <div class="control-group">
+      <span class="control-label">Sort by</span>
+      <select id="sortSelect">
+        <option value="date_asc" selected>Closing date (oldest first)</option>
+        <option value="coc_desc">Cash-on-cash return (high to low)</option>
+        <option value="total_desc">Modeled return, this year (high to low)</option>
+        <option value="state_asc">State (A–Z)</option>
+      </select>
+    </div>
+    <div class="count-note" id="countNote"></div>
+  </div>
+
+  <div class="desktop-table">
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th style="width:20px;"></th>
+          <th>State</th>
+          <th>Status
+            <span class="info-dot" tabindex="0">i<span class="tip">Closed = owned and rented. Under Contract = in the buying process. Proposed = analyzed, not yet purchased.</span></span>
+          </th>
+          <th>Price</th>
+          <th>Down Pmt
+            <span class="info-dot" tabindex="0">i<span class="tip">The cash you put in upfront (rest is financed by the mortgage).</span></span>
+          </th>
+          <th>Total Invested
+            <span class="info-dot" tabindex="0">i<span class="tip">Down payment + closing costs + any capital expenses = the real cash out of pocket.</span></span>
+          </th>
+          <th>Rent (avg)
+            <span class="info-dot" tabindex="0">i<span class="tip">Rent adjusted for average vacancy — roughly 30 days of vacancy between tenants living in the home for an average of 2.5 years.</span></span>
+          </th>
+          <th>Cash Flow
+            <span class="info-dot" tabindex="0">i<span class="tip">What's left over each month after the mortgage, taxes, insurance, and management fee are paid.</span></span>
+          </th>
+          <th>Cash-on-Cash
+            <span class="info-dot" tabindex="0">i<span class="tip">Yearly cash flow ÷ total cash invested. The return you'd get if the house never rose in value or paid back the loan — just from rent.</span></span>
+          </th>
+          <th>Principal
+            <span class="info-dot" tabindex="0">i<span class="tip">Part of your mortgage payment that pays down the loan balance — it's money going into your equity through your mortgage account, not an expense.</span></span>
+          </th>
+          <th class="th-predicted">Appreciation*
+            <span class="info-dot" tabindex="0">i<span class="tip">My best guess for this property's yearly value growth — from analyzing the market, not a guarantee. Leverage multiplies it: financing most of the purchase means you gain on the full price, not just your own cash. Click the box below for the exact math on any property.</span></span>
+          </th>
+          <th>Modeled Return
+            <span class="info-dot" tabindex="0">i<span class="tip">Modeled Return combines cash-on-cash return, principal paydown, and the appreciation assumption. Green components are actual; orange components depend on forecast appreciation.</span></span>
+            <span class="th-modeled-sub">Actual + Forecast</span>
+          </th>
+        </tr>
+      </thead>
+      <tbody id="tableBody"></tbody>
+    </table>
+  </div>
+  </div>
+
+  <div id="mobilePropertyList" class="mobile-property-list"></div>
+
+  <div class="decline-note">
+    <b>Modeled Return shown is a snapshot of this year only.</b> These numbers shift the longer a property is held — typically settling lower after several years, even when the investment is performing the same or better. That's because a strong early-leverage gain gets averaged over more and more years the longer you hold.
+    <details class="why">
+      <summary>Why does the number shrink even though the deal isn't getting worse? →</summary>
+      <div class="why-body">
+        <p>Leverage makes appreciation large relative to your initial cash investment. As equity builds over time, that leverage generally falls, so the same percentage increase in the property's value represents a smaller return relative to the equity you have accumulated.</p>
+        <div class="curve-wrap">
+          <svg viewBox="0 0 640 200" width="100%" height="200" preserveAspectRatio="xMidYMid meet">
+            <line x1="40" y1="20" x2="40" y2="170" stroke="#3a3f47" stroke-width="1"/>
+            <line x1="40" y1="170" x2="620" y2="170" stroke="#3a3f47" stroke-width="1"/>
+            <text x="10" y="30" fill="#a79f8f" font-family="IBM Plex Mono" font-size="10">25%</text>
+            <text x="10" y="100" fill="#a79f8f" font-family="IBM Plex Mono" font-size="10">15%</text>
+            <text x="18" y="174" fill="#a79f8f" font-family="IBM Plex Mono" font-size="10">0%</text>
+            <line x1="235" y1="170" x2="235" y2="20" stroke="#3a3f47" stroke-width="1" stroke-dasharray="2,3"/>
+            <text x="215" y="14" fill="#7f9c6e" font-family="IBM Plex Mono" font-size="10">S&P avg (9%)</text>
+            <line x1="40" y1="126" x2="620" y2="126" stroke="#7f9c6e" stroke-width="1.5" stroke-dasharray="3,3"/>
+            <polyline fill="none" stroke="#b6905a" stroke-width="2.5"
+              points="40,32 69,45 98,55 127,63 156,70 185,76 214,81 243,86 272,90 301,94 330,97 359,100 388,103 417,106 446,108 475,110 504,112 533,114 562,116 591,118 620,120" />
+            <circle cx="40" cy="32" r="3" fill="#b6905a"/>
+            <circle cx="620" cy="120" r="3" fill="#b6905a"/>
+            <text x="30" y="24" fill="#ece4d3" font-family="IBM Plex Mono" font-size="11">22%</text>
+            <text x="595" y="112" fill="#ece4d3" font-family="IBM Plex Mono" font-size="11">12%</text>
+          </svg>
+          <div class="curve-caption">ILLUSTRATIVE — annualized return, year 1 vs. year 20, generic leveraged-rental model vs. flat 9% benchmark</div>
+        </div>
+      </div>
+    </details>
+  </div>
+
+  <div class="faq-section">
+    <h2 class="faq-heading">Questions Investors Ask</h2>
+    <p class="faq-sub">The real questions I get, answered the way I'd answer them over coffee — not the polished version.</p>
+
+    <details class="faq-item">
+      <summary>What's the criteria for picking these properties — what do they all have in common?</summary>
+      <div class="faq-body">
+        <p>I don't start with a house. I start with the market, then the submarket, then the neighborhood, the community, and only then the property, layout, lot and finishes.</p>
+        <p>I'm looking for the same basic combination every time: a 3–4 bedroom single-family home or duplex, usually new construction from an established builder, in an affordable part of a large and economically diversified metro. I want population and job growth, a rental market with real tenant depth, good schools, manageable new supply, landlord-friendly rules, and property managers I'd be comfortable trusting with my own house. I want a layout with as broad as possible of an appeal, and a lot with no big flaws.</p>
+        <p>But checking boxes isn't enough. The numbers still have to work.</p>
+        <p>A beautiful house in a great market doesn't make the cut if the rent is too weak for the price. A high-cash-flow property doesn't make the cut if I think the neighborhood, supply picture, builder, or tenant base creates too much long-term risk.</p>
+        <p>The important part of the process is actually what gets rejected. I look at far more properties than I recommend, and when I'm showing you a deal I should be able to explain not only <strong>why I like it, but what would have made me say no.</strong></p>
+        <p>If you want, ask me that about any property I bring you.</p>
+      </div>
+    </details>
+
+    <details class="faq-item">
+      <summary>How do you know these markets so well if you don't live in them?</summary>
+      <div class="faq-body">
+        <p>I don't think research from a laptop is enough to tell someone else where to put $50,000–$100,000.</p>
+        <p>I only recommend markets where I am personally invested. I manage my own rentals directly, including leasing, which means I experience the tenant market firsthand: what applicants ask for, which neighborhoods they respond to, what rent actually gets attention, how seasonality changes demand, and how long a house really takes to lease.</p>
+        <p>That operating experience sits on top of the research: employment growth, employers moving in or out, infrastructure, development plans, construction permits, schools, rents, property taxes, insurance, housing supply and everything else that can change the long-term economics of the submarket.</p>
+        <p>And there's an important order to this: <strong>I become comfortable putting my own money into a market before I become comfortable recommending that market to somebody else.</strong></p>
+        <p>That doesn't mean I can't be wrong. It means when I recommend a market, I'm exposed to many of the same things you are — and I'm learning from the same tenant pool with my own properties.</p>
+      </div>
+    </details>
+
+    <details class="faq-item">
+      <summary>How do I know these numbers are real?</summary>
+      <div class="faq-body">
+        <p>Fair question — I'd ask it too. Chances are you got to me through someone who already owns a property on this list. Ask them to find their deal by purchase price and state and check it against what I've shown you. If the numbers match what they know to be true, that tells you something about the rest of the table.</p>
+        <p>And when I'm putting together a deal for you, I'll usually point to another one on here that's structured the same way — and I can hand over documentation for it if you want it.</p>
+      </div>
+    </details>
+
+    <details class="faq-item">
+      <summary>Were there bad deals? Disappointments? Misses?</summary>
+      <div class="faq-body">
+        <p>Absolutely. This isn't a highlight reel.</p>
+        <p>One property rented for $25 a month under my low estimate. Two sat vacant for two full months. One had a hidden electric sewage pump — found out about it when I paid $4,325 to replace it at the two-year mark. That one still stings a little. One lost a tenant at month three and had to go through a second vacancy in the same year.</p>
+        <p>These are the outliers, not the pattern — and I work hard to keep the surprises on the happy side. None of them were bad enough to break the underlying logic of the deal. Every single miss taught me something that's made the next deal sharper.</p>
+      </div>
+    </details>
+
+    <details class="faq-item">
+      <summary>Why is this heavily clustered in Arkansas?</summary>
+      <div class="faq-body">
+        <p>The recent concentration in Arkansas is due to what I see as striking a vein of particularly profitable properties. This can change any day because of changes in builder incentives or any parameter in market dynamics.</p>
+      </div>
+    </details>
+
+    <details class="faq-item">
+      <summary>Why is vacancy estimated at 30 days?</summary>
+      <div class="faq-body">
+        <p>Thirty days isn't a promise. It's an underwriting standard.</p>
+        <p>When I give you a projected rent, I'm deliberately trying to choose a number at which I believe a good tenant should be obtainable within about 30 days, rather than showing you the highest rent I can find on Zillow and assuming somebody will eventually pay it.</p>
+        <p>The real test is what happened afterward.</p>
+        <p>Most of the properties on this page have either leased in less than 30 days, rented for more than I originally projected, or both. Some haven't — two took about two months, and I want those misses included in the record too.</p>
+        <p>When we're evaluating a property together, I can show you the original rent and vacancy assumption and compare it with what happened on similar properties I've already placed with tenants.</p>
+        <p>I don't want you trusting the 30-day assumption because I sound confident about it. <strong>I want you to be able to see whether my previous 30-day assumptions actually held up.</strong></p>
+      </div>
+    </details>
+
+    <details class="faq-item">
+      <summary>What does the process actually look like?</summary>
+      <div class="faq-body">
+        <p>The transaction usually runs: sourcing → financing → inspection → closing → property management → tenant → accounting → taxes → repairs.</p>
+        <p>My formal role is your buyer's agent through closing. After closing, the legal transaction is finished — but owning the investment obviously isn't.</p>
+        <p>I'll help you get through the handoff to property management, tenant placement, rent decisions and the other unfamiliar pieces until you feel comfortable. Existing clients also continue to contact me about renewals, managers, repairs, rents and future purchases, and I'm happy to remain a resource.</p>
+      </div>
+    </details>
+
+    <details class="faq-item">
+      <summary>How do you represent me, and how do you get paid?</summary>
+      <div class="faq-body">
+        <p>When you hire me to represent you, I'm your buyer's agent under a written representation agreement for that transaction.</p>
+        <p>Before you sign it, you'll see exactly what I'm being paid, who is expected to pay it, what I owe you, how long the agreement lasts, and how either of us can end the relationship.</p>
+        <p>The exact legal duties vary somewhat by state and by the agreement we're using, but the basic principle is simple: <strong>I'm representing you, not the builder.</strong></p>
+        <p>That includes duties such as confidentiality, disclosure of material information, reasonable care, following your lawful instructions and putting your interests ahead of my own within the agency relationship.</p>
+        <p>There is also an economic reality worth saying out loud: I normally get paid when you buy a property. That gives me a financial interest in a transaction closing.</p>
+        <p>A fiduciary relationship doesn't make that incentive disappear. It means I have a duty not to let that incentive dictate the advice I give you. That's why I want compensation disclosed upfront, and why you should expect me to tell you when I think you should walk away from a property even though I won't be paid on it.</p>
+        <p>In residential real estate right now, the standard is that the seller pays commission for both agents — the one representing them and the one representing the buyer. With new construction, that means the builder typically covers my commission, not you. You'll always know upfront if that's the case and exactly how much it is.</p>
+        <p>I don't charge you anything on top of that, and I don't take money or gifts from anyone else I connect you with. If money is moving in relation to your deal, you'll know about it.</p>
+      </div>
+    </details>
+
+    <details class="faq-item">
+      <summary>Why include appreciation in ROI when you don't actually know what it'll be?</summary>
+      <div class="faq-body">
+        <p>Because leaving appreciation out completely would also give you an incomplete picture of leveraged real estate — but treating an appreciation estimate like cash flow would be misleading.</p>
+        <p>So I separate the two.</p>
+        <p>Cash flow and mortgage principal paydown are things we can observe. Future appreciation isn't. It's an assumption about what the property may be worth later.</p>
+        <p>I still model it because even relatively modest changes in the value of a leveraged property can materially affect the investor's long-term result. But I don't think you should buy a property simply because the appreciation assumption makes the total-return number look exciting.</p>
+        <p>When we're evaluating a deal, I want you to look at it at <strong>0% appreciation first</strong>:</p>
+        <ul>
+          <li>What does the property produce from rent?</li>
+          <li>How much principal is being paid down?</li>
+          <li>Are you still comfortable owning it if its value goes nowhere for several years?</li>
+        </ul>
+        <p>Then we can look at appreciation as a range of possible outcomes rather than a promise.</p>
+        <p>That's also why appreciation is visually separated throughout this page. <strong>The estimate matters, but it doesn't deserve the same confidence as money that has actually been earned.</strong></p>
+      </div>
+    </details>
+
+    <details class="faq-item">
+      <summary>When is it clear I shouldn't buy an investment like this?</summary>
+      <div class="faq-body">
+        <p>While my own personal financials are heavily reliant on these properties as long term investments, it's definitely not necessarily the right move for everyone. Some scenarios in which it certainly isn't:</p>
+        <ul>
+          <li>If a single property would be more than something like 10% of your net worth. That's not diversified, and no investment here is risk-free.</li>
+          <li>If you're going to need that money back soon. Your down payment, and most of your return, is stuck in the house until you sell or refinance — and doing either one at the wrong time can cost you.</li>
+          <li>If you're counting on the monthly cash flow for anything essential. A late tenant or a vacancy can make that number go quiet, or negative, without much warning.</li>
+        </ul>
+      </div>
+    </details>
+  </div>
+
+  </div>
+
+<script>
+// ===== PULLED FROM GOOGLE SHEETS =====
+const SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRj8OtOmCYZGVMYb1VSEgCmlVMcZC9b7Ie-Y_pPvcXzc1-D9ba_amLBxLFiDtXRfL0N7WCnVW-nZP45/pub?gid=0&single=true&output=csv";
+
+let DATA = [];
+
+// Turns "45%" or "0.45" or "45" into the plain number 45 (strips a % sign if present).
+// If your Sheet columns are formatted as Percent, Google may export them as a
+// decimal (0.0524 instead of 5.24) with no % sign — if numbers on the page look
+// 100x too small, that's why. Open SHEET_CSV_URL directly in a browser tab to see
+// exactly what values are coming through, then tell me and I'll adjust.
+function num(v){
+  if(v === undefined || v === null) return NaN;
+  const cleaned = String(v).replace(/[%,$\s]/g,"").replace(/x$/i,"");
+  return cleaned === "" ? NaN : Number(cleaned);
+}
+
+// Turns a Status cell into one of the three codes the page understands.
+function normalizeStatus(raw){
+  const s = String(raw||"").trim().toLowerCase();
+  if(s.includes("under")) return "under_contract";
+  if(s.includes("propos")) return "proposed";
+  return "closed";
+}
+
+// Turns a Purchase Date cell into a sortable "2023-03" key and a "Mar 2023" label.
+function parseDateLabel(raw){
+  const s = String(raw||"").trim();
+  const d = new Date(s);
+  if(isNaN(d.getTime())) return {date:s, label:s};
+  const MONTHS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+  const mm = String(d.getMonth()+1).padStart(2,"0");
+  return {date:`${d.getFullYear()}-${mm}`, label:`${MONTHS[d.getMonth()]} ${d.getFullYear()}`};
+}
+
+// Maps YOUR sheet's exact column headers to the fields this page needs.
+function rowToRecord(row){
+  const {date, label} = parseDateLabel(row["Purchase Date"]);
+  return {
+    date, label,
+    state: String(row["State"]||"").trim(),
+    status: normalizeStatus(row["Status"]),
+    price: num(row["Purchase Price"]),
+    down: num(row["Down Payment"]),
+    invested: num(row["Total Invested"]),
+    rent: num(row["Avg Rent considering avg vacancy (month)"]),
+    cashflow: num(row["Cash remaining after management (month)"]),
+    coc: num(row["Cash on Cash after management"]),
+    principal: num(row["Principal returned (month)"]),
+    principalPct: num(row["Principal returned % of invest"]),
+    apprPct: num(row["appreciation expectations"]),
+    leverage: num(row["leverage multiplier"]),
+    apprContribution: num(row["Leveraged appriciation"]),
+    totalReturn: num(row["Total returns this year"]),
+    detail: {
+      rate: num(row["Intrest rate"]),
+      points: num(row["Points"]),
+      closing: num(row["Total Closing Costs"]),
+      capex: num(row["Capex"]),
+      rentBase: num(row["Rent"]),
+      taxY: num(row["Taxes/y"]),
+      insY: num(row["Insurance/y"]),
+      hoaY: num(row["HOA/y"]),
+      mortPI: num(row["Mortgage P&I (month)"])
+    }
+  };
+}
+
+const STATUS_LABEL = {closed:"Closed", under_contract:"Under Contract", proposed:"Proposed"};
+const fmt$ = n => "$" + Math.round(n).toLocaleString("en-US");
+const fmtPct = n => n.toFixed(2).replace(/\.?0+$/,"") + "%";
+const fmt1 = n => n.toFixed(1).replace(/\.0$/,"");
+
+// One shared $-to-pixel scale for the leverage bars, based on the priciest
+// property in the whole dataset — so a bar's length always means the same
+// number of dollars no matter which property's box you click.
+const LEV_MAX_PX = 460;
+let LEV_SCALE = 0; // recalculated once data loads, see loadData()
+
+function leverageDetailHTML(d){
+  const downPct = d.down / d.price * 100;
+  const multiplier = d.price / d.down;
+  const gainDollar = d.price * d.apprPct / 100;
+  const returnOnCash = gainDollar / d.invested * 100;
+  const houseW = Math.max(6, d.price * LEV_SCALE);
+  const cashW = Math.max(6, d.invested * LEV_SCALE);
+  const gainW = Math.max(3, gainDollar * LEV_SCALE);
+  const verb = d.status === "closed" ? "was purchased" : d.status === "under_contract" ? "is under contract to be purchased" : "was analyzed as a potential purchase";
+  return `
+    <div class="receipt lev-detail">
+      <div class="receipt-title">${d.label} · ${d.state} — how the appreciation number breaks down</div>
+      <p class="lev-copy">This property ${verb} for <b>${fmt$(d.price)}</b>. The investor put down <b>${fmt$(d.down)}</b> — <b>${fmt1(downPct)}%</b> of the price.</p>
+      <div class="lev-driver">The down payment is the dial: ${fmt1(downPct)}% down → 1 ÷ ${fmt1(downPct)}% ≈ <b>${fmt1(multiplier)}×</b> multiplier on every dollar of appreciation.</div>
+      <p class="lev-copy">At a ${fmt1(d.apprPct)}% appreciation assumption, the house gains about <b>${fmt$(gainDollar)}</b> this year — on the full ${fmt$(d.price)} price. Measured against the investor's total cash in the deal (${fmt$(d.invested)}, down payment plus closing costs and capex), that same ${fmt$(gainDollar)} works out to a <b>${fmt1(returnOnCash)}%</b> return.</p>
+      <div class="lev-wrap">
+        <div class="lev-row">
+          <div class="lev-label"><b>Purchase price</b>${fmt$(d.price)}</div>
+          <div class="lev-track" style="width:${houseW}px;"><div class="lev-base" style="width:${houseW}px;"></div><div class="lev-gain" style="width:${gainW}px;left:${Math.max(0,houseW-gainW)}px;"></div></div>
+          <div class="lev-tag">+${fmt$(gainDollar)} <span>→ ${fmt1(d.apprPct)}% of the price</span></div>
+        </div>
+        <div class="lev-row">
+          <div class="lev-label"><b>Cash invested</b>${fmt$(d.invested)}</div>
+          <div class="lev-track" style="width:${cashW}px;"><div class="lev-base" style="width:${cashW}px;"></div><div class="lev-gain" style="width:${gainW}px;left:${Math.max(0,cashW-gainW)}px;"></div></div>
+          <div class="lev-tag">+${fmt$(gainDollar)} <span>→ ${fmt1(returnOnCash)}% of the cash</span></div>
+        </div>
+      </div>
+      <p class="lev-punch">Same gold sliver, same ${fmt$(gainDollar)}, on both bars — it's just a much bigger bite out of the shorter one. <b>That's leverage</b>, and the down payment percentage is what sets the size of that bite: a smaller down payment means a shorter cash bar, so the same dollar of appreciation lands as a bigger percentage. It cuts both ways just as hard if a market falls instead of rises.</p>
+    </div>
+  `;
+}
+
+// Tooltip "i" icons only respond to hover, and hover doesn't exist on a
+// touchscreen — there's no mouse to hold still over the icon. This single
+// listener makes them work on tap too: tapping an icon toggles it open,
+// tapping anywhere else closes whatever's open.
+document.addEventListener("click", (e)=>{
+  const dot = e.target.closest(".info-dot");
+  document.querySelectorAll(".info-dot.open").forEach(el=>{ if(el!==dot) el.classList.remove("open"); });
+  if(dot) dot.classList.toggle("open");
+});
+
+let activeStates = new Set(DATA.map(d=>d.state));
+let activeStatuses = new Set(["closed"]);
+let sortMode = "date_asc";
+
+function buildChips(){
+  const states = [...new Set(DATA.map(d=>d.state))];
+  const stateWrap = document.getElementById("stateChips");
+  states.forEach(s=>{
+    const b = document.createElement("button");
+    b.className = activeStates.has(s) ? "chip active" : "chip";
+    b.textContent = s;
+    b.onclick = ()=>{
+      if(activeStates.has(s)) activeStates.delete(s); else activeStates.add(s);
+      b.classList.toggle("active");
+      render();
+    };
+    stateWrap.appendChild(b);
+  });
+  const statuses = ["closed","under_contract","proposed"];
+  const statusWrap = document.getElementById("statusChips");
+  statuses.forEach(s=>{
+    const b = document.createElement("button");
+    b.className = activeStatuses.has(s) ? "chip active" : "chip";
+    b.textContent = STATUS_LABEL[s];
+    b.onclick = ()=>{
+      if(activeStatuses.has(s)) activeStatuses.delete(s); else activeStatuses.add(s);
+      b.classList.toggle("active");
+      render();
+    };
+    statusWrap.appendChild(b);
+  });
+}
+
+document.getElementById("sortSelect").addEventListener("change", e=>{
+  sortMode = e.target.value;
+  render();
+});
+
+function sortRows(rows){
+  const r = [...rows];
+  switch(sortMode){
+    case "date_asc": return r.sort((a,b)=>a.date.localeCompare(b.date));
+    case "coc_desc": return r.sort((a,b)=>b.coc-a.coc);
+    case "total_desc": return r.sort((a,b)=>b.totalReturn-a.totalReturn);
+    case "state_asc": return r.sort((a,b)=>a.state.localeCompare(b.state));
+    default: return r;
+  }
+}
+
+function detailReceiptLinesHTML(d){
+  const det = d.detail;
+  return `
+    <div class="mp-detail-line"><span class="mp-dl-label">Interest rate</span><span class="mp-dl-val">${det.rate}%</span></div>
+    <div class="mp-detail-line"><span class="mp-dl-label">Points</span><span class="mp-dl-val">${det.points}%</span></div>
+    <div class="mp-detail-line"><span class="mp-dl-label">Base rent (pre-vacancy)</span><span class="mp-dl-val">${fmt$(det.rentBase)}/mo</span></div>
+    <div class="mp-detail-line"><span class="mp-dl-label">Mortgage P&amp;I</span><span class="mp-dl-val">${fmt$(det.mortPI)}/mo</span></div>
+    <div class="mp-detail-line"><span class="mp-dl-label">Property tax</span><span class="mp-dl-val">${fmt$(det.taxY)}/yr</span></div>
+    <div class="mp-detail-line"><span class="mp-dl-label">Insurance</span><span class="mp-dl-val">${fmt$(det.insY)}/yr</span></div>
+    <div class="mp-detail-line"><span class="mp-dl-label">HOA</span><span class="mp-dl-val">${fmt$(det.hoaY)}/yr</span></div>
+    <div class="mp-detail-line"><span class="mp-dl-label">Closing costs</span><span class="mp-dl-val">${fmt$(det.closing)}</span></div>
+    <div class="mp-detail-line"><span class="mp-dl-label">Capex (fence/fan/fridge)</span><span class="mp-dl-val">${fmt$(det.capex)}</span></div>
+    <div class="mp-detail-line predicted"><span class="mp-dl-label">Appreciation assumption (predicted)</span><span class="mp-dl-val">${fmt1(d.apprPct)}%/yr</span></div>
+    <div class="mp-detail-line predicted"><span class="mp-dl-label">Leverage multiplier (predicted)</span><span class="mp-dl-val">${d.leverage}x</span></div>
+  `;
+}
+
+function mobileLeverageHTML(d){
+  const downPct = d.down / d.price * 100;
+  const multiplier = d.price / d.down;
+  const gainDollar = d.price * d.apprPct / 100;
+  const returnOnCash = gainDollar / d.invested * 100;
+  const houseW = 100;
+  const cashW = Math.max(6, d.invested / d.price * 100);
+  const gainW = Math.max(3, gainDollar / d.price * 100);
+  const gainWCash = Math.max(3, gainDollar / d.invested * 100);
+  const verb = d.status === "closed" ? "was purchased" : d.status === "under_contract" ? "is under contract to be purchased" : "was analyzed as a potential purchase";
+  return `
+    <div class="lev-detail mp-lev">
+      <p class="lev-copy">This property ${verb} for <b>${fmt$(d.price)}</b>. The investor put down <b>${fmt$(d.down)}</b> — <b>${fmt1(downPct)}%</b> of the price.</p>
+      <div class="lev-driver">${fmt1(downPct)}% down → 1 ÷ ${fmt1(downPct)}% ≈ <b>${fmt1(multiplier)}×</b> multiplier on every dollar of appreciation.</div>
+      <p class="lev-copy">At a ${fmt1(d.apprPct)}% appreciation assumption, the house gains about <b>${fmt$(gainDollar)}</b> this year. Measured against the cash invested (${fmt$(d.invested)}), that's a <b>${fmt1(returnOnCash)}%</b> return.</p>
+      <div class="lev-wrap">
+        <div class="lev-row">
+          <div class="lev-label"><b>Purchase price</b>${fmt$(d.price)}</div>
+          <div class="lev-track" style="width:${houseW}%;"><div class="lev-base" style="width:100%;"></div><div class="lev-gain" style="width:${gainW}%;left:${Math.max(0,100-gainW)}%;"></div></div>
+          <div class="lev-tag">+${fmt$(gainDollar)} <span>→ ${fmt1(d.apprPct)}% of the price</span></div>
+        </div>
+        <div class="lev-row">
+          <div class="lev-label"><b>Cash invested</b>${fmt$(d.invested)}</div>
+          <div class="lev-track" style="width:${cashW}%;"><div class="lev-base" style="width:100%;"></div><div class="lev-gain" style="width:${gainWCash}%;left:${Math.max(0,100-gainWCash)}%;"></div></div>
+          <div class="lev-tag">+${fmt$(gainDollar)} <span>→ ${fmt1(returnOnCash)}% of the cash</span></div>
+        </div>
+      </div>
+      <p class="lev-punch">Same dollar gain, both bars — it's just a much bigger bite out of the shorter one. <b>That's leverage</b>, and it cuts both ways if a market falls instead of rises.</p>
+    </div>
+  `;
+}
+
+function renderMobile(rows){
+  const list = document.getElementById("mobilePropertyList");
+  list.innerHTML = "";
+  rows.forEach(d=>{
+    const actualPct = d.coc + d.principalPct;
+    const predictedPct = d.apprContribution;
+    const barTotal = actualPct + predictedPct;
+    const actualShare = barTotal>0 ? (actualPct/barTotal*100) : 50;
+    const predictedShare = 100 - actualShare;
+
+    const card = document.createElement("div");
+    card.className = "mp-card";
+    card.innerHTML = `
+      <div class="mp-row1">
+        <span class="mp-state">${d.state}</span>
+        <span class="status-badge status-${d.status}">${STATUS_LABEL[d.status]}</span>
+      </div>
+      <div class="mp-row2">${fmt$(d.price)} purchase · ${fmt$(d.invested)} invested</div>
+      <div class="mp-metrics">
+        <div>
+          <span class="mp-metric-label">Cash-on-Cash</span>
+          <span class="mp-metric-val">${fmtPct(d.coc)}</span>
+        </div>
+        <div>
+          <span class="mp-metric-label">Cash Flow</span>
+          <span class="mp-metric-val">${fmt$(d.cashflow)}/mo</span>
+        </div>
+      </div>
+      <div class="mp-modeled">
+        <span class="mp-modeled-label">Modeled Return</span>
+        <span class="mp-modeled-val">${fmtPct(d.totalReturn)}</span>
+      </div>
+      <div class="mp-modeled-split"><span class="mp-a">${fmt1(actualPct)}%</span> <span class="mp-a-w">actual</span> + <span class="mp-f">${fmt1(predictedPct)}%</span> <span class="mp-f-w">forecast</span></div>
+      <div class="mp-bar"><span class="tr-actual" style="width:${actualShare}%"></span><span class="tr-predicted" style="width:${predictedShare}%"></span></div>
+      <div class="mp-actions">
+        <button class="mp-action underwriting">View underwriting →</button>
+        <button class="mp-action forecast">Explain forecast →</button>
+      </div>
+      <div class="mp-detail mp-underwriting-detail">${detailReceiptLinesHTML(d)}</div>
+      <div class="mp-detail mp-forecast-detail">${mobileLeverageHTML(d)}</div>
+    `;
+    const uwBtn = card.querySelector(".mp-action.underwriting");
+    const fcBtn = card.querySelector(".mp-action.forecast");
+    const uwDetail = card.querySelector(".mp-underwriting-detail");
+    const fcDetail = card.querySelector(".mp-forecast-detail");
+    uwBtn.onclick = ()=> uwDetail.classList.toggle("open");
+    fcBtn.onclick = ()=> fcDetail.classList.toggle("open");
+    list.appendChild(card);
+  });
+}
+
+function render(){
+  const rows = sortRows(DATA.filter(d=>activeStates.has(d.state) && activeStatuses.has(d.status)));
+  const body = document.getElementById("tableBody");
+  body.innerHTML = "";
+  rows.forEach((d,i)=>{
+    const actualPct = d.coc + d.principalPct;
+    const predictedPct = d.apprContribution;
+    const barTotal = actualPct + predictedPct;
+    const actualShare = barTotal>0 ? (actualPct/barTotal*100) : 50;
+    const predictedShare = 100 - actualShare;
+
+    const tr = document.createElement("tr");
+    tr.className = "data-row";
+    tr.innerHTML = `
+      <td><span class="chevron">▶</span></td>
+      <td class="state-cell">${d.state}</td>
+      <td><span class="status-badge status-${d.status}">${STATUS_LABEL[d.status]}</span></td>
+      <td class="num num-muted">${fmt$(d.price)}</td>
+      <td class="num num-muted">${fmt$(d.down)}</td>
+      <td class="num num-muted">${fmt$(d.invested)}</td>
+      <td class="num num-muted">${fmt$(d.rent)}</td>
+      <td class="num num-mid">${fmt$(d.cashflow)}</td>
+      <td class="num num-mid">${fmtPct(d.coc)}</td>
+      <td class="num num-mid">${fmt$(d.principal)}</td>
+      <td>
+        <div class="predicted-cell">
+          <span class="pv">+${fmt1(d.apprContribution)}%</span>
+          <span class="ps">${fmt1(d.apprPct)}% mkt × ${d.leverage}x</span>
+          <span class="pc-caret">▸</span>
+        </div>
+      </td>
+      <td>
+        <div class="tr-wrap">
+          <span class="tr-num">${fmtPct(d.totalReturn)}</span>
+          <span class="tr-modeled-label">Modeled</span>
+          <span class="tr-split"><span class="tr-a-num">${fmt1(actualPct)}%</span> <span class="tr-a-word">actual</span> <span class="tr-plus">+</span> <span class="tr-f-num">${fmt1(predictedPct)}%</span> <span class="tr-f-word">forecast</span></span>
+          <div class="tr-bar" title="${Math.round(actualShare)}% actual, ${Math.round(predictedShare)}% forecast">
+            <span class="tr-actual" style="width:${actualShare}%"></span>
+            <span class="tr-predicted" style="width:${predictedShare}%"></span>
+          </div>
+        </div>
+      </td>
+    `;
+    const levTr = document.createElement("tr");
+    levTr.className = "detail-row";
+    levTr.innerHTML = `<td colspan="12">${leverageDetailHTML(d)}</td>`;
+
+    const detailTr = document.createElement("tr");
+    detailTr.className = "detail-row";
+    const det = d.detail;
+    const dateTag = d.status === "proposed" ? "Analyzed" : "Closing Date";
+    const receiptDesc = d.status === "proposed" ? "the analysis behind the listing — not yet purchased" : "the actual numbers";
+    detailTr.innerHTML = `
+      <td colspan="12">
+        <div class="receipt">
+          <div class="receipt-title">${dateTag}: ${d.label} · ${d.state} — ${receiptDesc}</div>
+          <div class="receipt-grid">
+            <div class="receipt-line"><span class="rl-label">Interest rate</span><span class="rl-fill"></span><span class="rl-val">${det.rate}%</span></div>
+            <div class="receipt-line"><span class="rl-label">Points</span><span class="rl-fill"></span><span class="rl-val">${det.points}%</span></div>
+            <div class="receipt-line"><span class="rl-label">Base rent (pre-vacancy)</span><span class="rl-fill"></span><span class="rl-val">${fmt$(det.rentBase)}/mo</span></div>
+            <div class="receipt-line"><span class="rl-label">Mortgage P&amp;I</span><span class="rl-fill"></span><span class="rl-val">${fmt$(det.mortPI)}/mo</span></div>
+            <div class="receipt-line"><span class="rl-label">Property tax</span><span class="rl-fill"></span><span class="rl-val">${fmt$(det.taxY)}/yr</span></div>
+            <div class="receipt-line"><span class="rl-label">Insurance</span><span class="rl-fill"></span><span class="rl-val">${fmt$(det.insY)}/yr</span></div>
+            <div class="receipt-line"><span class="rl-label">HOA</span><span class="rl-fill"></span><span class="rl-val">${fmt$(det.hoaY)}/yr</span></div>
+            <div class="receipt-line"><span class="rl-label">Closing costs</span><span class="rl-fill"></span><span class="rl-val">${fmt$(det.closing)}</span></div>
+            <div class="receipt-line"><span class="rl-label">Capex (fence/fan/fridge)</span><span class="rl-fill"></span><span class="rl-val">${fmt$(det.capex)}</span></div>
+            <div class="receipt-line predicted-line"><span class="rl-label">Appreciation assumption (predicted)</span><span class="rl-fill"></span><span class="rl-val">${fmt1(d.apprPct)}%/yr</span></div>
+            <div class="receipt-line predicted-line"><span class="rl-label">Leverage multiplier (predicted)</span><span class="rl-fill"></span><span class="rl-val">${d.leverage}x</span></div>
+          </div>
+        </div>
+      </td>`;
+    tr.onclick = ()=>{
+      const willOpen = !tr.classList.contains("open");
+      document.querySelectorAll("tr.data-row.open").forEach(r=>r.classList.remove("open"));
+      document.querySelectorAll("tr.detail-row.open").forEach(r=>r.classList.remove("open","lev-row-open"));
+      document.querySelectorAll(".predicted-cell.open").forEach(el=>el.classList.remove("open"));
+      if(willOpen){ tr.classList.add("open"); detailTr.classList.add("open"); }
+    };
+    const predictedCell = tr.querySelector(".predicted-cell");
+    predictedCell.onclick = (e)=>{
+      e.stopPropagation();
+      const willOpen = !levTr.classList.contains("open");
+      document.querySelectorAll(".predicted-cell.open").forEach(el=>el.classList.remove("open"));
+      document.querySelectorAll("tr.detail-row.lev-row-open").forEach(r=>r.classList.remove("open","lev-row-open"));
+      if(willOpen){ predictedCell.classList.add("open"); levTr.classList.add("open","lev-row-open"); }
+    };
+    body.appendChild(tr);
+    body.appendChild(levTr);
+    body.appendChild(detailTr);
+  });
+
+  document.getElementById("countNote").textContent = `Showing ${rows.length} of ${DATA.length} properties`;
+  renderMobile(rows);
+}
+
+// ===== LOAD DATA FROM GOOGLE SHEETS, THEN BUILD THE PAGE =====
+function loadData(){
+  const wrap = document.querySelector(".table-wrap");
+  Papa.parse(SHEET_CSV_URL, {
+    download: true,
+    header: true,
+    skipEmptyLines: true,
+    complete: function(results){
+      DATA = results.data.map(rowToRecord);
+      console.log("First row from your sheet, as parsed:", DATA[0]);
+      LEV_SCALE = LEV_MAX_PX / Math.max(...DATA.map(d=>d.price));
+      buildChips();
+      render();
+    },
+    error: function(err){
+      console.error("Could not load the Google Sheet:", err);
+      if(wrap){
+        wrap.innerHTML = '<p style="color:#c1633f;font-family:monospace;">Could not load data from the Google Sheet. Check that SHEET_CSV_URL is set correctly and the sheet is published to the web.</p>';
+      }
+    }
+  });
+}
+
+loadData();
+</script>
+</body>
+</html>
