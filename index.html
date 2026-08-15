@@ -424,12 +424,42 @@
     color:#c9c1b0;
     max-width:680px;
   }
+  .why-body p{margin:0 0 12px;}
+  .why-body p:last-child{margin-bottom:0;}
+  .example-line{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:13px;
+    color:#d8d0c0;
+    background:rgba(182,144,90,0.06);
+    border:1px solid var(--line);
+    border-left:3px solid var(--brass);
+    padding:10px 14px;
+    margin:14px 0;
+    line-height:1.6;
+  }
+  .example-line div{margin:2px 0;}
+  .example-line .eq{color:var(--paper-dim);}
+  .why-conclusion{
+    margin:14px 0 0;
+    padding:12px 14px;
+    background:rgba(182,144,90,0.08);
+    border-left:3px solid var(--brass);
+    font-size:13.5px;
+  }
   .curve-wrap{margin:16px 0;}
   .curve-caption{
     font-family:'IBM Plex Mono',monospace;
     font-size:10.5px;
     color:var(--paper-dim);
     letter-spacing:.04em;
+  }
+  .curve-method-note{
+    margin-top:8px;
+    max-width:680px;
+    font-family:'IBM Plex Sans',sans-serif;
+    font-size:11.5px;
+    line-height:1.5;
+    color:var(--paper-dim);
   }
 
   /* ---------- Leverage explainer ---------- */
@@ -778,11 +808,34 @@
   <div id="mobilePropertyList" class="mobile-property-list"></div>
 
   <div class="decline-note">
-    <b>Modeled Return shown is a snapshot of this year only.</b> These numbers shift the longer a property is held — typically settling lower after several years, even when the investment is performing the same or better. That's because a strong early-leverage gain gets averaged over more and more years the longer you hold.
+    <b>Modeled Return shown is a snapshot of this year only.</b> These numbers shift the longer a property is held — typically settling lower after several years, even when the investment is performing the same or better.
     <details class="why">
-      <summary>Why does the number shrink even though the deal isn't getting worse? →</summary>
+      <summary>Why does the return percentage get smaller over time? →</summary>
       <div class="why-body">
-        <p>Leverage makes appreciation large relative to your initial cash investment. As equity builds over time, that leverage generally falls, so the same percentage increase in the property's value represents a smaller return relative to the equity you have accumulated.</p>
+        <p>Because early on, you're using a lot of the bank's money and relatively little of your own.</p>
+
+        <p>Imagine you put <strong>$50,000</strong> into a <strong>$250,000</strong> house. If the house goes up <strong>4%</strong>, that's a <strong>$10,000 increase in value</strong>.</p>
+
+        <p>Early on, that $10,000 is large compared with the $50,000 of your own money you started with — about a <strong>20% gain</strong> relative to that starting amount.</p>
+
+        <div class="example-line">
+          <div>Early: $10,000 ÷ $50,000 <span class="eq">=</span> <strong>20%</strong></div>
+        </div>
+
+        <p>Over time, you pay down the mortgage and own more of the house yourself. That ownership is called <strong>equity</strong>.</p>
+
+        <p><strong>Equity is the part of the house you actually own — roughly the home's value minus what you still owe on the mortgage.</strong></p>
+
+        <p>Years later, imagine you now have about <strong>$200,000 of equity</strong> in the house. If the house rises by that same $10,000, the gain is now only about <strong>5%</strong> relative to the $200,000 you own.</p>
+
+        <div class="example-line">
+          <div>Later: $10,000 ÷ $200,000 <span class="eq">=</span> <strong>5%</strong></div>
+        </div>
+
+        <div class="why-conclusion"><strong>The house didn't perform worse. You simply own much more of it, so borrowed money is giving your return less of a boost.</strong> That boost from using borrowed money is what investors mean by leverage.</div>
+
+        <p>That's what the downward curve below is illustrating.</p>
+
         <div class="curve-wrap">
           <svg viewBox="0 0 640 200" width="100%" height="200" preserveAspectRatio="xMidYMid meet">
             <line x1="40" y1="20" x2="40" y2="170" stroke="#3a3f47" stroke-width="1"/>
@@ -791,7 +844,7 @@
             <text x="10" y="100" fill="#a79f8f" font-family="IBM Plex Mono" font-size="10">15%</text>
             <text x="18" y="174" fill="#a79f8f" font-family="IBM Plex Mono" font-size="10">0%</text>
             <line x1="235" y1="170" x2="235" y2="20" stroke="#3a3f47" stroke-width="1" stroke-dasharray="2,3"/>
-            <text x="215" y="14" fill="#7f9c6e" font-family="IBM Plex Mono" font-size="10">S&P avg (9%)</text>
+            <text x="205" y="14" fill="#7f9c6e" font-family="IBM Plex Mono" font-size="10">S&amp;P 500 — 9% CAGR</text>
             <line x1="40" y1="126" x2="620" y2="126" stroke="#7f9c6e" stroke-width="1.5" stroke-dasharray="3,3"/>
             <polyline fill="none" stroke="#b6905a" stroke-width="2.5"
               points="40,32 69,45 98,55 127,63 156,70 185,76 214,81 243,86 272,90 301,94 330,97 359,100 388,103 417,106 446,108 475,110 504,112 533,114 562,116 591,118 620,120" />
@@ -800,8 +853,21 @@
             <text x="30" y="24" fill="#ece4d3" font-family="IBM Plex Mono" font-size="11">22%</text>
             <text x="595" y="112" fill="#ece4d3" font-family="IBM Plex Mono" font-size="11">12%</text>
           </svg>
-          <div class="curve-caption">ILLUSTRATIVE — annualized return, year 1 vs. year 20, generic leveraged-rental model vs. flat 9% benchmark</div>
+          <div class="curve-caption">ILLUSTRATIVE — modeled rental CAGR over time vs. a 9% S&amp;P 500 benchmark</div>
+          <div class="curve-method-note">Both sides assume returns are reinvested and compounded. The S&amp;P 500 benchmark assumes a 9% annual total return with dividends reinvested. The rental model assumes cash generated by the investment is reinvested back into the same investment strategy. Actual results will vary.</div>
         </div>
+
+        <p><strong>What exactly is this chart comparing?</strong></p>
+
+        <p>The chart uses <strong>CAGR</strong>, which is just a way of turning a multi-year result into one average yearly growth rate. Think of it as:</p>
+
+        <p><strong>"What yearly return would have gotten me from where I started to where I ended?"</strong></p>
+
+        <p>For this comparison, money produced along the way is assumed to be reinvested rather than spent.</p>
+
+        <p>The S&amp;P 500 line uses a <strong>9% assumed long-term annual total return</strong>, with dividends reinvested. The rental-property model similarly assumes cash generated by the investment is reinvested back into the same investment strategy.</p>
+
+        <p>The 9% isn't a prediction, and it doesn't mean the S&amp;P 500 earns 9% every year. It's simply the benchmark used in this illustration.</p>
       </div>
     </details>
   </div>
@@ -853,7 +919,9 @@
     <details class="faq-item">
       <summary>Why is this heavily clustered in Arkansas?</summary>
       <div class="faq-body">
-        <p>The recent concentration in Arkansas is due to what I see as striking a vein of particularly profitable properties. This can change any day because of changes in builder incentives or any parameter in market dynamics.</p>
+        <p>The concentration isn't intentional. Right now, Arkansas is simply where I'm finding the best combination of purchase price, achievable rent, growth trajectory, property taxes, builder incentives and manageable supply. You can see the result of that in the cash-flow and cash-on-cash numbers in the table.</p>
+        <p>That can change quickly. Rent being too low relative to price is the most common reason I reject a market or property. I've backed away from parts of Raleigh because I didn't like the amount of new supply coming in, and Texas property taxes make it much harder for a deal there to cash flow. Even within a market I like, I'll reject individual houses because of the layout or a particular lot.</p>
+        <p>So I'm not trying to build an Arkansas portfolio. Arkansas is just where the filter has been producing the most interesting properties lately. If that changes, the next purchases will change with it.</p>
       </div>
     </details>
 
