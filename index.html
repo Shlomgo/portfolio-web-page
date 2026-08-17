@@ -168,7 +168,7 @@
 
   /* ---------- Table ---------- */
   .table-wrap{width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch;margin-bottom:8px;}
-  table{width:100%;border-collapse:collapse;min-width:1240px;}
+  table{width:100%;border-collapse:collapse;min-width:960px;}
   .table-scroll-hint{
     display:none;
     font-family:'IBM Plex Mono',monospace;
@@ -176,39 +176,45 @@
     color:var(--paper-dim);
     margin:0 0 8px;
   }
-  @media (max-width:1270px){
+  @media (max-width:1180px){
     .table-scroll-hint{display:block;}
   }
   @media (max-width:760px){
     .table-scroll-hint{display:none;}
   }
   th.id-col,
-  td.id-col{width:52px;min-width:52px;white-space:nowrap;}
+  td.id-col{width:44px;min-width:44px;white-space:nowrap;}
+  th.rent-col,
+  td.rent-col{min-width:68px;width:68px;}
+  th.cash-return-col,
+  td.cash-return-col{min-width:92px;width:92px;}
+  th.principal-return-col,
+  td.principal-return-col{min-width:92px;width:92px;}
   th.appreciation-col,
-  td.appreciation-col{min-width:115px;}
+  td.appreciation-col{min-width:112px;}
   th.modeled-return-col,
-  td.modeled-return-col{min-width:120px;width:120px;}
+  td.modeled-return-col{min-width:116px;width:116px;}
   .num,
   .property-id,
   td[data-numeric="true"]{white-space:nowrap;}
   thead th{
     text-align:left;
     font-family:'IBM Plex Mono',monospace;
-    font-size:10.5px;
-    letter-spacing:.05em;
+    font-size:10px;
+    letter-spacing:.04em;
     text-transform:uppercase;
     color:var(--paper-dim);
     font-weight:500;
-    padding:0 8px 10px;
+    padding:0 5px 10px;
     border-bottom:1px solid var(--line);
-    white-space:nowrap;
+    white-space:normal;
   }
   thead th.th-predicted{color:var(--rust);}
   thead th .th-inner{display:flex;align-items:center;gap:5px;}
   tbody td{
-    padding:11px 8px;
+    padding:10px 5px;
     border-bottom:1px solid rgba(58,63,71,.6);
-    font-size:13.5px;
+    font-size:13px;
     vertical-align:middle;
   }
   tbody tr.data-row{cursor:pointer;transition:background .12s ease;}
@@ -216,6 +222,43 @@
   .num{font-family:'IBM Plex Mono',monospace;white-space:nowrap;}
   .num-muted{color:#a79f8f;font-weight:400;}
   .num-mid{color:var(--sage);font-weight:600;}
+  .return-pair{
+    display:flex;
+    flex-direction:column;
+    align-items:flex-start;
+    gap:1px;
+    line-height:1.18;
+    font-family:'IBM Plex Mono',monospace;
+  }
+  .return-pair .rp-month{
+    color:var(--sage);
+    font-size:13px;
+    font-weight:600;
+    white-space:nowrap;
+  }
+  .return-pair .rp-year{
+    color:rgba(127,156,110,.78);
+    font-size:9.5px;
+    font-weight:500;
+    white-space:nowrap;
+  }
+  .th-title-row{
+    display:flex;
+    align-items:center;
+    flex-wrap:wrap;
+    gap:3px 4px;
+    white-space:normal;
+  }
+  .th-unit-sub{
+    display:block;
+    margin-top:2px;
+    font-size:8.5px;
+    line-height:1.15;
+    letter-spacing:.04em;
+    color:var(--paper-dim);
+    font-weight:400;
+    white-space:nowrap;
+  }
   .state-cell{font-weight:600;}
   .id-cell{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--brass);white-space:nowrap;}
   .status-badge{
@@ -374,7 +417,7 @@
     flex-direction:column;
     align-items:flex-start;
     gap:1px;
-    padding:4px 20px 4px 8px;
+    padding:4px 16px 4px 6px;
     border:1px dashed var(--rust);
     border-radius:3px;
     background:rgba(193,99,63,0.08);
@@ -426,7 +469,7 @@
   .tr-split .tr-plus{color:var(--paper-dim);}
   .tr-split .tr-f-num{color:var(--rust);font-weight:600;}
   .tr-split .tr-f-word{color:rgba(193,99,63,.7);}
-  .tr-bar{width:82px;height:5px;border-radius:3px;overflow:hidden;display:flex;background:rgba(255,255,255,0.06);margin-top:2px;}
+  .tr-bar{width:68px;height:5px;border-radius:3px;overflow:hidden;display:flex;background:rgba(255,255,255,0.06);margin-top:2px;}
   .tr-actual{height:100%;background:var(--sage);}
   .tr-predicted{
     height:100%;
@@ -506,6 +549,23 @@
     text-transform:uppercase;
     margin-bottom:12px;
   }
+  .receipt-sections{display:flex;flex-direction:column;gap:18px;}
+  .receipt-section{min-width:0;}
+  .receipt-section + .receipt-section{
+    padding-top:16px;
+    border-top:1px solid rgba(58,63,71,.72);
+  }
+  .receipt-section-title{
+    margin:0 0 9px;
+    font-family:'IBM Plex Mono',monospace;
+    font-size:9.5px;
+    letter-spacing:.10em;
+    text-transform:uppercase;
+    color:var(--paper-dim);
+    font-weight:500;
+  }
+  .receipt-section-title.purchase{color:var(--brass);}
+  .receipt-section-title.forecast{color:var(--rust);}
   .receipt-grid{
     display:grid;
     grid-template-columns:repeat(4, minmax(0,1fr));
@@ -520,6 +580,22 @@
   @media (max-width:560px){
     .receipt-grid{grid-template-columns:1fr;}
   }
+  .mp-detail-section{margin-top:16px;}
+  .mp-detail-section:first-of-type{margin-top:10px;}
+  .mp-detail-section + .mp-detail-section{
+    padding-top:14px;
+    border-top:1px solid rgba(58,63,71,.72);
+  }
+  .mp-detail-section-title{
+    margin:0 0 5px;
+    font-family:'IBM Plex Mono',monospace;
+    font-size:9.5px;
+    letter-spacing:.10em;
+    text-transform:uppercase;
+    color:var(--paper-dim);
+  }
+  .mp-detail-section-title.purchase{color:var(--brass);}
+  .mp-detail-section-title.forecast{color:var(--rust);}
   .receipt-line{
     display:flex;
     align-items:flex-start;
@@ -747,6 +823,14 @@
     font-size:17px;
     font-weight:600;
     color:var(--sage);
+  }
+  .mp-metric-sub{
+    display:block;
+    margin-top:2px;
+    font-family:'IBM Plex Mono',monospace;
+    font-size:10.5px;
+    color:rgba(127,156,110,.78);
+    white-space:nowrap;
   }
   .mp-modeled{
     margin-top:14px;
@@ -1009,21 +1093,26 @@
             <span class="info-dot" tabindex="0">i<span class="tip">Down payment + closing costs + any capital expenses = the real cash out of pocket.</span></span>
             <span class="fx-dot" tabindex="0">ƒx<span class="tip"><span class="tip-label">Formula</span>Down payment + closing costs + capex.</span></span>
           </th>
-          <th>Rent (avg)
-            <span class="info-dot" tabindex="0">i<span class="tip">Rent adjusted for average vacancy — roughly 30 days of vacancy between tenants living in the home for an average of 2.5 years.</span></span>
-            <span class="fx-dot" tabindex="0">ƒx<span class="tip"><span class="tip-label">Formula</span>Base rent × 30 occupied months ÷ 31 total months. This models one month vacant after an average 30-month tenancy.</span></span>
+          <th class="rent-col">
+            <span class="th-title-row">Rent (avg)
+              <span class="info-dot" tabindex="0">i<span class="tip">Monthly rent after the underwriting vacancy allowance — roughly one vacant month after an average 30-month tenancy.</span></span>
+              <span class="fx-dot" tabindex="0">ƒx<span class="tip"><span class="tip-label">Formula</span>Base rent × 30 occupied months ÷ 31 total months.</span></span>
+            </span>
+            <span class="th-unit-sub">$/MO</span>
           </th>
-          <th>Cash Flow
-            <span class="info-dot" tabindex="0">i<span class="tip">What's left over each month after the mortgage, taxes, insurance, and management fee are paid.</span></span>
-            <span class="fx-dot" tabindex="0">ƒx<span class="tip"><span class="tip-label">Formula</span>Vacancy-adjusted rent − mortgage P&amp;I − taxes/12 − insurance/12 − HOA/12 − 10% management fee. Management is 10% of vacancy-adjusted rent.</span></span>
+          <th class="cash-return-col">
+            <span class="th-title-row">Cash Flow
+              <span class="info-dot" tabindex="0">i<span class="tip">Top line: cash left each month after mortgage, taxes, insurance, HOA, management and the vacancy allowance. Bottom line: that same cash flow annualized as cash-on-cash return on total cash invested.</span></span>
+              <span class="fx-dot" tabindex="0">ƒx<span class="tip"><span class="tip-label">Formulas</span>Monthly cash flow = vacancy-adjusted rent − mortgage P&amp;I − taxes/12 − insurance/12 − HOA/12 − 10% management. Cash-on-cash = (monthly cash flow × 12) ÷ total invested.</span></span>
+            </span>
+            <span class="th-unit-sub">$/MO · COC/YR</span>
           </th>
-          <th>Cash-on-Cash
-            <span class="info-dot" tabindex="0">i<span class="tip">Yearly cash flow ÷ total cash invested. The return you'd get if the house never rose in value or paid back the loan — just from rent.</span></span>
-            <span class="fx-dot" tabindex="0">ƒx<span class="tip"><span class="tip-label">Formula</span>(Monthly cash flow × 12) ÷ total cash invested.</span></span>
-          </th>
-          <th>Principal
-            <span class="info-dot" tabindex="0">i<span class="tip">Part of your mortgage payment that pays down the loan balance — it's money going into your equity through your mortgage account, not an expense.</span></span>
-            <span class="fx-dot" tabindex="0">ƒx<span class="tip"><span class="tip-label">Formula used in return</span>(Monthly principal × 12) ÷ total cash invested. The monthly principal itself comes from the mortgage amortization.</span></span>
+          <th class="principal-return-col">
+            <span class="th-title-row">Principal
+              <span class="info-dot" tabindex="0">i<span class="tip">Top line: mortgage principal paid down each month. Bottom line: that principal paydown annualized as a percentage of total cash invested.</span></span>
+              <span class="fx-dot" tabindex="0">ƒx<span class="tip"><span class="tip-label">Formula used in return</span>(Monthly principal × 12) ÷ total cash invested. The monthly principal itself comes from the mortgage amortization.</span></span>
+            </span>
+            <span class="th-unit-sub">$/MO · %/YR</span>
           </th>
           <th class="th-predicted appreciation-col">Appreciation*
             <span class="info-dot" tabindex="0">i<span class="tip">My best guess for this property's yearly value growth — from analyzing the market, not a guarantee. The page converts it to a return on total cash invested using effective leverage: purchase price ÷ total invested. Closing costs and capex therefore reduce the multiplier. Click the box below for the exact math on any property.</span></span>
@@ -1032,7 +1121,7 @@
           <th class="modeled-return-col">Modeled Return
             <span class="info-dot" tabindex="0">i<span class="tip">Modeled Return combines cash-on-cash return, principal paydown, and the appreciation assumption. Green components are actual for closed properties (underwritten for pipeline properties); orange components depend on forecast appreciation.</span></span>
             <span class="fx-dot" tabindex="0">ƒx<span class="tip"><span class="tip-label">Formula</span>Cash-on-cash return + principal return contribution + modeled appreciation contribution.</span></span>
-            <span class="th-modeled-sub">Actual/Underwritten + Forecast</span>
+            <span class="th-modeled-sub">Operating + Forecast</span>
           </th>
         </tr>
       </thead>
@@ -1597,19 +1686,35 @@ function detailReceiptLinesHTML(d){
   const det = d.detail;
   return `
     <div class="receipt-title">${detailHeadingText(d)}</div>
-    <div class="mp-detail-line"><span class="mp-dl-label">Interest rate</span><span class="mp-dl-val">${det.rate}%</span></div>
-    <div class="mp-detail-line"><span class="mp-dl-label">Points</span><span class="mp-dl-val">${det.points}%</span></div>
-    <div class="mp-detail-line"><span class="mp-dl-label">Base rent (pre-vacancy)</span><span class="mp-dl-val">${fmt$(det.rentBase)}/mo</span></div>
-    ${daysToRentStartMobileLineHTML(d)}
-    <div class="mp-detail-line"><span class="mp-dl-label">Mortgage P&amp;I</span><span class="mp-dl-val">${fmt$(det.mortPI)}/mo</span></div>
-    <div class="mp-detail-line"><span class="mp-dl-label">Property tax</span><span class="mp-dl-val">${fmt$(det.taxY)}/yr</span></div>
-    <div class="mp-detail-line"><span class="mp-dl-label">Insurance</span><span class="mp-dl-val">${fmt$(det.insY)}/yr</span></div>
-    <div class="mp-detail-line"><span class="mp-dl-label">HOA</span><span class="mp-dl-val">${fmt$(det.hoaY)}/yr</span></div>
-    <div class="mp-detail-line"><span class="mp-dl-label">Closing costs</span><span class="mp-dl-val">${fmt$(det.closing)}</span></div>
-    <div class="mp-detail-line"><span class="mp-dl-label">Capex (fence/fan/fridge)</span><span class="mp-dl-val">${formatCapex(det.capex)}</span></div>
-    <div class="mp-detail-line predicted"><span class="mp-dl-label">Appreciation assumption (predicted)</span><span class="mp-dl-val">${fmt1(d.apprPct)}%/yr</span></div>
-    <div class="mp-detail-line predicted"><span class="mp-dl-label">Effective leverage <span class="info-dot" tabindex="0">i<span class="tip">Purchase price ÷ total cash invested. Closing costs and capex reduce this multiplier because they add cash invested without increasing the purchase price.</span></span><span class="fx-dot" tabindex="0">ƒx<span class="tip"><span class="tip-label">Formula</span>Purchase price ÷ total cash invested.</span></span></span><span class="mp-dl-val">${fmtLev(d.leverage)}×</span></div>
-    <div class="mp-detail-line predicted"><span class="mp-dl-label">Modeled appreciation contribution</span><span class="mp-dl-val">${fmt1(d.apprContribution)}%</span></div>
+
+    <div class="mp-detail-section">
+      <div class="mp-detail-section-title purchase">Purchase &amp; financing</div>
+      <div class="mp-detail-line"><span class="mp-dl-label">Purchase price</span><span class="mp-dl-val">${fmt$(d.price)}</span></div>
+      <div class="mp-detail-line"><span class="mp-dl-label">Down payment</span><span class="mp-dl-val">${fmt$(d.down)}</span></div>
+      <div class="mp-detail-line"><span class="mp-dl-label">Closing costs</span><span class="mp-dl-val">${fmt$(det.closing)}</span></div>
+      <div class="mp-detail-line"><span class="mp-dl-label">Initial capex</span><span class="mp-dl-val">${formatCapex(det.capex)}</span></div>
+      <div class="mp-detail-line"><span class="mp-dl-label">Total invested</span><span class="mp-dl-val">${fmt$(d.invested)}</span></div>
+      <div class="mp-detail-line"><span class="mp-dl-label">Interest rate</span><span class="mp-dl-val">${det.rate}%</span></div>
+      <div class="mp-detail-line"><span class="mp-dl-label">Points</span><span class="mp-dl-val">${det.points}%</span></div>
+      <div class="mp-detail-line"><span class="mp-dl-label">Effective leverage <span class="info-dot" tabindex="0">i<span class="tip">Purchase price ÷ total cash invested. Closing costs and capex reduce this multiplier because they add cash invested without increasing the purchase price.</span></span><span class="fx-dot" tabindex="0">ƒx<span class="tip"><span class="tip-label">Formula</span>Purchase price ÷ total cash invested.</span></span></span><span class="mp-dl-val">${fmtLev(d.leverage)}×</span></div>
+    </div>
+
+    <div class="mp-detail-section">
+      <div class="mp-detail-section-title">Leasing &amp; ongoing expenses</div>
+      <div class="mp-detail-line"><span class="mp-dl-label">Base rent (pre-vacancy)</span><span class="mp-dl-val">${fmt$(det.rentBase)}/mo</span></div>
+      ${daysToRentStartMobileLineHTML(d)}
+      <div class="mp-detail-line"><span class="mp-dl-label">Mortgage P&amp;I</span><span class="mp-dl-val">${fmt$(det.mortPI)}/mo</span></div>
+      <div class="mp-detail-line"><span class="mp-dl-label">Property tax</span><span class="mp-dl-val">${fmt$(det.taxY)}/yr</span></div>
+      <div class="mp-detail-line"><span class="mp-dl-label">Insurance</span><span class="mp-dl-val">${fmt$(det.insY)}/yr</span></div>
+      <div class="mp-detail-line"><span class="mp-dl-label">HOA</span><span class="mp-dl-val">${fmt$(det.hoaY)}/yr</span></div>
+    </div>
+
+    <div class="mp-detail-section">
+      <div class="mp-detail-section-title forecast">Appreciation forecast</div>
+      <div class="mp-detail-line predicted"><span class="mp-dl-label">Appreciation assumption</span><span class="mp-dl-val">${fmt1(d.apprPct)}%/yr</span></div>
+      <div class="mp-detail-line predicted"><span class="mp-dl-label">Modeled appreciation contribution</span><span class="mp-dl-val">${fmt1(d.apprContribution)}%</span></div>
+    </div>
+
     ${mathToolsHTML(d,true)}
   `;
 }
@@ -1669,12 +1774,14 @@ function renderMobile(rows){
       <div class="mp-row2">${fmt$(d.price)} purchase · ${fmt$(d.invested)} invested</div>
       <div class="mp-metrics">
         <div>
-          <span class="mp-metric-label">Cash-on-Cash</span>
-          <span class="mp-metric-val">${fmtPct(d.coc)}</span>
-        </div>
-        <div>
           <span class="mp-metric-label">Cash Flow</span>
           <span class="mp-metric-val">${fmt$(d.cashflow)}/mo</span>
+          <span class="mp-metric-sub">${fmt1(d.coc)}% CoC/yr</span>
+        </div>
+        <div>
+          <span class="mp-metric-label">Principal</span>
+          <span class="mp-metric-val">${fmt$(d.principal)}/mo</span>
+          <span class="mp-metric-sub">${fmt1(d.principalPct)}% / yr</span>
         </div>
       </div>
       <div class="mp-modeled">
@@ -1722,14 +1829,23 @@ function render(){
       <td class="num num-muted">${fmt$(d.price)}</td>
       <td class="num num-muted">${fmt$(d.down)}</td>
       <td class="num num-muted">${fmt$(d.invested)}</td>
-      <td class="num num-muted">${fmt$(d.rent)}</td>
-      <td class="num num-mid">${fmt$(d.cashflow)}</td>
-      <td class="num num-mid">${fmtPct(d.coc)}</td>
-      <td class="num num-mid">${fmt$(d.principal)}</td>
+      <td class="num num-muted rent-col">${fmt$(d.rent)}<span style="font-size:9px;color:var(--paper-dim);">/mo</span></td>
+      <td class="cash-return-col">
+        <div class="return-pair">
+          <span class="rp-month">${fmt$(d.cashflow)}/mo</span>
+          <span class="rp-year">${fmt1(d.coc)}% CoC/yr</span>
+        </div>
+      </td>
+      <td class="principal-return-col">
+        <div class="return-pair">
+          <span class="rp-month">${fmt$(d.principal)}/mo</span>
+          <span class="rp-year">${fmt1(d.principalPct)}% / yr</span>
+        </div>
+      </td>
       <td class="appreciation-col">
         <div class="predicted-cell">
           <span class="pv">+${fmt1(d.apprContribution)}%</span>
-          <span class="ps">${fmt1(d.apprPct)}% mkt × ${fmtLev(d.leverage)}× eff.</span>
+          <span class="ps">${fmt1(d.apprPct)}% × ${fmtLev(d.leverage)}×</span>
           <span class="pc-caret">▸</span>
         </div>
       </td>
@@ -1737,7 +1853,7 @@ function render(){
         <div class="tr-wrap">
           <span class="tr-num">${fmtPct(d.totalReturn)}</span>
           <span class="tr-modeled-label">Modeled</span>
-          <span class="tr-split"><span class="tr-a-num">${fmt1(actualPct)}%</span> <span class="tr-a-word">${operatingLabel(d)}</span> <span class="tr-plus">+</span> <span class="tr-f-num">${fmt1(predictedPct)}%</span> <span class="tr-f-word">forecast</span></span>
+          <span class="tr-split" title="${fmt1(actualPct)}% ${operatingLabel(d)} operating return + ${fmt1(predictedPct)}% forecast appreciation"><span class="tr-a-num">${fmt1(actualPct)}%</span> <span class="tr-plus">+</span> <span class="tr-f-num">${fmt1(predictedPct)}%</span></span>
           <div class="tr-bar" title="${Math.round(actualShare)}% ${operatingLabel(d)}, ${Math.round(predictedShare)}% forecast">
             <span class="tr-actual" style="width:${actualShare}%"></span>
             <span class="tr-predicted" style="width:${predictedShare}%"></span>
@@ -1747,29 +1863,49 @@ function render(){
     `;
     const levTr = document.createElement("tr");
     levTr.className = "detail-row";
-    levTr.innerHTML = `<td colspan="13">${leverageDetailHTML(d)}</td>`;
+    levTr.innerHTML = `<td colspan="12">${leverageDetailHTML(d)}</td>`;
 
     const detailTr = document.createElement("tr");
     detailTr.className = "detail-row";
     const det = d.detail;
     detailTr.innerHTML = `
-      <td colspan="13">
+      <td colspan="12">
         <div class="receipt">
           <div class="receipt-title">${detailHeadingText(d)}</div>
-          <div class="receipt-grid">
-            <div class="receipt-line"><span class="rl-label">Interest rate</span><span class="rl-fill"></span><span class="rl-val">${det.rate}%</span></div>
-            <div class="receipt-line"><span class="rl-label">Points</span><span class="rl-fill"></span><span class="rl-val">${det.points}%</span></div>
-            <div class="receipt-line"><span class="rl-label">Base rent (pre-vacancy)</span><span class="rl-fill"></span><span class="rl-val">${fmt$(det.rentBase)}/mo</span></div>
-            ${daysToRentStartReceiptLineHTML(d)}
-            <div class="receipt-line"><span class="rl-label">Mortgage P&amp;I</span><span class="rl-fill"></span><span class="rl-val">${fmt$(det.mortPI)}/mo</span></div>
-            <div class="receipt-line"><span class="rl-label">Property tax</span><span class="rl-fill"></span><span class="rl-val">${fmt$(det.taxY)}/yr</span></div>
-            <div class="receipt-line"><span class="rl-label">Insurance</span><span class="rl-fill"></span><span class="rl-val">${fmt$(det.insY)}/yr</span></div>
-            <div class="receipt-line"><span class="rl-label">HOA</span><span class="rl-fill"></span><span class="rl-val">${fmt$(det.hoaY)}/yr</span></div>
-            <div class="receipt-line"><span class="rl-label">Closing costs</span><span class="rl-fill"></span><span class="rl-val">${fmt$(det.closing)}</span></div>
-            <div class="receipt-line"><span class="rl-label">Capex (fence/fan/fridge)</span><span class="rl-fill"></span><span class="rl-val">${formatCapex(det.capex)}</span></div>
-            <div class="receipt-line predicted-line"><span class="rl-label">Appreciation assumption (predicted)</span><span class="rl-fill"></span><span class="rl-val">${fmt1(d.apprPct)}%/yr</span></div>
-            <div class="receipt-line predicted-line"><span class="rl-label">Effective leverage <span class="info-dot" tabindex="0">i<span class="tip">Purchase price ÷ total cash invested. Closing costs and capex reduce this multiplier because they add cash invested without increasing the purchase price.</span></span><span class="fx-dot" tabindex="0">ƒx<span class="tip"><span class="tip-label">Formula</span>Purchase price ÷ total cash invested.</span></span></span><span class="rl-fill"></span><span class="rl-val">${fmtLev(d.leverage)}×</span></div>
-            <div class="receipt-line predicted-line"><span class="rl-label">Modeled appreciation contribution</span><span class="rl-fill"></span><span class="rl-val">${fmt1(d.apprContribution)}%</span></div>
+          <div class="receipt-sections">
+            <section class="receipt-section">
+              <div class="receipt-section-title purchase">Purchase &amp; financing</div>
+              <div class="receipt-grid">
+                <div class="receipt-line"><span class="rl-label">Purchase price</span><span class="rl-fill"></span><span class="rl-val">${fmt$(d.price)}</span></div>
+                <div class="receipt-line"><span class="rl-label">Down payment</span><span class="rl-fill"></span><span class="rl-val">${fmt$(d.down)}</span></div>
+                <div class="receipt-line"><span class="rl-label">Closing costs</span><span class="rl-fill"></span><span class="rl-val">${fmt$(det.closing)}</span></div>
+                <div class="receipt-line"><span class="rl-label">Initial capex</span><span class="rl-fill"></span><span class="rl-val">${formatCapex(det.capex)}</span></div>
+                <div class="receipt-line"><span class="rl-label">Total invested</span><span class="rl-fill"></span><span class="rl-val">${fmt$(d.invested)}</span></div>
+                <div class="receipt-line"><span class="rl-label">Interest rate</span><span class="rl-fill"></span><span class="rl-val">${det.rate}%</span></div>
+                <div class="receipt-line"><span class="rl-label">Points</span><span class="rl-fill"></span><span class="rl-val">${det.points}%</span></div>
+                <div class="receipt-line"><span class="rl-label">Effective leverage <span class="info-dot" tabindex="0">i<span class="tip">Purchase price ÷ total cash invested. Closing costs and capex reduce this multiplier because they add cash invested without increasing the purchase price.</span></span><span class="fx-dot" tabindex="0">ƒx<span class="tip"><span class="tip-label">Formula</span>Purchase price ÷ total cash invested.</span></span></span><span class="rl-fill"></span><span class="rl-val">${fmtLev(d.leverage)}×</span></div>
+              </div>
+            </section>
+
+            <section class="receipt-section">
+              <div class="receipt-section-title">Leasing &amp; ongoing expenses</div>
+              <div class="receipt-grid">
+                <div class="receipt-line"><span class="rl-label">Base rent (pre-vacancy)</span><span class="rl-fill"></span><span class="rl-val">${fmt$(det.rentBase)}/mo</span></div>
+                ${daysToRentStartReceiptLineHTML(d)}
+                <div class="receipt-line"><span class="rl-label">Mortgage P&amp;I</span><span class="rl-fill"></span><span class="rl-val">${fmt$(det.mortPI)}/mo</span></div>
+                <div class="receipt-line"><span class="rl-label">Property tax</span><span class="rl-fill"></span><span class="rl-val">${fmt$(det.taxY)}/yr</span></div>
+                <div class="receipt-line"><span class="rl-label">Insurance</span><span class="rl-fill"></span><span class="rl-val">${fmt$(det.insY)}/yr</span></div>
+                <div class="receipt-line"><span class="rl-label">HOA</span><span class="rl-fill"></span><span class="rl-val">${fmt$(det.hoaY)}/yr</span></div>
+              </div>
+            </section>
+
+            <section class="receipt-section">
+              <div class="receipt-section-title forecast">Appreciation forecast</div>
+              <div class="receipt-grid">
+                <div class="receipt-line predicted-line"><span class="rl-label">Appreciation assumption</span><span class="rl-fill"></span><span class="rl-val">${fmt1(d.apprPct)}%/yr</span></div>
+                <div class="receipt-line predicted-line"><span class="rl-label">Modeled appreciation contribution</span><span class="rl-fill"></span><span class="rl-val">${fmt1(d.apprContribution)}%</span></div>
+              </div>
+            </section>
           </div>
           ${mathToolsHTML(d,false)}
         </div>
