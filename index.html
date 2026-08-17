@@ -168,7 +168,7 @@
 
   /* ---------- Table ---------- */
   .table-wrap{width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch;margin-bottom:8px;}
-  table{width:100%;border-collapse:collapse;min-width:960px;}
+  table{width:100%;border-collapse:collapse;min-width:1290px;table-layout:fixed;}
   .table-scroll-hint{
     display:none;
     font-family:'IBM Plex Mono',monospace;
@@ -176,38 +176,43 @@
     color:var(--paper-dim);
     margin:0 0 8px;
   }
-  @media (max-width:1180px){
+  @media (max-width:1400px){
     .table-scroll-hint{display:block;}
   }
   @media (max-width:760px){
     .table-scroll-hint{display:none;}
   }
-  th.id-col,
-  td.id-col{width:44px;min-width:44px;white-space:nowrap;}
-  th.rent-col,
-  td.rent-col{min-width:68px;width:68px;}
-  th.cash-return-col,
-  td.cash-return-col{min-width:92px;width:92px;}
-  th.principal-return-col,
-  td.principal-return-col{min-width:92px;width:92px;}
-  th.appreciation-col,
-  td.appreciation-col{min-width:112px;}
-  th.modeled-return-col,
-  td.modeled-return-col{min-width:116px;width:116px;}
+  /* Explicit, deliberate widths for every column (used with table-layout:fixed
+     below) so each one is sized to what its header and values actually need,
+     instead of being left to the browser's auto-layout guesswork. */
+  th.chevron-col,td.chevron-col{width:24px;}
+  th.id-col,td.id-col{width:52px;white-space:nowrap;}
+  th.state-col,td.state-col{width:128px;}
+  th.status-col,td.status-col{width:124px;}
+  th.price-col,td.price-col{width:86px;}
+  th.down-col,td.down-col{width:90px;}
+  th.invested-col,td.invested-col{width:146px;}
+  th.rent-col,td.rent-col{width:114px;}
+  th.cash-return-col,td.cash-return-col{width:114px;}
+  th.principal-return-col,td.principal-return-col{width:110px;}
+  th.appreciation-col,td.appreciation-col{width:140px;}
+  th.modeled-return-col,td.modeled-return-col{width:154px;}
   .num,
   .property-id,
   td[data-numeric="true"]{white-space:nowrap;}
   thead th{
     text-align:left;
+    vertical-align:bottom;
     font-family:'IBM Plex Mono',monospace;
     font-size:10px;
     letter-spacing:.04em;
     text-transform:uppercase;
     color:var(--paper-dim);
     font-weight:500;
-    padding:0 5px 10px;
+    padding:0 8px 10px 5px;
     border-bottom:1px solid var(--line);
     white-space:normal;
+    overflow-wrap:break-word;
   }
   thead th.th-predicted{color:var(--rust);}
   thead th .th-inner{display:flex;align-items:center;gap:5px;}
@@ -245,13 +250,13 @@
   .th-title-row{
     display:flex;
     align-items:center;
-    flex-wrap:wrap;
-    gap:3px 4px;
-    white-space:normal;
+    flex-wrap:nowrap;
+    gap:4px;
+    white-space:nowrap;
   }
   .th-unit-sub{
     display:block;
-    margin-top:2px;
+    margin-top:4px;
     font-size:8.5px;
     line-height:1.15;
     letter-spacing:.04em;
@@ -786,6 +791,47 @@
     margin:2px 0 14px;
   }
 
+  /* Close control for the appreciation-breakdown popover and the "why does
+     the return shrink" explainer — collapses the box and scrolls the view
+     back to the control that opened it. */
+  .close-box-btn{
+    appearance:none;
+    display:inline-flex;
+    align-items:center;
+    gap:5px;
+    background:none;
+    border:1px solid rgba(182,144,90,.5);
+    border-radius:3px;
+    color:var(--brass);
+    font-family:'IBM Plex Mono',monospace;
+    font-size:11px;
+    letter-spacing:.02em;
+    padding:5px 10px;
+    cursor:pointer;
+    flex-shrink:0;
+    transition:background .12s ease, color .12s ease, border-color .12s ease;
+  }
+  .close-box-btn:hover{
+    background:rgba(182,144,90,.12);
+    color:#d6c19e;
+    border-color:rgba(182,144,90,.8);
+  }
+  .lev-detail-head{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:16px;
+    margin-bottom:12px;
+  }
+  .lev-detail-head .receipt-title{margin-bottom:0;}
+  .lev-detail-head.solo{justify-content:flex-end;}
+  .why-close-row{
+    display:flex;
+    margin-top:18px;
+    padding-top:14px;
+    border-top:1px dotted rgba(167,159,143,.28);
+  }
+
   /* ---------- Mobile property list ---------- */
   .mobile-property-list{display:none;}
   .mp-card{
@@ -1079,19 +1125,25 @@
     <table>
       <thead>
         <tr>
-          <th style="width:20px;"></th>
-          <th class="id-col">ID</th>
-          <th>State</th>
-          <th>Status
-            <span class="info-dot" tabindex="0">i<span class="tip">Closed = owned and rented. Under Contract = in the buying process. Proposed = analyzed, not yet purchased.</span></span>
+          <th class="chevron-col"></th>
+          <th class="id-col"><span class="th-title-row">ID</span></th>
+          <th class="state-col"><span class="th-title-row">State</span></th>
+          <th class="status-col">
+            <span class="th-title-row">Status
+              <span class="info-dot" tabindex="0">i<span class="tip">Closed = owned and rented. Under Contract = in the buying process. Proposed = analyzed, not yet purchased.</span></span>
+            </span>
           </th>
-          <th>Price</th>
-          <th>Down Pmt
-            <span class="info-dot" tabindex="0">i<span class="tip">The cash you put in upfront (rest is financed by the mortgage).</span></span>
+          <th class="price-col"><span class="th-title-row">Price</span></th>
+          <th class="down-col">
+            <span class="th-title-row">Down Pmt
+              <span class="info-dot" tabindex="0">i<span class="tip">The cash you put in upfront (rest is financed by the mortgage).</span></span>
+            </span>
           </th>
-          <th>Total Invested
-            <span class="info-dot" tabindex="0">i<span class="tip">Down payment + closing costs + any capital expenses = the real cash out of pocket.</span></span>
-            <span class="fx-dot" tabindex="0">ƒx<span class="tip"><span class="tip-label">Formula</span>Down payment + closing costs + capex.</span></span>
+          <th class="invested-col">
+            <span class="th-title-row">Total Invested
+              <span class="info-dot" tabindex="0">i<span class="tip">Down payment + closing costs + any capital expenses = the real cash out of pocket.</span></span>
+              <span class="fx-dot" tabindex="0">ƒx<span class="tip"><span class="tip-label">Formula</span>Down payment + closing costs + capex.</span></span>
+            </span>
           </th>
           <th class="rent-col">
             <span class="th-title-row">Rent (avg)
@@ -1114,13 +1166,17 @@
             </span>
             <span class="th-unit-sub">$/MO · %/YR</span>
           </th>
-          <th class="th-predicted appreciation-col">Appreciation*
-            <span class="info-dot" tabindex="0">i<span class="tip">My best guess for this property's yearly value growth — from analyzing the market, not a guarantee. The page converts it to a return on total cash invested using effective leverage: purchase price ÷ total invested. Closing costs and capex therefore reduce the multiplier. Click the box below for the exact math on any property.</span></span>
-            <span class="fx-dot" tabindex="0">ƒx<span class="tip"><span class="tip-label">Formula</span>Appreciation assumption × effective leverage, where effective leverage = purchase price ÷ total cash invested.</span></span>
+          <th class="th-predicted appreciation-col">
+            <span class="th-title-row">Appreciation*
+              <span class="info-dot" tabindex="0">i<span class="tip">My best guess for this property's yearly value growth — from analyzing the market, not a guarantee. The page converts it to a return on total cash invested using effective leverage: purchase price ÷ total invested. Closing costs and capex therefore reduce the multiplier. Click the box below for the exact math on any property.</span></span>
+              <span class="fx-dot" tabindex="0">ƒx<span class="tip"><span class="tip-label">Formula</span>Appreciation assumption × effective leverage, where effective leverage = purchase price ÷ total cash invested.</span></span>
+            </span>
           </th>
-          <th class="modeled-return-col">Modeled Return
-            <span class="info-dot" tabindex="0">i<span class="tip">Modeled Return combines cash-on-cash return, principal paydown, and the appreciation assumption. Green components are actual for closed properties (underwritten for pipeline properties); orange components depend on forecast appreciation.</span></span>
-            <span class="fx-dot" tabindex="0">ƒx<span class="tip"><span class="tip-label">Formula</span>Cash-on-cash return + principal return contribution + modeled appreciation contribution.</span></span>
+          <th class="modeled-return-col">
+            <span class="th-title-row">Modeled Return
+              <span class="info-dot" tabindex="0">i<span class="tip">Modeled Return combines cash-on-cash return, principal paydown, and the appreciation assumption. Green components are actual for closed properties (underwritten for pipeline properties); orange components depend on forecast appreciation.</span></span>
+              <span class="fx-dot" tabindex="0">ƒx<span class="tip"><span class="tip-label">Formula</span>Cash-on-cash return + principal return contribution + modeled appreciation contribution.</span></span>
+            </span>
             <span class="th-modeled-sub">Operating + Forecast</span>
           </th>
         </tr>
@@ -1134,7 +1190,7 @@
 
   <div class="decline-note">
     <b>Modeled Return shown is a snapshot of this year only.</b> These numbers shift the longer a property is held — typically settling lower after several years, even when the investment is performing the same or better.
-    <details class="why">
+    <details class="why" id="whyDetails">
       <summary>Why does the return percentage get smaller over time? →</summary>
       <div class="why-body">
         <p>Because early on, you're using a lot of the bank's money and relatively little of your own.</p>
@@ -1193,6 +1249,10 @@
         <p>The S&amp;P 500 line uses a <strong>9% assumed long-term annual total return</strong>, with dividends reinvested. The rental-property model similarly assumes cash generated by the investment is reinvested back into the same investment strategy.</p>
 
         <p>The 9% isn't a prediction, and it doesn't mean the S&amp;P 500 earns 9% every year. It's simply the benchmark used in this illustration.</p>
+
+        <div class="why-close-row">
+          <button type="button" class="close-box-btn why-close-btn" aria-label="Close this explanation">Close ✕</button>
+        </div>
       </div>
     </details>
   </div>
@@ -1598,7 +1658,10 @@ function leverageDetailHTML(d){
   const costsText = extraCash >= 0 ? `${fmt$(extraCash)} of closing costs/capex` : `${fmt$(Math.abs(extraCash))} of net credits after closing costs/capex`;
   return `
     <div class="receipt lev-detail">
-      <div class="receipt-title">${d.label} · ${d.state} — how the appreciation number breaks down</div>
+      <div class="lev-detail-head">
+        <div class="receipt-title">${d.label} · ${d.state} — how the appreciation number breaks down</div>
+        <button type="button" class="close-box-btn lev-close-btn" aria-label="Close appreciation breakdown">Close ✕</button>
+      </div>
       <p class="lev-copy">This property ${verb} for <b>${fmt$(d.price)}</b>. The investor put down <b>${fmt$(d.down)}</b> — <b>${fmt1(downPct)}%</b> of the price — and had <b>${fmt$(d.invested)}</b> of total cash invested after closing costs and capex.</p>
       <div class="lev-driver">${fmt1(downPct)}% down is about <b>${fmtLev(purchaseLeverage)}×</b> purchase leverage. After ${costsText}, the more useful number is <b>${fmtLev(effectiveLeverage)}× effective leverage</b> (${fmt$(d.price)} purchase price ÷ ${fmt$(d.invested)} total invested).</div>
       <p class="lev-copy">At a ${fmt1(d.apprPct)}% appreciation assumption, the house gains about <b>${fmt$(gainDollar)}</b> this year on the full ${fmt$(d.price)} property value. Measured against the investor's total cash in the deal, that is a <b>${fmt1(returnOnCash)}%</b> modeled appreciation contribution.</p>
@@ -1631,6 +1694,20 @@ document.addEventListener("click", (e)=>{
     dot.classList.toggle("open");
   }
 });
+
+// Closes the "why does the return shrink" explainer from its own Close
+// button and scrolls back up to the toggle that opened it.
+const whyDetails = document.getElementById("whyDetails");
+if(whyDetails){
+  const whyCloseBtn = whyDetails.querySelector(".why-close-btn");
+  if(whyCloseBtn){
+    whyCloseBtn.addEventListener("click", (e)=>{
+      e.preventDefault();
+      whyDetails.open = false;
+      whyDetails.scrollIntoView({behavior:"smooth", block:"start"});
+    });
+  }
+}
 
 let activeStates = new Set();
 let activeStatuses = new Set(["closed","under_contract","proposed"]);
@@ -1734,6 +1811,9 @@ function mobileLeverageHTML(d){
   const costsText = extraCash >= 0 ? `${fmt$(extraCash)} of closing costs/capex` : `${fmt$(Math.abs(extraCash))} of net credits after closing costs/capex`;
   return `
     <div class="lev-detail mp-lev">
+      <div class="lev-detail-head solo">
+        <button type="button" class="close-box-btn lev-close-btn" aria-label="Close appreciation breakdown">Close ✕</button>
+      </div>
       <p class="lev-copy">This property ${verb} for <b>${fmt$(d.price)}</b>. The investor put down <b>${fmt$(d.down)}</b> — <b>${fmt1(downPct)}%</b> of the price — with <b>${fmt$(d.invested)}</b> total cash invested.</p>
       <div class="lev-driver">${fmt1(downPct)}% down ≈ <b>${fmtLev(purchaseLeverage)}×</b> purchase leverage. After ${costsText}: <b>${fmtLev(effectiveLeverage)}× effective leverage</b>.</div>
       <p class="lev-copy"><b>Effective leverage = purchase price ÷ total cash invested.</b> At ${fmt1(d.apprPct)}% assumed appreciation, the ${fmt$(gainDollar)} increase in property value equals a <b>${fmt1(returnOnCash)}%</b> modeled return on total cash invested.</p>
@@ -1803,6 +1883,14 @@ function renderMobile(rows){
     const fcDetail = card.querySelector(".mp-forecast-detail");
     uwBtn.onclick = ()=> uwDetail.classList.toggle("open");
     fcBtn.onclick = ()=> fcDetail.classList.toggle("open");
+    const fcCloseBtn = fcDetail.querySelector(".lev-close-btn");
+    if(fcCloseBtn){
+      fcCloseBtn.onclick = (e)=>{
+        e.stopPropagation();
+        fcDetail.classList.remove("open");
+        card.scrollIntoView({behavior:"smooth", block:"start"});
+      };
+    }
     wireMathToggle(uwDetail);
     list.appendChild(card);
   });
@@ -1926,6 +2014,15 @@ function render(){
       document.querySelectorAll("tr.detail-row.lev-row-open").forEach(r=>r.classList.remove("open","lev-row-open"));
       if(willOpen){ predictedCell.classList.add("open"); levTr.classList.add("open","lev-row-open"); }
     };
+    const levCloseBtn = levTr.querySelector(".lev-close-btn");
+    if(levCloseBtn){
+      levCloseBtn.onclick = (e)=>{
+        e.stopPropagation();
+        predictedCell.classList.remove("open");
+        levTr.classList.remove("open","lev-row-open");
+        tr.scrollIntoView({behavior:"smooth", block:"center"});
+      };
+    }
     body.appendChild(tr);
     body.appendChild(levTr);
     body.appendChild(detailTr);
