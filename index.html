@@ -238,23 +238,46 @@
   }
   tr.data-row.open .chevron{transform:rotate(90deg);color:var(--brass);}
 
-  /* info tooltip */
+  /* info + formula tooltips */
+  .info-dot,
+  .fx-dot{
+    background:none;
+    font-family:'IBM Plex Mono',monospace;
+    line-height:1;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    cursor:help;
+    position:relative;
+    flex-shrink:0;
+    vertical-align:middle;
+  }
   .info-dot{
     width:13px;height:13px;border-radius:50%;
     border:1px solid var(--paper-dim);
-    background:none;color:var(--paper-dim);
-    font-family:'IBM Plex Mono',monospace;
-    font-size:9px;line-height:1;
-    display:inline-flex;align-items:center;justify-content:center;
-    cursor:help;position:relative;flex-shrink:0;
+    color:var(--paper-dim);
+    font-size:9px;
+  }
+  .fx-dot{
+    min-width:19px;height:13px;
+    padding:0 3px;
+    margin-left:3px;
+    border:1px solid rgba(182,144,90,.58);
+    border-radius:2px;
+    color:var(--brass);
+    font-size:8.5px;
+    letter-spacing:-.02em;
+    text-transform:none;
   }
   th.th-predicted .info-dot{border-color:var(--rust);color:var(--rust);}
-  .info-dot .tip{
+  th.th-predicted .fx-dot{border-color:rgba(193,99,63,.7);color:var(--rust);}
+  .info-dot .tip,
+  .fx-dot .tip{
     position:absolute;
     bottom:calc(100% + 8px);
     left:50%;
     transform:translateX(-50%) translateY(4px);
-    width:225px;
+    width:250px;
     background:var(--ink-2);
     border:1px solid var(--brass);
     color:#d8d0c0;
@@ -268,15 +291,81 @@
     opacity:0;
     visibility:hidden;
     transition:opacity .15s ease, transform .15s ease;
-    z-index:20;
+    z-index:80;
     white-space:normal;
     pointer-events:none;
     box-shadow:0 8px 24px rgba(0,0,0,.4);
     font-weight:400;
   }
-  th.th-predicted .info-dot .tip{border-color:var(--rust);}
-  .info-dot:hover .tip,.info-dot:focus .tip,.info-dot.open .tip{
+  .fx-dot .tip{
+    width:285px;
+    border-color:rgba(182,144,90,.8);
+  }
+  th.th-predicted .info-dot .tip,
+  th.th-predicted .fx-dot .tip{border-color:var(--rust);}
+  .info-dot:hover .tip,.info-dot:focus .tip,.info-dot.open .tip,
+  .fx-dot:hover .tip,.fx-dot:focus .tip,.fx-dot.open .tip{
     opacity:1;visibility:visible;transform:translateX(-50%) translateY(0);
+  }
+  .tip .tip-label{
+    display:block;
+    margin-bottom:4px;
+    font-family:'IBM Plex Mono',monospace;
+    font-size:9.5px;
+    letter-spacing:.08em;
+    text-transform:uppercase;
+    color:var(--brass);
+  }
+  th.th-predicted .tip .tip-label{color:var(--rust);}
+
+
+  /* Column-header help bubbles open DOWNWARD. The table lives inside an
+     overflow-x:auto scroller, so bubbles positioned above the header are
+     clipped at the scroller's top edge. Opening them into the table keeps
+     them fully visible without changing the horizontal-scroll behavior. */
+  .table-wrap thead .info-dot .tip,
+  .table-wrap thead .fx-dot .tip{
+    top:calc(100% + 8px);
+    bottom:auto;
+    transform:translateX(-50%) translateY(-4px);
+  }
+  .table-wrap thead .info-dot:hover .tip,
+  .table-wrap thead .info-dot:focus .tip,
+  .table-wrap thead .info-dot.open .tip,
+  .table-wrap thead .fx-dot:hover .tip,
+  .table-wrap thead .fx-dot:focus .tip,
+  .table-wrap thead .fx-dot.open .tip{
+    transform:translateX(-50%) translateY(0);
+  }
+
+  /* Keep the bubbles inside the horizontal table viewport at the two edges. */
+  .table-wrap thead th:nth-child(-n+4) .info-dot .tip,
+  .table-wrap thead th:nth-child(-n+4) .fx-dot .tip{
+    left:0;
+    right:auto;
+    transform:translateX(0) translateY(-4px);
+  }
+  .table-wrap thead th:nth-child(-n+4) .info-dot:hover .tip,
+  .table-wrap thead th:nth-child(-n+4) .info-dot:focus .tip,
+  .table-wrap thead th:nth-child(-n+4) .info-dot.open .tip,
+  .table-wrap thead th:nth-child(-n+4) .fx-dot:hover .tip,
+  .table-wrap thead th:nth-child(-n+4) .fx-dot:focus .tip,
+  .table-wrap thead th:nth-child(-n+4) .fx-dot.open .tip{
+    transform:translateX(0) translateY(0);
+  }
+  .table-wrap thead th:nth-last-child(-n+2) .info-dot .tip,
+  .table-wrap thead th:nth-last-child(-n+2) .fx-dot .tip{
+    left:auto;
+    right:0;
+    transform:translateX(0) translateY(-4px);
+  }
+  .table-wrap thead th:nth-last-child(-n+2) .info-dot:hover .tip,
+  .table-wrap thead th:nth-last-child(-n+2) .info-dot:focus .tip,
+  .table-wrap thead th:nth-last-child(-n+2) .info-dot.open .tip,
+  .table-wrap thead th:nth-last-child(-n+2) .fx-dot:hover .tip,
+  .table-wrap thead th:nth-last-child(-n+2) .fx-dot:focus .tip,
+  .table-wrap thead th:nth-last-child(-n+2) .fx-dot.open .tip{
+    transform:translateX(0) translateY(0);
   }
 
   /* predicted appreciation cell */
@@ -354,6 +443,52 @@
     margin-top:2px;
   }
 
+  /* ---------- Frozen desktop table header ---------- */
+  .desktop-table{position:relative;}
+  .sticky-table-header{
+    position:fixed;
+    top:0;
+    left:0;
+    z-index:60;
+    width:0;
+    visibility:hidden;
+    opacity:0;
+    pointer-events:none;
+    background:var(--ink);
+    box-shadow:0 1px 0 var(--line),0 8px 14px rgba(20,23,28,.28);
+    transition:opacity .10s ease;
+  }
+  .sticky-table-header.is-active{
+    visibility:visible;
+    opacity:1;
+  }
+  .sticky-table-header-viewport{
+    width:100%;
+    overflow:hidden;
+    background:var(--ink);
+  }
+  .sticky-table-header-table{
+    width:auto;
+    min-width:0;
+    table-layout:fixed;
+    border-collapse:collapse;
+    background:var(--ink);
+    transform:translateX(0);
+    will-change:transform;
+  }
+  .sticky-table-header thead th{
+    background:var(--ink);
+  }
+  /* The frozen header is a visual label clone only. Hide help controls there
+     so it never presents duplicate/non-semantic interactive controls. */
+  .sticky-table-header .info-dot,
+  .sticky-table-header .fx-dot{
+    display:none;
+  }
+  @media (max-width:760px){
+    .sticky-table-header{display:none !important;}
+  }
+
   /* detail / ledger receipt row */
   tr.detail-row{display:none;}
   tr.detail-row.open{display:table-row;}
@@ -400,6 +535,93 @@
   .receipt-line.predicted-line{border-bottom:1px dashed rgba(193,99,63,.55);}
   .receipt-line.predicted-line .rl-label{color:#c99a86;}
   .receipt-line.predicted-line .rl-val{color:var(--rust);font-style:italic;}
+
+
+  /* ---------- Formula transparency / show-the-math ---------- */
+  .math-tools{
+    margin-top:16px;
+    padding-top:12px;
+    border-top:1px dotted rgba(167,159,143,.28);
+  }
+  .math-toggle{
+    appearance:none;
+    border:0;
+    background:none;
+    padding:0;
+    color:var(--brass);
+    font-family:'IBM Plex Mono',monospace;
+    font-size:11.5px;
+    letter-spacing:.02em;
+    cursor:pointer;
+  }
+  .math-toggle:hover{text-decoration:underline;text-underline-offset:3px;}
+  .math-toggle .math-fx{
+    display:inline-block;
+    margin-left:5px;
+    padding:1px 4px;
+    border:1px solid rgba(182,144,90,.55);
+    border-radius:2px;
+    font-size:9px;
+    line-height:1.15;
+    text-decoration:none;
+  }
+  .math-panel{
+    display:none;
+    margin-top:14px;
+    max-width:920px;
+  }
+  .math-panel.open{display:block;}
+  .math-note{
+    margin:0 0 12px;
+    color:var(--paper-dim);
+    font-family:'IBM Plex Sans',sans-serif;
+    font-size:12px;
+    line-height:1.5;
+    max-width:760px;
+  }
+  .math-group-title{
+    margin:16px 0 7px;
+    font-family:'IBM Plex Mono',monospace;
+    font-size:9.5px;
+    letter-spacing:.09em;
+    text-transform:uppercase;
+    color:var(--paper-dim);
+  }
+  .math-item{
+    padding:10px 0;
+    border-top:1px solid rgba(58,63,71,.58);
+  }
+  .math-item:last-child{border-bottom:1px solid rgba(58,63,71,.58);}
+  .math-name{
+    color:var(--paper);
+    font-family:'IBM Plex Sans',sans-serif;
+    font-size:13px;
+    font-weight:600;
+    margin-bottom:2px;
+  }
+  .math-meaning{
+    color:#c9c1b0;
+    font-family:'IBM Plex Sans',sans-serif;
+    font-size:12.5px;
+    line-height:1.45;
+    margin-bottom:5px;
+  }
+  .math-formula,
+  .math-example{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:11.5px;
+    line-height:1.55;
+    overflow-wrap:anywhere;
+  }
+  .math-formula{color:var(--paper-dim);}
+  .math-example{color:#d8d0c0;margin-top:2px;}
+  .math-example strong{color:var(--paper);font-weight:600;}
+  .math-kicker{color:var(--brass);}
+  .math-item.predicted-math .math-name,
+  .math-item.predicted-math .math-kicker{color:var(--rust);}
+  .math-item.predicted-math{border-top-style:dashed;}
+  .mp-actions{flex-wrap:wrap;row-gap:10px;}
+  .mp-math-panel{margin-top:8px;}
 
   /* ---------- Decline note ---------- */
   .decline-note{
@@ -717,7 +939,7 @@
 
   <img class="artemis-mark" src="assets/artemis-mark.svg" alt="" aria-hidden="true">
   <h1>The Open Book</h1>
-  <p class="lede">Here's every buy-and-hold rental I've closed on, or have under contract — some I bought for my own portfolio, some I helped an investor buy. No flips, no wholesale deals, just properties meant to be held and rented. <b>A lower number here doesn't mean a weaker deal</b> — a Texas property banking on long-term growth and a stable Oklahoma rental can both be right, for different reasons. The operating numbers are real; the appreciation assumptions are forecasts. Neither tells the whole story. Click any row for the actual numbers behind it.</p>
+  <p class="lede">Here's every buy-and-hold rental I've closed on, have under contract, or am currently analyzing — some I bought for my own portfolio, some I helped an investor buy. No flips, no wholesale deals, just properties meant to be held and rented. <b>A lower number here doesn't mean a weaker deal</b> — a Texas property banking on long-term growth and a stable Oklahoma rental can both be right, for different reasons. For closed properties, operating numbers are actual; for pipeline properties, they're underwritten. Appreciation assumptions are forecasts. Neither tells the whole story. Click any row for the numbers behind it.</p>
 
   <div class="ledger-note">
     <span class="label">What's already accounted for</span>
@@ -728,7 +950,7 @@
       <div class="methodology-more-body">
         <p><strong>Also not shown:</strong> tax benefits like depreciation, which can meaningfully boost real returns for many investors — but depend entirely on your individual situation, so that's a conversation for your CPA, not this table.</p>
         <p><strong>On appreciation:</strong> The appreciation rate is my underwriting assumption for that specific submarket—not a historical market average or a guarantee. It's set deliberately at the <strong>low end</strong> of what a long-term hold there should average, not a best-case number. It's still a forecast, not a closed transaction, which is why it's marked in orange everywhere it shows up below.</p>
-        <p><strong>One more framing note:</strong> Modeled Return is labeled "this year," but two of its three ingredients — appreciation and the vacancy already built into rent — are long-run averages, not a literal trailing-12-month report. That's on purpose: any single real year is too noisy to underwrite from (one vacant month or one hot comp can swing it), so the stabilized long-run figure is the more honest input for a snapshot. Cash flow and principal paydown are the only two pieces pulled straight from that property's actual year.</p>
+        <p><strong>One more framing note:</strong> Modeled Return is labeled "this year," but two of its three ingredients — appreciation and the vacancy already built into rent — are long-run averages, not a literal trailing-12-month report. That's on purpose: any single real year is too noisy to underwrite from (one vacant month or one hot comp can swing it), so the stabilized long-run figure is the more honest input for a snapshot. For closed properties, cash flow and principal paydown are pulled from the property's actual year; for pipeline properties, those operating figures are underwritten.</p>
       </div>
     </details>
   </div>
@@ -736,6 +958,7 @@
   <div class="legend-row">
     <span class="legend-swatch"><span class="legend-dot actual"></span> Operating figures — actual for closed properties, underwritten for pipeline properties</span>
     <span class="legend-swatch"><span class="legend-dot predicted"></span> Forecast — appreciation assumption, not guaranteed</span>
+    <span class="legend-swatch"><span class="fx-dot" aria-hidden="true">ƒx</span> Formula — hover or tap ƒx beside a calculated field</span>
   </div>
   <p class="click-hint">Click any orange Appreciation box in the table below to see exactly how that number breaks down for that property.</p>
 
@@ -752,6 +975,7 @@
       <span class="control-label">Sort by</span>
       <select id="sortSelect">
         <option value="date_asc" selected>Closing date (oldest first)</option>
+        <option value="date_desc">Closing date (newest first)</option>
         <option value="coc_desc">Cash-on-cash return (high to low)</option>
         <option value="total_desc">Modeled return, this year (high to low)</option>
         <option value="state_asc">State (A–Z)</option>
@@ -762,6 +986,11 @@
 
   <div class="desktop-table">
   <p class="table-scroll-hint">Scroll horizontally to see all columns →</p>
+  <div class="sticky-table-header" aria-hidden="true">
+    <div class="sticky-table-header-viewport">
+      <table class="sticky-table-header-table"></table>
+    </div>
+  </div>
   <div class="table-wrap">
     <table>
       <thead>
@@ -778,24 +1007,31 @@
           </th>
           <th>Total Invested
             <span class="info-dot" tabindex="0">i<span class="tip">Down payment + closing costs + any capital expenses = the real cash out of pocket.</span></span>
+            <span class="fx-dot" tabindex="0">ƒx<span class="tip"><span class="tip-label">Formula</span>Down payment + closing costs + capex.</span></span>
           </th>
           <th>Rent (avg)
             <span class="info-dot" tabindex="0">i<span class="tip">Rent adjusted for average vacancy — roughly 30 days of vacancy between tenants living in the home for an average of 2.5 years.</span></span>
+            <span class="fx-dot" tabindex="0">ƒx<span class="tip"><span class="tip-label">Formula</span>Base rent × 30 occupied months ÷ 31 total months. This models one month vacant after an average 30-month tenancy.</span></span>
           </th>
           <th>Cash Flow
             <span class="info-dot" tabindex="0">i<span class="tip">What's left over each month after the mortgage, taxes, insurance, and management fee are paid.</span></span>
+            <span class="fx-dot" tabindex="0">ƒx<span class="tip"><span class="tip-label">Formula</span>Vacancy-adjusted rent − mortgage P&amp;I − taxes/12 − insurance/12 − HOA/12 − 10% management fee. Management is 10% of vacancy-adjusted rent.</span></span>
           </th>
           <th>Cash-on-Cash
             <span class="info-dot" tabindex="0">i<span class="tip">Yearly cash flow ÷ total cash invested. The return you'd get if the house never rose in value or paid back the loan — just from rent.</span></span>
+            <span class="fx-dot" tabindex="0">ƒx<span class="tip"><span class="tip-label">Formula</span>(Monthly cash flow × 12) ÷ total cash invested.</span></span>
           </th>
           <th>Principal
             <span class="info-dot" tabindex="0">i<span class="tip">Part of your mortgage payment that pays down the loan balance — it's money going into your equity through your mortgage account, not an expense.</span></span>
+            <span class="fx-dot" tabindex="0">ƒx<span class="tip"><span class="tip-label">Formula used in return</span>(Monthly principal × 12) ÷ total cash invested. The monthly principal itself comes from the mortgage amortization.</span></span>
           </th>
           <th class="th-predicted appreciation-col">Appreciation*
-            <span class="info-dot" tabindex="0">i<span class="tip">My best guess for this property's yearly value growth — from analyzing the market, not a guarantee. Leverage multiplies it: financing most of the purchase means you gain on the full price, not just your own cash. Click the box below for the exact math on any property.</span></span>
+            <span class="info-dot" tabindex="0">i<span class="tip">My best guess for this property's yearly value growth — from analyzing the market, not a guarantee. The page converts it to a return on total cash invested using effective leverage: purchase price ÷ total invested. Closing costs and capex therefore reduce the multiplier. Click the box below for the exact math on any property.</span></span>
+            <span class="fx-dot" tabindex="0">ƒx<span class="tip"><span class="tip-label">Formula</span>Appreciation assumption × effective leverage, where effective leverage = purchase price ÷ total cash invested.</span></span>
           </th>
           <th class="modeled-return-col">Modeled Return
             <span class="info-dot" tabindex="0">i<span class="tip">Modeled Return combines cash-on-cash return, principal paydown, and the appreciation assumption. Green components are actual for closed properties (underwritten for pipeline properties); orange components depend on forecast appreciation.</span></span>
+            <span class="fx-dot" tabindex="0">ƒx<span class="tip"><span class="tip-label">Formula</span>Cash-on-cash return + principal return contribution + modeled appreciation contribution.</span></span>
             <span class="th-modeled-sub">Actual/Underwritten + Forecast</span>
           </th>
         </tr>
@@ -1001,14 +1237,14 @@ const SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRj8OtOmC
 
 let DATA = [];
 
-// Turns "45%" or "0.45" or "45" into the plain number 45 (strips a % sign if present).
+// Turns values such as "45%", "$1,250", "x4", "4x", or "45" into a plain number.
 // If your Sheet columns are formatted as Percent, Google may export them as a
 // decimal (0.0524 instead of 5.24) with no % sign — if numbers on the page look
 // 100x too small, that's why. Open SHEET_CSV_URL directly in a browser tab to see
 // exactly what values are coming through, then tell me and I'll adjust.
 function num(v){
   if(v === undefined || v === null) return NaN;
-  const cleaned = String(v).replace(/[%,$\s]/g,"").replace(/x$/i,"");
+  const cleaned = String(v).replace(/[%,$\sx]/gi,"");
   return cleaned === "" ? NaN : Number(cleaned);
 }
 
@@ -1033,22 +1269,52 @@ function parseDateLabel(raw){
 // Maps YOUR sheet's exact column headers to the fields this page needs.
 function rowToRecord(row){
   const {date, label} = parseDateLabel(row["Purchase Date"]);
+
+  const price = num(row["Purchase Price"]);
+  const down = num(row["Down Payment"]);
+  const invested = num(row["Total Invested"]);
+  const coc = num(row["Cash on Cash after management"]);
+  const principalPct = num(row["Principal returned % of invest"]);
+  const apprPct = num(row["appreciation expectations"]);
+
+  // Effective leverage is based on ALL cash the investor has in the deal,
+  // not just the down payment. This automatically accounts for the fact that
+  // closing costs and capex add cash invested without increasing purchase price.
+  // Example: $250k property / $75k total invested = 3.33× effective leverage.
+  const effectiveLeverage = Number.isFinite(price) && Number.isFinite(invested) && invested > 0
+    ? price / invested
+    : NaN;
+
+  // Appreciation is earned on the full property value, then expressed as a
+  // percentage of total cash invested. Deriving it here prevents malformed or
+  // stale leverage cells in the source sheet from producing values such as NaNx.
+  const apprContribution = Number.isFinite(apprPct) && Number.isFinite(effectiveLeverage)
+    ? apprPct * effectiveLeverage
+    : NaN;
+
+  // Keep Modeled Return internally consistent with the components shown on the
+  // website: operating return + principal paydown + modeled appreciation.
+  const totalReturn = [coc, principalPct, apprContribution].every(Number.isFinite)
+    ? coc + principalPct + apprContribution
+    : NaN;
+
   return {
     date, label,
     state: String(row["State"]||"").trim(),
     status: normalizeStatus(row["Status"]),
-    price: num(row["Purchase Price"]),
-    down: num(row["Down Payment"]),
-    invested: num(row["Total Invested"]),
+    price,
+    down,
+    downPctSource: num(row["% down"]),
+    invested,
     rent: num(row["Avg Rent considering avg vacancy (month)"]),
     cashflow: num(row["Cash remaining after management (month)"]),
-    coc: num(row["Cash on Cash after management"]),
+    coc,
     principal: num(row["Principal returned (month)"]),
-    principalPct: num(row["Principal returned % of invest"]),
-    apprPct: num(row["appreciation expectations"]),
-    leverage: num(row["leverage multiplier"]),
-    apprContribution: num(row["Leveraged appriciation"]),
-    totalReturn: num(row["Total returns this year"]),
+    principalPct,
+    apprPct,
+    leverage: effectiveLeverage,
+    apprContribution,
+    totalReturn,
     daysToRentStart: row["Days from closing to first tenant"],
     detail: {
       rate: num(row["Intrest rate"]),
@@ -1068,6 +1334,7 @@ const STATUS_LABEL = {closed:"Closed", under_contract:"Under Contract", proposed
 const fmt$ = n => "$" + Math.round(n).toLocaleString("en-US");
 const fmtPct = n => n.toFixed(2).replace(/\.?0+$/,"") + "%";
 const fmt1 = n => n.toFixed(1).replace(/\.0$/,"");
+const fmtLev = n => Number.isFinite(n) ? n.toFixed(2).replace(/\.?0+$/g,"") : "—";
 
 // Turns a full state name into its two-letter abbreviation, e.g. "Arkansas" -> "AR".
 // Falls back gracefully if a sheet ever uses a state this map doesn't know.
@@ -1141,6 +1408,87 @@ function daysToRentStartMobileLineHTML(d){
   return `<div class="mp-detail-line"><span class="mp-dl-label">Days from closing to rent start<span class="info-dot" tabindex="0">i<span class="tip">${RENT_START_TOOLTIP}</span></span></span><span class="mp-dl-val">${rentStartDaysLabel(d)}</span></div>`;
 }
 
+// ---------- Formula transparency helpers ----------
+// The main table stays visually quiet. These helpers expose both the plain-English
+// meaning and the actual arithmetic for a specific property only when requested.
+const MANAGEMENT_RATE = 0.10;
+const OCCUPIED_MONTHS_PER_TURN = 30;
+const TOTAL_MONTHS_PER_TURN = 31;
+
+function fmtMathMoney(n){
+  if(!Number.isFinite(n)) return "—";
+  const rounded = Math.round(Math.abs(n)).toLocaleString("en-US");
+  return n < 0 ? `−$${rounded}` : `$${rounded}`;
+}
+
+function mathItemHTML(name, meaning, formula, example, predicted=false){
+  return `
+    <div class="math-item${predicted ? ' predicted-math' : ''}">
+      <div class="math-name">${name}</div>
+      <div class="math-meaning">${meaning}</div>
+      <div class="math-formula"><span class="math-kicker">Formula:</span> ${formula}</div>
+      <div class="math-example"><span class="math-kicker">This property:</span> ${example}</div>
+    </div>`;
+}
+
+function propertyMathHTML(d){
+  const det = d.detail;
+  const monthlyTax = det.taxY / 12;
+  const monthlyIns = det.insY / 12;
+  const monthlyHoa = det.hoaY / 12;
+  const management = d.rent * MANAGEMENT_RATE;
+  const calculatedRent = det.rentBase * OCCUPIED_MONTHS_PER_TURN / TOTAL_MONTHS_PER_TURN;
+  const calculatedCashFlow = d.rent - det.mortPI - monthlyTax - monthlyIns - monthlyHoa - management;
+  const calculatedCoc = d.cashflow * 12 / d.invested * 100;
+  const calculatedPrincipalPct = d.principal * 12 / d.invested * 100;
+
+  const capexMath = Number(det.capex) === 0 ? '$0' : fmtMathMoney(det.capex);
+  const totalInvestedExample = `${fmtMathMoney(d.down)} + ${fmtMathMoney(det.closing)} + ${capexMath} = <strong>${fmtMathMoney(d.invested)}</strong>`;
+  const rentExample = `${fmtMathMoney(det.rentBase)} × 30 ÷ 31 ≈ <strong>${fmtMathMoney(d.rent)}/mo</strong>`;
+  const cashFlowExample = `${fmtMathMoney(d.rent)} − ${fmtMathMoney(det.mortPI)} P&amp;I − ${fmtMathMoney(monthlyTax)} tax − ${fmtMathMoney(monthlyIns)} insurance − ${fmtMathMoney(monthlyHoa)} HOA − ${fmtMathMoney(management)} management ≈ <strong>${fmtMathMoney(d.cashflow)}/mo</strong>`;
+  const cocExample = `(${fmtMathMoney(d.cashflow)} × 12) ÷ ${fmtMathMoney(d.invested)} ≈ <strong>${fmt1(d.coc)}%</strong>`;
+  const principalExample = `(${fmtMathMoney(d.principal)} × 12) ÷ ${fmtMathMoney(d.invested)} ≈ <strong>${fmt1(d.principalPct)}%</strong>`;
+  const leverageExample = `${fmtMathMoney(d.price)} ÷ ${fmtMathMoney(d.invested)} = <strong>${fmtLev(d.leverage)}×</strong>`;
+  const appreciationExample = `${fmt1(d.apprPct)}% × ${fmtLev(d.leverage)}× ≈ <strong>${fmt1(d.apprContribution)}%</strong>`;
+  const totalExample = `${fmt1(d.coc)}% + ${fmt1(d.principalPct)}% + ${fmt1(d.apprContribution)}% = <strong>${fmt1(d.totalReturn)}%</strong>`;
+
+  return `
+    <div class="math-panel">
+      <p class="math-note">The words tell you what each number means; the line beneath shows the formula and this property's actual inputs. Values on the page are rounded for readability, so formulas marked ≈ can differ slightly from hand arithmetic using the displayed rounded numbers.</p>
+      <div class="math-group-title">Cash in &amp; monthly operations</div>
+      ${mathItemHTML('Total invested','All upfront cash in the deal, not just the down payment.','Down payment + closing costs + capex',totalInvestedExample)}
+      ${mathItemHTML('Vacancy-adjusted rent','The base rent reduced by the underwriting vacancy allowance.','Base rent × 30 occupied months ÷ 31 total months',rentExample)}
+      ${mathItemHTML('Cash flow','What remains each month after financing, property expenses and management.','Vacancy-adjusted rent − mortgage P&amp;I − taxes/12 − insurance/12 − HOA/12 − 10% management fee',cashFlowExample)}
+      <div class="math-group-title">Return math</div>
+      ${mathItemHTML('Cash-on-cash return','Annual cash flow expressed as a percentage of all cash invested.','(Monthly cash flow × 12) ÷ total invested',cocExample)}
+      ${mathItemHTML('Principal return contribution','The mortgage principal paid down over a year, expressed as a percentage of total cash invested. The monthly principal amount comes from the mortgage amortization.','(Monthly principal × 12) ÷ total invested',principalExample)}
+      ${mathItemHTML('Effective leverage','How much property value each $1 of total investor cash controls. Closing costs and capex reduce it.','Purchase price ÷ total invested',leverageExample,true)}
+      ${mathItemHTML('Modeled appreciation contribution','The appreciation assumption translated into a return on the investor\'s total cash using effective leverage.','Appreciation assumption × effective leverage',appreciationExample,true)}
+      ${mathItemHTML('Modeled Return','The three return components shown on the page added together.','Cash-on-cash + principal return contribution + modeled appreciation contribution',totalExample,true)}
+    </div>`;
+}
+
+function mathToolsHTML(d, mobile=false){
+  return `
+    <div class="math-tools${mobile ? ' mp-math-tools' : ''}">
+      <button class="math-toggle" type="button" aria-expanded="false">Show the math <span class="math-fx">ƒx</span></button>
+      ${propertyMathHTML(d).replace('class="math-panel"', `class="math-panel${mobile ? ' mp-math-panel' : ''}"`)}
+    </div>`;
+}
+
+function wireMathToggle(scope){
+  const btn = scope.querySelector('.math-toggle');
+  const panel = scope.querySelector('.math-panel');
+  if(!btn || !panel) return;
+  btn.addEventListener('click', (e)=>{
+    e.stopPropagation();
+    const open = !panel.classList.contains('open');
+    panel.classList.toggle('open', open);
+    btn.setAttribute('aria-expanded', String(open));
+    btn.innerHTML = `${open ? 'Hide' : 'Show'} the math <span class="math-fx">ƒx</span>`;
+  });
+}
+
 // One shared $-to-pixel scale for the leverage bars, based on the priciest
 // property in the whole dataset — so a bar's length always means the same
 // number of dollars no matter which property's box you click.
@@ -1149,19 +1497,22 @@ let LEV_SCALE = 0; // recalculated once data loads, see loadData()
 
 function leverageDetailHTML(d){
   const downPct = d.down / d.price * 100;
-  const multiplier = d.price / d.down;
+  const purchaseLeverage = d.price / d.down;
+  const effectiveLeverage = d.leverage;
   const gainDollar = d.price * d.apprPct / 100;
-  const returnOnCash = gainDollar / d.invested * 100;
+  const returnOnCash = d.apprContribution;
+  const extraCash = d.invested - d.down;
   const houseW = Math.max(6, d.price * LEV_SCALE);
   const cashW = Math.max(6, d.invested * LEV_SCALE);
   const gainW = Math.max(3, gainDollar * LEV_SCALE);
   const verb = d.status === "closed" ? "was purchased" : d.status === "under_contract" ? "is under contract to be purchased" : "was analyzed as a potential purchase";
+  const costsText = extraCash >= 0 ? `${fmt$(extraCash)} of closing costs/capex` : `${fmt$(Math.abs(extraCash))} of net credits after closing costs/capex`;
   return `
     <div class="receipt lev-detail">
       <div class="receipt-title">${d.label} · ${d.state} — how the appreciation number breaks down</div>
-      <p class="lev-copy">This property ${verb} for <b>${fmt$(d.price)}</b>. The investor put down <b>${fmt$(d.down)}</b> — <b>${fmt1(downPct)}%</b> of the price.</p>
-      <div class="lev-driver">The down payment is the dial: ${fmt1(downPct)}% down → 1 ÷ ${fmt1(downPct)}% ≈ <b>${fmt1(multiplier)}×</b> multiplier on every dollar of appreciation.</div>
-      <p class="lev-copy">At a ${fmt1(d.apprPct)}% appreciation assumption, the house gains about <b>${fmt$(gainDollar)}</b> this year — on the full ${fmt$(d.price)} price. Measured against the investor's total cash in the deal (${fmt$(d.invested)}, down payment plus closing costs and capex), that same ${fmt$(gainDollar)} works out to a <b>${fmt1(returnOnCash)}%</b> return.</p>
+      <p class="lev-copy">This property ${verb} for <b>${fmt$(d.price)}</b>. The investor put down <b>${fmt$(d.down)}</b> — <b>${fmt1(downPct)}%</b> of the price — and had <b>${fmt$(d.invested)}</b> of total cash invested after closing costs and capex.</p>
+      <div class="lev-driver">${fmt1(downPct)}% down is about <b>${fmtLev(purchaseLeverage)}×</b> purchase leverage. After ${costsText}, the more useful number is <b>${fmtLev(effectiveLeverage)}× effective leverage</b> (${fmt$(d.price)} purchase price ÷ ${fmt$(d.invested)} total invested).</div>
+      <p class="lev-copy">At a ${fmt1(d.apprPct)}% appreciation assumption, the house gains about <b>${fmt$(gainDollar)}</b> this year on the full ${fmt$(d.price)} property value. Measured against the investor's total cash in the deal, that is a <b>${fmt1(returnOnCash)}%</b> modeled appreciation contribution.</p>
       <div class="lev-wrap">
         <div class="lev-row">
           <div class="lev-label"><b>Purchase price</b>${fmt$(d.price)}</div>
@@ -1169,12 +1520,12 @@ function leverageDetailHTML(d){
           <div class="lev-tag">+${fmt$(gainDollar)} <span>→ ${fmt1(d.apprPct)}% of the price</span></div>
         </div>
         <div class="lev-row">
-          <div class="lev-label"><b>Cash invested</b>${fmt$(d.invested)}</div>
+          <div class="lev-label"><b>Total cash invested</b>${fmt$(d.invested)}</div>
           <div class="lev-track" style="width:${cashW}px;"><div class="lev-base" style="width:${cashW}px;"></div><div class="lev-gain" style="width:${gainW}px;left:${Math.max(0,cashW-gainW)}px;"></div></div>
           <div class="lev-tag">+${fmt$(gainDollar)} <span>→ ${fmt1(returnOnCash)}% of the cash</span></div>
         </div>
       </div>
-      <p class="lev-punch">Same gold sliver, same ${fmt$(gainDollar)}, on both bars — it's just a much bigger bite out of the shorter one. <b>That's leverage</b>, and the down payment percentage is what sets the size of that bite: a smaller down payment means a shorter cash bar, so the same dollar of appreciation lands as a bigger percentage. It cuts both ways just as hard if a market falls instead of rises.</p>
+      <p class="lev-punch"><b>Effective leverage = purchase price ÷ total cash invested.</b> A smaller down payment usually increases it; closing costs and capex reduce it because they add investor cash without increasing the property's purchase price. Leverage also magnifies losses if the property falls in value.</p>
     </div>
   `;
 }
@@ -1184,13 +1535,16 @@ function leverageDetailHTML(d){
 // listener makes them work on tap too: tapping an icon toggles it open,
 // tapping anywhere else closes whatever's open.
 document.addEventListener("click", (e)=>{
-  const dot = e.target.closest(".info-dot");
-  document.querySelectorAll(".info-dot.open").forEach(el=>{ if(el!==dot) el.classList.remove("open"); });
-  if(dot) dot.classList.toggle("open");
+  const dot = e.target.closest(".info-dot, .fx-dot");
+  document.querySelectorAll(".info-dot.open, .fx-dot.open").forEach(el=>{ if(el!==dot) el.classList.remove("open"); });
+  if(dot){
+    e.stopPropagation();
+    dot.classList.toggle("open");
+  }
 });
 
 let activeStates = new Set();
-let activeStatuses = new Set(["closed"]);
+let activeStatuses = new Set(["closed","under_contract","proposed"]);
 let sortMode = "date_asc";
 
 function buildChips(){
@@ -1231,6 +1585,7 @@ function sortRows(rows){
   const r = [...rows];
   switch(sortMode){
     case "date_asc": return r.sort((a,b)=>a.date.localeCompare(b.date));
+    case "date_desc": return r.sort((a,b)=>b.date.localeCompare(a.date));
     case "coc_desc": return r.sort((a,b)=>b.coc-a.coc);
     case "total_desc": return r.sort((a,b)=>b.totalReturn-a.totalReturn);
     case "state_asc": return r.sort((a,b)=>a.state.localeCompare(b.state));
@@ -1253,25 +1608,30 @@ function detailReceiptLinesHTML(d){
     <div class="mp-detail-line"><span class="mp-dl-label">Closing costs</span><span class="mp-dl-val">${fmt$(det.closing)}</span></div>
     <div class="mp-detail-line"><span class="mp-dl-label">Capex (fence/fan/fridge)</span><span class="mp-dl-val">${formatCapex(det.capex)}</span></div>
     <div class="mp-detail-line predicted"><span class="mp-dl-label">Appreciation assumption (predicted)</span><span class="mp-dl-val">${fmt1(d.apprPct)}%/yr</span></div>
-    <div class="mp-detail-line predicted"><span class="mp-dl-label">Leverage multiplier (predicted)</span><span class="mp-dl-val">${d.leverage}x</span></div>
+    <div class="mp-detail-line predicted"><span class="mp-dl-label">Effective leverage <span class="info-dot" tabindex="0">i<span class="tip">Purchase price ÷ total cash invested. Closing costs and capex reduce this multiplier because they add cash invested without increasing the purchase price.</span></span><span class="fx-dot" tabindex="0">ƒx<span class="tip"><span class="tip-label">Formula</span>Purchase price ÷ total cash invested.</span></span></span><span class="mp-dl-val">${fmtLev(d.leverage)}×</span></div>
+    <div class="mp-detail-line predicted"><span class="mp-dl-label">Modeled appreciation contribution</span><span class="mp-dl-val">${fmt1(d.apprContribution)}%</span></div>
+    ${mathToolsHTML(d,true)}
   `;
 }
 
 function mobileLeverageHTML(d){
   const downPct = d.down / d.price * 100;
-  const multiplier = d.price / d.down;
+  const purchaseLeverage = d.price / d.down;
+  const effectiveLeverage = d.leverage;
   const gainDollar = d.price * d.apprPct / 100;
-  const returnOnCash = gainDollar / d.invested * 100;
+  const returnOnCash = d.apprContribution;
+  const extraCash = d.invested - d.down;
   const houseW = 100;
   const cashW = Math.max(6, d.invested / d.price * 100);
   const gainW = Math.max(3, gainDollar / d.price * 100);
   const gainWCash = Math.max(3, gainDollar / d.invested * 100);
   const verb = d.status === "closed" ? "was purchased" : d.status === "under_contract" ? "is under contract to be purchased" : "was analyzed as a potential purchase";
+  const costsText = extraCash >= 0 ? `${fmt$(extraCash)} of closing costs/capex` : `${fmt$(Math.abs(extraCash))} of net credits after closing costs/capex`;
   return `
     <div class="lev-detail mp-lev">
-      <p class="lev-copy">This property ${verb} for <b>${fmt$(d.price)}</b>. The investor put down <b>${fmt$(d.down)}</b> — <b>${fmt1(downPct)}%</b> of the price.</p>
-      <div class="lev-driver">${fmt1(downPct)}% down → 1 ÷ ${fmt1(downPct)}% ≈ <b>${fmt1(multiplier)}×</b> multiplier on every dollar of appreciation.</div>
-      <p class="lev-copy">At a ${fmt1(d.apprPct)}% appreciation assumption, the house gains about <b>${fmt$(gainDollar)}</b> this year. Measured against the cash invested (${fmt$(d.invested)}), that's a <b>${fmt1(returnOnCash)}%</b> return.</p>
+      <p class="lev-copy">This property ${verb} for <b>${fmt$(d.price)}</b>. The investor put down <b>${fmt$(d.down)}</b> — <b>${fmt1(downPct)}%</b> of the price — with <b>${fmt$(d.invested)}</b> total cash invested.</p>
+      <div class="lev-driver">${fmt1(downPct)}% down ≈ <b>${fmtLev(purchaseLeverage)}×</b> purchase leverage. After ${costsText}: <b>${fmtLev(effectiveLeverage)}× effective leverage</b>.</div>
+      <p class="lev-copy"><b>Effective leverage = purchase price ÷ total cash invested.</b> At ${fmt1(d.apprPct)}% assumed appreciation, the ${fmt$(gainDollar)} increase in property value equals a <b>${fmt1(returnOnCash)}%</b> modeled return on total cash invested.</p>
       <div class="lev-wrap">
         <div class="lev-row">
           <div class="lev-label"><b>Purchase price</b>${fmt$(d.price)}</div>
@@ -1279,12 +1639,12 @@ function mobileLeverageHTML(d){
           <div class="lev-tag">+${fmt$(gainDollar)} <span>→ ${fmt1(d.apprPct)}% of the price</span></div>
         </div>
         <div class="lev-row">
-          <div class="lev-label"><b>Cash invested</b>${fmt$(d.invested)}</div>
+          <div class="lev-label"><b>Total cash invested</b>${fmt$(d.invested)}</div>
           <div class="lev-track" style="width:${cashW}%;"><div class="lev-base" style="width:100%;"></div><div class="lev-gain" style="width:${gainWCash}%;left:${Math.max(0,100-gainWCash)}%;"></div></div>
           <div class="lev-tag">+${fmt$(gainDollar)} <span>→ ${fmt1(returnOnCash)}% of the cash</span></div>
         </div>
       </div>
-      <p class="lev-punch">Same dollar gain, both bars — it's just a much bigger bite out of the shorter one. <b>That's leverage</b>, and it cuts both ways if a market falls instead of rises.</p>
+      <p class="lev-punch">A smaller down payment usually increases effective leverage; closing costs and capex reduce it. It magnifies losses too if the property falls in value.</p>
     </div>
   `;
 }
@@ -1336,6 +1696,7 @@ function renderMobile(rows){
     const fcDetail = card.querySelector(".mp-forecast-detail");
     uwBtn.onclick = ()=> uwDetail.classList.toggle("open");
     fcBtn.onclick = ()=> fcDetail.classList.toggle("open");
+    wireMathToggle(uwDetail);
     list.appendChild(card);
   });
 }
@@ -1368,7 +1729,7 @@ function render(){
       <td class="appreciation-col">
         <div class="predicted-cell">
           <span class="pv">+${fmt1(d.apprContribution)}%</span>
-          <span class="ps">${fmt1(d.apprPct)}% mkt × ${d.leverage}x</span>
+          <span class="ps">${fmt1(d.apprPct)}% mkt × ${fmtLev(d.leverage)}× eff.</span>
           <span class="pc-caret">▸</span>
         </div>
       </td>
@@ -1407,10 +1768,13 @@ function render(){
             <div class="receipt-line"><span class="rl-label">Closing costs</span><span class="rl-fill"></span><span class="rl-val">${fmt$(det.closing)}</span></div>
             <div class="receipt-line"><span class="rl-label">Capex (fence/fan/fridge)</span><span class="rl-fill"></span><span class="rl-val">${formatCapex(det.capex)}</span></div>
             <div class="receipt-line predicted-line"><span class="rl-label">Appreciation assumption (predicted)</span><span class="rl-fill"></span><span class="rl-val">${fmt1(d.apprPct)}%/yr</span></div>
-            <div class="receipt-line predicted-line"><span class="rl-label">Leverage multiplier (predicted)</span><span class="rl-fill"></span><span class="rl-val">${d.leverage}x</span></div>
+            <div class="receipt-line predicted-line"><span class="rl-label">Effective leverage <span class="info-dot" tabindex="0">i<span class="tip">Purchase price ÷ total cash invested. Closing costs and capex reduce this multiplier because they add cash invested without increasing the purchase price.</span></span><span class="fx-dot" tabindex="0">ƒx<span class="tip"><span class="tip-label">Formula</span>Purchase price ÷ total cash invested.</span></span></span><span class="rl-fill"></span><span class="rl-val">${fmtLev(d.leverage)}×</span></div>
+            <div class="receipt-line predicted-line"><span class="rl-label">Modeled appreciation contribution</span><span class="rl-fill"></span><span class="rl-val">${fmt1(d.apprContribution)}%</span></div>
           </div>
+          ${mathToolsHTML(d,false)}
         </div>
       </td>`;
+    wireMathToggle(detailTr);
     tr.onclick = ()=>{
       const willOpen = !tr.classList.contains("open");
       document.querySelectorAll("tr.data-row.open").forEach(r=>r.classList.remove("open"));
@@ -1433,6 +1797,147 @@ function render(){
 
   document.getElementById("countNote").textContent = `Showing ${rows.length} of ${DATA.length} properties`;
   renderMobile(rows);
+  requestAnimationFrame(()=>{
+    syncStickyHeaderLayout();
+    updateStickyHeaderVisibility();
+  });
+}
+
+// ===== FROZEN DESKTOP TABLE HEADER =====
+// The real table stays semantic and scrollable. A visual clone of its <thead>
+// is fixed to the top of the viewport only while the user is inside the table.
+// Its column widths and horizontal position are synchronized with the real table.
+const stickyHeaderState = {
+  initialized:false,
+  desktop:null,
+  wrap:null,
+  mainTable:null,
+  originalHead:null,
+  shell:null,
+  viewport:null,
+  stickyTable:null,
+  colgroup:null,
+  resizeObserver:null
+};
+
+function initStickyTableHeader(){
+  const desktop = document.querySelector('.desktop-table');
+  const wrap = desktop ? desktop.querySelector('.table-wrap') : null;
+  const mainTable = wrap ? wrap.querySelector('table') : null;
+  const originalHead = mainTable ? mainTable.querySelector('thead') : null;
+  const shell = desktop ? desktop.querySelector('.sticky-table-header') : null;
+  const viewport = shell ? shell.querySelector('.sticky-table-header-viewport') : null;
+  const stickyTable = shell ? shell.querySelector('.sticky-table-header-table') : null;
+
+  if(!desktop || !wrap || !mainTable || !originalHead || !shell || !viewport || !stickyTable) return;
+
+  stickyTable.innerHTML = '';
+
+  const colgroup = document.createElement('colgroup');
+  originalHead.querySelectorAll('th').forEach(()=> colgroup.appendChild(document.createElement('col')));
+  stickyTable.appendChild(colgroup);
+
+  const clonedHead = originalHead.cloneNode(true);
+  clonedHead.querySelectorAll('[tabindex]').forEach(el=>el.removeAttribute('tabindex'));
+  clonedHead.querySelectorAll('[id]').forEach(el=>el.removeAttribute('id'));
+  stickyTable.appendChild(clonedHead);
+
+  Object.assign(stickyHeaderState, {
+    initialized:true,
+    desktop, wrap, mainTable, originalHead, shell, viewport, stickyTable, colgroup
+  });
+
+  wrap.addEventListener('scroll', syncStickyHeaderHorizontal, {passive:true});
+  window.addEventListener('scroll', updateStickyHeaderVisibility, {passive:true});
+  window.addEventListener('resize', ()=>{
+    syncStickyHeaderLayout();
+    updateStickyHeaderVisibility();
+  }, {passive:true});
+
+  if('ResizeObserver' in window){
+    stickyHeaderState.resizeObserver = new ResizeObserver(()=>{
+      syncStickyHeaderLayout();
+      updateStickyHeaderVisibility();
+    });
+    stickyHeaderState.resizeObserver.observe(mainTable);
+    stickyHeaderState.resizeObserver.observe(wrap);
+  }
+
+  if(document.fonts && document.fonts.ready){
+    document.fonts.ready.then(()=>{
+      syncStickyHeaderLayout();
+      updateStickyHeaderVisibility();
+    });
+  }
+
+  requestAnimationFrame(()=>{
+    syncStickyHeaderLayout();
+    updateStickyHeaderVisibility();
+  });
+}
+
+function syncStickyHeaderLayout(){
+  const s = stickyHeaderState;
+  if(!s.initialized) return;
+
+  if(window.innerWidth <= 760 || getComputedStyle(s.desktop).display === 'none'){
+    s.shell.classList.remove('is-active');
+    return;
+  }
+
+  const wrapRect = s.wrap.getBoundingClientRect();
+  const originalCells = Array.from(s.originalHead.querySelectorAll('th'));
+  const cols = Array.from(s.colgroup.children);
+
+  if(!wrapRect.width || !originalCells.length || originalCells.length !== cols.length) return;
+
+  const widths = originalCells.map(cell=>cell.getBoundingClientRect().width);
+  const totalWidth = widths.reduce((sum,w)=>sum+w,0);
+
+  cols.forEach((col,i)=>{
+    col.style.width = `${widths[i]}px`;
+  });
+
+  s.shell.style.left = `${wrapRect.left}px`;
+  s.shell.style.width = `${s.wrap.clientWidth}px`;
+  s.viewport.style.width = `${s.wrap.clientWidth}px`;
+  s.stickyTable.style.width = `${totalWidth}px`;
+  s.stickyTable.style.minWidth = `${totalWidth}px`;
+
+  syncStickyHeaderHorizontal();
+}
+
+function syncStickyHeaderHorizontal(){
+  const s = stickyHeaderState;
+  if(!s.initialized) return;
+  s.stickyTable.style.transform = `translateX(${-s.wrap.scrollLeft}px)`;
+}
+
+function updateStickyHeaderVisibility(){
+  const s = stickyHeaderState;
+  if(!s.initialized) return;
+
+  if(window.innerWidth <= 760 || getComputedStyle(s.desktop).display === 'none'){
+    s.shell.classList.remove('is-active');
+    return;
+  }
+
+  // Keep the fixed clone horizontally aligned with the actual table as the
+  // centered page container moves at different viewport widths.
+  const wrapRect = s.wrap.getBoundingClientRect();
+  s.shell.style.left = `${wrapRect.left}px`;
+  s.shell.style.width = `${s.wrap.clientWidth}px`;
+  s.viewport.style.width = `${s.wrap.clientWidth}px`;
+
+  const headRect = s.originalHead.getBoundingClientRect();
+  const tableRect = s.mainTable.getBoundingClientRect();
+  const stickyHead = s.stickyTable.querySelector('thead');
+  const stickyHeight = stickyHead ? stickyHead.getBoundingClientRect().height : headRect.height;
+
+  // Show only after the real heading row has fully scrolled offscreen, and
+  // hide again before the fixed row would extend past the bottom of the table.
+  const shouldShow = headRect.bottom <= 0 && tableRect.bottom > stickyHeight;
+  s.shell.classList.toggle('is-active', shouldShow);
 }
 
 // ===== LOAD DATA FROM GOOGLE SHEETS, THEN BUILD THE PAGE =====
@@ -1457,10 +1962,14 @@ function loadData(){
       if(wrap){
         wrap.innerHTML = '<p style="color:#c1633f;font-family:monospace;">Could not load data from the Google Sheet. Check that SHEET_CSV_URL is set correctly and the sheet is published to the web.</p>';
       }
+      if(stickyHeaderState.initialized){
+        stickyHeaderState.shell.classList.remove('is-active');
+      }
     }
   });
 }
 
+initStickyTableHeader();
 loadData();
 </script>
 </body>
