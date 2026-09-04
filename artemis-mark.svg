@@ -1,18 +1,14 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 800" role="img" aria-label="Artemis mark">
-  <defs><mask id="crescentMask"><rect width="1100" height="800" fill="black"/><ellipse cx="380" cy="395" rx="260" ry="325" fill="white"/><ellipse cx="465" cy="365" rx="225" ry="275" fill="black"/></mask></defs>
-  <rect width="1100" height="800" fill="#b6905a" mask="url(#crescentMask)"/>
-  <g fill="none" stroke="#b6905a" stroke-width="12" stroke-linecap="round" stroke-linejoin="round">
-    <path d="M330 475 H500 L610 360 L720 475 H900"/>
-    <path d="M280 475 L330 475"/>
-    <path d="M280 445 L330 475 L280 505"/>
-    <path d="M300 445 L350 475 L300 505"/>
-    <path d="M320 445 L370 475 L320 505"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 250 140" role="img" aria-label="Open Book mark">
+  <title>Open Book</title>
+  <g fill="none" stroke="#E1B85F" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M45 102 C50 66 70 40 100 28 C112 23 126 22 138 25" stroke-width="8"/>
+    <path d="M25 102 H80 L104 80 L128 102 H203" stroke-width="5"/>
   </g>
-  <polygon points="960,475 900,435 900,515" fill="#b6905a"/>
-  <rect x="675" y="410" width="22" height="62" fill="#b6905a"/>
-  <g fill="#b6905a">
-    <rect x="590" y="450" width="18" height="18"/><rect x="617" y="450" width="18" height="18"/>
-    <rect x="590" y="477" width="18" height="18"/><rect x="617" y="477" width="18" height="18"/>
-    <path d="M680 245 L690 275 L720 285 L690 295 L680 325 L670 295 L640 285 L670 275 Z"/>
+  <g fill="#E1B85F">
+    <rect x="98" y="96" width="5.2" height="5.2" rx=".6"/>
+    <rect x="106" y="96" width="5.2" height="5.2" rx=".6"/>
+    <rect x="98" y="104" width="5.2" height="5.2" rx=".6"/>
+    <rect x="106" y="104" width="5.2" height="5.2" rx=".6"/>
+    <path d="M232 102 L201 89 L208 102 L201 115 Z"/>
   </g>
 </svg>

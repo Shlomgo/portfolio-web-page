@@ -1,12 +1,16 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-  <defs><mask id="m"><rect width="512" height="512" fill="black"/><ellipse cx="205" cy="245" rx="170" ry="190" fill="white"/><ellipse cx="260" cy="225" rx="145" ry="160" fill="black"/></mask></defs>
-  <rect width="512" height="512" fill="#b6905a" mask="url(#m)"/>
-  <g fill="none" stroke="#b6905a" stroke-width="15" stroke-linecap="round" stroke-linejoin="round">
-    <path d="M165 290 H245 L300 240 L350 290 H405"/>
-    <path d="M135 290 L165 290"/>
-    <path d="M135 270 L165 290 L135 310"/>
-    <path d="M150 270 L180 290 L150 310"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Open Book icon">
+  <rect width="512" height="512" rx="72" fill="#14171C"/>
+  <g fill="none" stroke="#E1B85F" stroke-linecap="round" stroke-linejoin="round">
+    <!-- Simplified open arc, optimized for tiny sizes -->
+    <path d="M104 330 C111 207 188 126 300 118" stroke-width="34"/>
+    <!-- compact home-to-forward line -->
+    <path d="M78 332 H196 L257 278 L319 332 H379" stroke-width="24"/>
   </g>
-  <polygon points="440,290 405,265 405,315" fill="#b6905a"/>
-  <path d="M335 160 L342 181 L363 188 L342 195 L335 216 L328 195 L307 188 L328 181 Z" fill="#b6905a"/>
+  <g fill="#E1B85F">
+    <rect x="238" y="316" width="20" height="20" rx="2"/>
+    <rect x="268" y="316" width="20" height="20" rx="2"/>
+    <rect x="238" y="346" width="20" height="20" rx="2"/>
+    <rect x="268" y="346" width="20" height="20" rx="2"/>
+    <path d="M437 332 L370 292 L386 332 L370 372 Z"/>
+  </g>
 </svg>
