@@ -1,0 +1,125 @@
+name: One-time Open Book style refinement
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/open-book-style-refine.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  patch-index:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Refine Open Book colors, alignment, and disclosures
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          path = Path('index.html')
+          s = path.read_text()
+
+          # Bring the rest of the main page onto the brighter green/orange palette
+          # used by the new return explainer boxes.
+          replacements = {
+              '--sage:#7f9c6e;': '--sage:#72cdb4;',
+              '--rust:#c1633f;': '--rust:#dc8f50;',
+              '#7f9c6e': '#72cdb4',
+              '#c1633f': '#dc8f50',
+              'rgba(127,156,110': 'rgba(114,205,180',
+              'rgba(193,99,63': 'rgba(220,143,80',
+              '#c99a86': '#c6a08a',
+          }
+          for old, new in replacements.items():
+              s = s.replace(old, new)
+
+          # Add compact, closed-by-default disclosures for the long intro copy
+          # and the methodology/assumptions box.
+          lede_open = '  <p class="lede">'
+          if s.count(lede_open) != 1:
+              raise SystemExit(f'Expected one lede opening, found {s.count(lede_open)}')
+          s = s.replace(
+              lede_open,
+              '  <details class="masthead-disclosure intro-disclosure">\n'
+              '    <summary>About this track record →</summary>\n'
+              '    <p class="lede">',
+              1
+          )
+
+          ledger_open = '\n\n  <div class="ledger-note">'
+          if s.count(ledger_open) != 1:
+              raise SystemExit(f'Expected one ledger opening, found {s.count(ledger_open)}')
+          s = s.replace(
+              ledger_open,
+              '</p>\n  </details>\n\n'
+              '  <details class="masthead-disclosure methodology-disclosure">\n'
+              '    <summary>What\'s already accounted for →</summary>\n'
+              '    <div class="ledger-note">',
+              1
+          )
+          # The previous replacement retained the original closing </p>; remove the duplicate
+          # that now sits just before </details> if present.
+          s = s.replace('</p></p>\n  </details>', '</p>\n  </details>', 1)
+
+          ledger_close = '''      </div>\n    </details>\n  </div>\n\n  <div class="legend-row">'''
+          if s.count(ledger_close) != 1:
+              raise SystemExit(f'Expected one ledger closing marker, found {s.count(ledger_close)}')
+          s = s.replace(
+              ledger_close,
+              '''      </div>\n    </details>\n    </div>\n  </details>\n\n  <div class="legend-row">''',
+              1
+          )
+
+          # Style the collapsed disclosures as intentional one-line controls.
+          masthead_css_marker = '''  .lede b{color:var(--paper);font-weight:600;}\n'''
+          masthead_css = '''  .lede b{color:var(--paper);font-weight:600;}\n\n  .masthead-disclosure{\n    max-width:760px;\n    margin:0 0 14px;\n  }\n  .masthead-disclosure > summary{\n    cursor:pointer;\n    list-style:none;\n    display:flex;\n    align-items:center;\n    gap:9px;\n    width:max-content;\n    max-width:100%;\n    color:#cfc7b6;\n    font-family:'IBM Plex Mono',monospace;\n    font-size:11.5px;\n    letter-spacing:.02em;\n    padding:7px 0;\n    user-select:none;\n  }\n  .masthead-disclosure > summary::-webkit-details-marker{display:none;}\n  .masthead-disclosure > summary::before{\n    content:'+';\n    display:inline-flex;\n    align-items:center;\n    justify-content:center;\n    width:17px;\n    height:17px;\n    border:1px solid var(--line);\n    border-radius:50%;\n    color:var(--brass);\n    font-size:12px;\n    line-height:1;\n    flex:0 0 auto;\n  }\n  .masthead-disclosure[open] > summary::before{content:'−';}\n  .masthead-disclosure[open] > summary{color:var(--paper);}\n  .masthead-disclosure .lede{\n    max-width:660px;\n    margin:6px 0 22px;\n  }\n  .methodology-disclosure > summary{\n    width:100%;\n    border:1px solid var(--line);\n    border-left:3px solid var(--brass);\n    background:rgba(182,144,90,.05);\n    padding:9px 12px;\n  }\n  .methodology-disclosure[open] > summary{\n    border-bottom-color:transparent;\n    margin-bottom:0;\n  }\n  .methodology-disclosure .ledger-note{\n    margin:0;\n    border-top:0;\n  }\n'''
+          if s.count(masthead_css_marker) != 1:
+              raise SystemExit(f'Expected one lede CSS marker, found {s.count(masthead_css_marker)}')
+          s = s.replace(masthead_css_marker, masthead_css, 1)
+
+          # Replace the old external explainer grid with table-native rows. Putting
+          # each box in the exact table cell it explains guarantees that its arrow
+          # is mathematically centered on that column at every desktop width.
+          css_start = s.index('  /* ---------- How real estate pays you ---------- */')
+          css_end = s.index('  .table-scroll-hint{', css_start)
+          payoff_css = '''  /* ---------- How real estate pays you ---------- */\n  thead .payoff-intro-row th,\n  thead .payoff-box-row th{\n    border-bottom:0;\n    text-transform:none;\n    letter-spacing:normal;\n    overflow:visible;\n  }\n  thead .payoff-intro-row th{\n    padding:0 5px 12px;\n  }\n  thead .payoff-box-row th{\n    position:relative;\n    padding:0 0 20px;\n    vertical-align:top;\n  }\n  .payoff-copy{\n    text-align:left;\n    font-family:'IBM Plex Sans',sans-serif;\n  }\n  .payoff-title{\n    font-size:15px;\n    line-height:1.25;\n    font-weight:600;\n    color:var(--paper);\n  }\n  .payoff-subtitle{\n    margin-top:2px;\n    font-size:12px;\n    line-height:1.3;\n    color:var(--paper-dim);\n  }\n  .payoff-card{\n    position:relative;\n    width:calc(100% - 10px);\n    min-height:78px;\n    margin:0 5px;\n    padding:8px 7px 9px;\n    border-radius:8px;\n    box-sizing:border-box;\n    text-align:left;\n    font-family:'IBM Plex Sans',sans-serif;\n    font-size:10.5px;\n    line-height:1.32;\n    font-weight:400;\n  }\n  .payoff-card.cash,\n  .payoff-card.principal{\n    background:rgba(114,205,180,.12);\n    border:1px solid rgba(114,205,180,.38);\n  }\n  .payoff-card.appreciation{\n    background:rgba(220,143,80,.09);\n    border:1px dashed rgba(220,143,80,.70);\n  }\n  .payoff-card.modeled{\n    background:rgba(182,144,90,.06);\n    border:1px solid rgba(182,144,90,.28);\n  }\n  .payoff-card-name{\n    display:block;\n    margin-bottom:2px;\n    font-size:10.5px;\n    line-height:1.25;\n    font-weight:500;\n  }\n  .payoff-card.cash .payoff-card-name,\n  .payoff-card.principal .payoff-card-name{color:#72cdb4;}\n  .payoff-card.appreciation .payoff-card-name{color:#dc8f50;font-style:italic;}\n  .payoff-card.modeled .payoff-card-name{color:var(--paper);}\n  .payoff-card-copy{color:#aeb6c0;}\n  .payoff-card.appreciation .payoff-card-copy{color:#c6a08a;}\n  .payoff-mini-bars{\n    display:inline-flex;\n    align-items:center;\n    gap:3px;\n    margin-right:4px;\n    vertical-align:1px;\n  }\n  .payoff-mini-bars i{display:block;width:6px;height:6px;border-radius:1px;}\n  .payoff-mini-bars .actual{background:#72cdb4;}\n  .payoff-mini-bars .forecast{background:#dc8f50;}\n  .payoff-op{\n    position:absolute;\n    right:-15px;\n    top:30px;\n    z-index:3;\n    width:20px;\n    height:20px;\n    border-radius:50%;\n    border:1px solid var(--line);\n    background:var(--ink);\n    color:#aeb6c0;\n    display:flex;\n    align-items:center;\n    justify-content:center;\n    font-family:'IBM Plex Mono',monospace;\n    font-size:12px;\n    line-height:1;\n  }\n  .payoff-arrow{\n    position:absolute;\n    left:50%;\n    bottom:-17px;\n    width:0;\n    height:0;\n    transform:translateX(-50%);\n    border-left:5px solid transparent;\n    border-right:5px solid transparent;\n    border-top:5px solid currentColor;\n  }\n  .payoff-card.cash .payoff-arrow,\n  .payoff-card.principal .payoff-arrow{color:#72cdb4;}\n  .payoff-card.appreciation .payoff-arrow{color:#dc8f50;}\n  .payoff-card.modeled .payoff-arrow{color:#8099ad;}\n'''
+          s = s[:css_start] + payoff_css + s[css_end:]
+
+          html_start = s.index('    <div class="return-payoff-explainer" aria-label="How this kind of real estate pays you">')
+          html_end_marker = '    <table>\n      <thead>\n        <tr>'
+          html_end = s.index(html_end_marker, html_start) + len(html_end_marker)
+          payoff_html = '''    <table>\n      <thead>\n        <tr class="payoff-intro-row">\n          <th colspan="8">\n            <div class="payoff-copy">\n              <div class="payoff-title">How this kind of real estate pays you</div>\n              <div class="payoff-subtitle">3 real levers add up to the modeled return</div>\n            </div>\n          </th>\n          <th colspan="4"></th>\n        </tr>\n        <tr class="payoff-box-row">\n          <th colspan="8"></th>\n          <th class="cash-return-col">\n            <div class="payoff-card cash">\n              <span class="payoff-card-name">Cash flow</span>\n              <span class="payoff-card-copy">Actual — money<br>in your account<br>monthly</span>\n              <span class="payoff-op" aria-hidden="true">+</span>\n              <span class="payoff-arrow" aria-hidden="true"></span>\n            </div>\n          </th>\n          <th class="principal-return-col">\n            <div class="payoff-card principal">\n              <span class="payoff-card-name">Principal</span>\n              <span class="payoff-card-copy">Actual — tenant<br>pays down your<br>loan debt</span>\n              <span class="payoff-op" aria-hidden="true">+</span>\n              <span class="payoff-arrow" aria-hidden="true"></span>\n            </div>\n          </th>\n          <th class="appreciation-col">\n            <div class="payoff-card appreciation">\n              <span class="payoff-card-name">Appreciation</span>\n              <span class="payoff-card-copy">Forecast — 3% ×<br>3.33× leverage</span>\n              <span class="payoff-op" aria-hidden="true">=</span>\n              <span class="payoff-arrow" aria-hidden="true"></span>\n            </div>\n          </th>\n          <th class="modeled-return-col">\n            <div class="payoff-card modeled">\n              <span class="payoff-card-name"><span class="payoff-mini-bars" aria-hidden="true"><i class="actual"></i><i class="forecast"></i></span>Modeled return</span>\n              <span class="payoff-card-copy">The 3 to the left,<br>combined</span>\n              <span class="payoff-arrow" aria-hidden="true"></span>\n            </div>\n          </th>\n        </tr>\n        <tr>'''
+          s = s[:html_start] + payoff_html + s[html_end:]
+
+          # The sticky header clone should contain only the actual column-label row,
+          # not the explanatory rows above it. It also needs exactly 12 cols.
+          old_colgroup = """  const colgroup = document.createElement('colgroup');\n  originalHead.querySelectorAll('th').forEach(()=> colgroup.appendChild(document.createElement('col')));\n  stickyTable.appendChild(colgroup);\n\n  const clonedHead = originalHead.cloneNode(true);\n"""
+          new_colgroup = """  const colgroup = document.createElement('colgroup');\n  originalHead.querySelectorAll('tr:last-child th').forEach(()=> colgroup.appendChild(document.createElement('col')));\n  stickyTable.appendChild(colgroup);\n\n  const clonedHead = originalHead.cloneNode(true);\n  clonedHead.querySelectorAll('.payoff-intro-row, .payoff-box-row').forEach(row=>row.remove());\n"""
+          if s.count(old_colgroup) != 1:
+              raise SystemExit(f'Expected one sticky colgroup marker, found {s.count(old_colgroup)}')
+          s = s.replace(old_colgroup, new_colgroup, 1)
+
+          old_cells = "const originalCells = Array.from(s.originalHead.querySelectorAll('th'));"
+          new_cells = "const originalCells = Array.from(s.originalHead.querySelectorAll('tr:last-child th'));"
+          if s.count(old_cells) != 1:
+              raise SystemExit(f'Expected one sticky width marker, found {s.count(old_cells)}')
+          s = s.replace(old_cells, new_cells, 1)
+
+          path.write_text(s)
+          PY
+      - name: Commit refined page
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html
+          if git diff --cached --quiet; then
+            echo "No changes to commit"
+            exit 0
+          fi
+          git commit -m "Refine Open Book palette, alignment, and intro disclosures"
+          git push
