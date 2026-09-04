@@ -1,0 +1,45 @@
+name: Property media one-time upload
+
+on:
+  push:
+    branches:
+      - property-pages-setup
+    paths:
+      - '.property-upload/READY'
+
+permissions:
+  contents: write
+
+jobs:
+  unpack:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Reassemble property media
+        shell: bash
+        run: |
+          cat .property-upload/media.part.* | base64 --decode > /tmp/property-media.tar.gz
+          echo '9af828f638517b9af899ff08d77fa0e553fa4510662a127be70ed5341de1fec1  /tmp/property-media.tar.gz' | sha256sum -c -
+          tar -xzf /tmp/property-media.tar.gz -C .
+
+      - name: Validate media
+        shell: bash
+        run: |
+          test -s properties/1649-rambling-brook-drive/images/1649-rambling-brook-street-view.jpg
+          test -s properties/1649-rambling-brook-drive/images/1649-rambling-brook-floorplan.png
+          test -s properties/1649-rambling-brook-drive/images/1649-rambling-brook-lot.jpg
+          test -s properties/1649-rambling-brook-drive/video/1649-rambling-brook-lot-walkthrough.mp4
+
+      - name: Commit media and remove upload machinery
+        shell: bash
+        run: |
+          rm -rf .property-upload
+          rm -f .github/workflows/property-media-upload.yml
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -A
+          git commit -m 'Add Rambling Brook property media'
+          git push origin HEAD:property-pages-setup
