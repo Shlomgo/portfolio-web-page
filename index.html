@@ -1622,9 +1622,10 @@ function num(v){
   return cleaned === "" ? NaN : Number(cleaned);
 }
 
-// Turns a Status cell into one of the three codes the page understands.
+// Turns a Status cell into one of the four codes the page understands.
 function normalizeStatus(raw){
   const s = String(raw||"").trim().toLowerCase();
+  if(s.includes("hide")) return "hide";
   if(s.includes("under")) return "under_contract";
   if(s.includes("propos")) return "proposed";
   return "closed";
@@ -2421,7 +2422,7 @@ function loadData(){
     header: true,
     skipEmptyLines: true,
     complete: function(results){
-      DATA = results.data.map(rowToRecord).filter(d=>d.state && !isNaN(d.price) && d.price > 0);
+      DATA = results.data.map(rowToRecord).filter(d=>d.status !== "hide" && d.state && !isNaN(d.price) && d.price > 0);
       assignPropertyIds(DATA);
       console.log(`Loaded ${DATA.length} properties from your sheet.`);
       console.log("First row from your sheet, as parsed:", DATA[0]);
