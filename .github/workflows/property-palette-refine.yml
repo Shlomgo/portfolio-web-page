@@ -1,0 +1,48 @@
+name: One-time property page palette refinement
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/property-palette-refine.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  patch-property-palette:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Match property page accents to Open Book palette
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          path = Path('properties/1649-rambling-brook-drive/index.html')
+          s = path.read_text()
+          replacements = {
+              '--green:#7ea884': '--green:#72cdb4',
+              '--green-dim:#4d6b52': '--green-dim:#467e6f',
+              '--orange:#c98a4b': '--orange:#dc8f50',
+              '--orange-dim:#8a5e33': '--orange-dim:#8f5c34',
+              'rgba(201,138,75': 'rgba(220,143,80',
+          }
+          for old, new in replacements.items():
+              if old not in s:
+                  raise SystemExit(f'Missing expected palette token: {old}')
+              s = s.replace(old, new)
+          path.write_text(s)
+          PY
+      - name: Commit property page palette
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add properties/1649-rambling-brook-drive/index.html
+          if git diff --cached --quiet; then
+            echo "No changes to commit"
+            exit 0
+          fi
+          git commit -m "Match property page accents to Open Book palette"
+          git push
