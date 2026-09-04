@@ -1,0 +1,50 @@
+name: Add hide property status
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/add-hide-status.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  patch-index:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Add hide status support
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          path = Path('index.html')
+          text = path.read_text(encoding='utf-8')
+
+          parser_old = '  if (!v) return "closed";\n  if (v.includes("propos")) return "proposed";'
+          parser_new = '  if (!v) return "closed";\n  if (v.includes("hide")) return "hide";\n  if (v.includes("propos")) return "proposed";'
+          if parser_old not in text:
+              raise SystemExit('Status parser target not found; no changes made.')
+          text = text.replace(parser_old, parser_new, 1)
+
+          filter_old = '.filter(d => d.address.trim() && Number.isFinite(d.price) && d.price > 0);'
+          filter_new = '.filter(d => d.status !== "hide" && d.address.trim() && Number.isFinite(d.price) && d.price > 0);'
+          if filter_old not in text:
+              raise SystemExit('DATA filter target not found; no changes made.')
+          text = text.replace(filter_old, filter_new, 1)
+
+          path.write_text(text, encoding='utf-8')
+          PY
+
+      - name: Commit source change
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html
+          git diff --cached --quiet && exit 0
+          git commit -m "Support hide status for properties"
+          git push
