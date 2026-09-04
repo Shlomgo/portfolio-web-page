@@ -1439,7 +1439,7 @@ th.th-predicted .fx-dot .tip{border-color:var(--forecast-border);}
 
 /* One exact column definition powers both callouts and the real header. */
 .desktop-table{
-  --table-columns:24px 52px 128px 124px 86px 90px 146px 114px 114px 110px 140px 154px;
+  --table-columns:24px 124px 52px 128px 86px 90px 146px 114px 114px 110px 140px 154px;
   --table-width:1282px;
 }
 .table-wrap > table{width:var(--table-width);min-width:var(--table-width);table-layout:fixed;}
@@ -1550,6 +1550,50 @@ tbody tr.data-row td.status-cell .property-page-link{
 .property-page-link:hover,
 .mp-property-page-link:hover{color:#F0CF82;}
 
+/* ===== Availability-first status hierarchy + logo sizing ===== */
+.status-proposed{
+  background:rgba(225,184,95,.10);
+  color:#E1B85F;
+  border-color:rgba(225,184,95,.58);
+  font-weight:600;
+  white-space:normal;
+  line-height:1.18;
+  text-align:center;
+  min-width:108px;
+}
+.desktop-table .status-badge{margin-right:0;}
+.chip.chip-recommended{
+  color:#E1B85F;
+  border-color:rgba(225,184,95,.55);
+}
+.chip.chip-recommended.active{
+  color:#F0CF82;
+  background:rgba(225,184,95,.10);
+  border-color:rgba(225,184,95,.72);
+}
+tbody tr.data-row.status-proposed-row{
+  background:linear-gradient(90deg,rgba(225,184,95,.085),rgba(225,184,95,.025) 23%,rgba(20,23,28,0) 48%);
+}
+tbody tr.data-row.status-proposed-row:hover{
+  background:linear-gradient(90deg,rgba(225,184,95,.13),rgba(225,184,95,.045) 25%,rgba(168,166,160,.025) 52%);
+}
+tbody tr.data-row.status-proposed-row td:first-child{
+  box-shadow:inset 3px 0 0 #E1B85F;
+}
+.artemis-mark,
+.artemis-faq-mark,
+.artemis-footer-mark{width:164px;}
+@media (max-width:900px){
+  .artemis-mark,
+  .artemis-faq-mark,
+  .artemis-footer-mark{width:144px;}
+}
+@media (max-width:640px){
+  .artemis-mark,
+  .artemis-faq-mark,
+  .artemis-footer-mark{width:124px;}
+}
+
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
 <link rel="icon" href="assets/artemis-favicon.svg" type="image/svg+xml">
@@ -1566,7 +1610,7 @@ tbody tr.data-row td.status-cell .property-page-link{
   <h1>The Open Book</h1>
   <details class="masthead-disclosure intro-disclosure">
     <summary>About this track record →</summary>
-    <p class="lede">Here's every buy-and-hold rental I've closed on, have under contract, or am currently analyzing — some I bought for my own portfolio, some I helped an investor buy. No flips, no wholesale deals, just properties meant to be held and rented. <b>A lower number here doesn't mean a weaker deal</b> — a Texas property banking on long-term growth and a stable Oklahoma rental can both be right, for different reasons. For closed properties, operating numbers are actual; for pipeline properties, they're underwritten. Appreciation assumptions are forecasts. Neither tells the whole story. Click any row for the numbers behind it.</p>
+    <p class="lede">Here's every buy-and-hold rental I've closed on, have under contract, or have finished evaluating and currently recommend as available opportunities — some I bought for my own portfolio, some I helped an investor buy. No flips, no wholesale deals, just properties meant to be held and rented. <b>A lower number here doesn't mean a weaker deal</b> — a Texas property banking on long-term growth and a stable Oklahoma rental can both be right, for different reasons. For closed properties, operating numbers are actual; for pipeline properties, they're underwritten. Appreciation assumptions are forecasts. Neither tells the whole story. Click any row for the numbers behind it.</p>
   </details>
 
   <details class="masthead-disclosure methodology-disclosure">
@@ -1599,8 +1643,9 @@ tbody tr.data-row td.status-cell .property-page-link{
     <div class="control-group">
       <span class="control-label">Sort by</span>
       <select id="sortSelect">
-        <option value="date_desc" selected>Closing date (newest first)</option>
-        <option value="date_asc">Closing date (oldest first)</option>
+        <option value="status_date_desc" selected>Status, then date (newest first)</option>
+        <option value="date_desc">Date (newest first)</option>
+        <option value="date_asc">Date (oldest first)</option>
         <option value="coc_desc">Cash-on-cash return (high to low)</option>
         <option value="total_desc">Modeled return, this year (high to low)</option>
         <option value="state_asc">State (A–Z)</option>
@@ -1618,7 +1663,7 @@ tbody tr.data-row td.status-cell .property-page-link{
   <div class="table-wrap">
     <table>
       <colgroup>
-        <col class="chevron-col"><col class="id-col"><col class="state-col"><col class="status-col">
+        <col class="chevron-col"><col class="status-col"><col class="id-col"><col class="state-col">
         <col class="price-col"><col class="down-col"><col class="invested-col"><col class="rent-col">
         <col class="cash-return-col"><col class="principal-return-col"><col class="appreciation-col"><col class="modeled-return-col">
       </colgroup>
@@ -1672,13 +1717,13 @@ tbody tr.data-row td.status-cell .property-page-link{
         </tr>
         <tr class="column-header-row">
           <th class="chevron-col"></th>
-          <th class="id-col"><span class="th-title-row">ID</span></th>
-          <th class="state-col"><span class="th-title-row">State</span></th>
           <th class="status-col">
             <span class="th-title-row">Status
-              <span class="info-dot" tabindex="0">i<span class="tip">Closed = owned and rented. Under Contract = in the buying process. Proposed = analyzed, not yet purchased.</span></span>
+              <span class="info-dot" tabindex="0">i<span class="tip">Closed = owned and rented. Under Contract = in the buying process. Recommended + Available = fully evaluated, selected, and currently available for consideration.</span></span>
             </span>
           </th>
+          <th class="id-col"><span class="th-title-row">ID</span></th>
+          <th class="state-col"><span class="th-title-row">State</span></th>
           <th class="price-col"><span class="th-title-row">Price</span></th>
           <th class="down-col">
             <span class="th-title-row">Down Pmt
@@ -2021,7 +2066,7 @@ function rowToRecord(row){
   };
 }
 
-const STATUS_LABEL = {closed:"Closed", under_contract:"Under Contract", proposed:"Proposed"};
+const STATUS_LABEL = {closed:"Closed", under_contract:"Under Contract", proposed:"Recommended + Available"};
 const fmt$ = n => "$" + Math.round(n).toLocaleString("en-US");
 const fmtPct = n => n.toFixed(2).replace(/\.?0+$/,"") + "%";
 const fmt1 = n => n.toFixed(1).replace(/\.0$/,"");
@@ -2094,7 +2139,7 @@ function propertyPageLinkHTML(d, mobile=false){
 // Shared heading text for a property's expanded underwriting/details panel,
 // used on both desktop and mobile so the wording always matches.
 function detailHeadingText(d){
-  const dateTag = d.status === "proposed" ? "Analyzed" : "Closing Date";
+  const dateTag = d.status === "closed" ? "Purchase Date" : "Expected Closing Date";
   const desc = d.status === "closed" ? "actual operating details" : "projected underwriting";
   return `${d.id} · ${dateTag}: ${d.label} · ${d.state} — ${desc}`;
 }
@@ -2208,7 +2253,7 @@ function leverageDetailHTML(d){
   const houseW = Math.max(6, d.price * LEV_SCALE);
   const cashW = Math.max(6, d.invested * LEV_SCALE);
   const gainW = Math.max(3, gainDollar * LEV_SCALE);
-  const verb = d.status === "closed" ? "was purchased" : d.status === "under_contract" ? "is under contract to be purchased" : "was analyzed as a potential purchase";
+  const verb = d.status === "closed" ? "was purchased" : d.status === "under_contract" ? "is under contract to be purchased" : "is currently recommended and available to purchase";
   const costsText = extraCash >= 0 ? `${fmt$(extraCash)} of closing costs/capex` : `${fmt$(Math.abs(extraCash))} of net credits after closing costs/capex`;
   return `
     <div class="receipt lev-detail">
@@ -2265,7 +2310,7 @@ if(whyDetails){
 
 let activeStates = new Set();
 let activeStatuses = new Set(["closed","under_contract","proposed"]);
-let sortMode = "date_desc";
+let sortMode = "status_date_desc";
 
 function buildChips(){
   const states = [...new Set(DATA.map(d=>d.state))];
@@ -2281,11 +2326,11 @@ function buildChips(){
     };
     stateWrap.appendChild(b);
   });
-  const statuses = ["closed","under_contract","proposed"];
+  const statuses = ["proposed","under_contract","closed"];
   const statusWrap = document.getElementById("statusChips");
   statuses.forEach(s=>{
     const b = document.createElement("button");
-    b.className = activeStatuses.has(s) ? "chip active" : "chip";
+    b.className = (activeStatuses.has(s) ? "chip active" : "chip") + (s === "proposed" ? " chip-recommended" : "");
     b.textContent = STATUS_LABEL[s];
     b.onclick = ()=>{
       if(activeStatuses.has(s)) activeStatuses.delete(s); else activeStatuses.add(s);
@@ -2301,9 +2346,12 @@ document.getElementById("sortSelect").addEventListener("change", e=>{
   render();
 });
 
+const STATUS_SORT_ORDER = {proposed:0, under_contract:1, closed:2};
+
 function sortRows(rows){
   const r = [...rows];
   switch(sortMode){
+    case "status_date_desc": return r.sort((a,b)=> (STATUS_SORT_ORDER[a.status] ?? 99) - (STATUS_SORT_ORDER[b.status] ?? 99) || String(b.date||"").localeCompare(String(a.date||"")));
     case "date_asc": return r.sort((a,b)=>a.date.localeCompare(b.date));
     case "date_desc": return r.sort((a,b)=>b.date.localeCompare(a.date));
     case "coc_desc": return r.sort((a,b)=>b.coc-a.coc);
@@ -2361,7 +2409,7 @@ function mobileLeverageHTML(d){
   const cashW = Math.max(6, d.invested / d.price * 100);
   const gainW = Math.max(3, gainDollar / d.price * 100);
   const gainWCash = Math.max(3, gainDollar / d.invested * 100);
-  const verb = d.status === "closed" ? "was purchased" : d.status === "under_contract" ? "is under contract to be purchased" : "was analyzed as a potential purchase";
+  const verb = d.status === "closed" ? "was purchased" : d.status === "under_contract" ? "is under contract to be purchased" : "is currently recommended and available to purchase";
   const costsText = extraCash >= 0 ? `${fmt$(extraCash)} of closing costs/capex` : `${fmt$(Math.abs(extraCash))} of net credits after closing costs/capex`;
   return `
     <div class="lev-detail mp-lev">
@@ -2463,12 +2511,12 @@ function render(){
     const predictedShare = 100 - actualShare;
 
     const tr = document.createElement("tr");
-    tr.className = "data-row";
+    tr.className = `data-row status-${d.status}-row`;
     tr.innerHTML = `
       <td><span class="chevron">▶</span></td>
+      <td class="status-cell"><span class="status-badge status-${d.status}">${STATUS_LABEL[d.status]}</span>${propertyPageLinkHTML(d)}</td>
       <td class="id-cell id-col">${d.id}</td>
       <td class="state-cell">${d.state}</td>
-      <td class="status-cell"><span class="status-badge status-${d.status}">${STATUS_LABEL[d.status]}</span>${propertyPageLinkHTML(d)}</td>
       <td class="num num-muted">${fmt$(d.price)}</td>
       <td class="num num-muted">${fmt$(d.down)}</td>
       <td class="num num-muted">${fmt$(d.invested)}</td>
