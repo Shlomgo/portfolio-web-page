@@ -1,0 +1,348 @@
+name: One-time Open Book theme update
+
+on:
+  push:
+    paths:
+      - '.github/workflows/open-book-theme-update.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  apply-theme:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - name: Apply requested site-wide palette and column alignment
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import re
+
+          path = Path('index.html')
+          s = path.read_text()
+
+          root = '''  :root{
+            --bg:#14171c;
+            --text-primary:#f5f4f0;
+            --text-secondary:#a8a6a0;
+            --actual-primary:#4ade80;
+            --actual-secondary:#7fbd94;
+            --actual-fill:#16321f;
+            --actual-border:#285437;
+            --forecast-primary:#38bdf8;
+            --forecast-secondary:#7bafc9;
+            --forecast-fill:#132430;
+            --forecast-border:#245068;
+            --status-fill:#232720;
+            --status-text:#a8a6a0;
+            --status-border:#3a3d38;
+            --radius:2px;
+          }'''
+          s, n = re.subn(r'  :root\{.*?\n  \}', root, s, count=1, flags=re.S)
+          assert n == 1, 'Could not replace root palette'
+
+          # Replace legacy variable names everywhere so all site sections resolve
+          # to the new single primary/secondary and actual/forecast system.
+          for old, new in {
+              'var(--ink-2)':'var(--bg)',
+              'var(--ink)':'var(--bg)',
+              'var(--paper-dim)':'var(--text-secondary)',
+              'var(--paper)':'var(--text-primary)',
+              'var(--sage)':'var(--actual-primary)',
+              'var(--rust)':'var(--forecast-primary)',
+              'var(--brass)':'var(--text-secondary)',
+              'var(--line)':'var(--status-border)',
+          }.items():
+              s = s.replace(old, new)
+
+          # Eliminate the older gray/tan/khaki literals and amber/orange literals.
+          for old, new in {
+              '#cfc7b6':'#a8a6a0', '#d8d0c0':'#a8a6a0', '#aeb6c0':'#a8a6a0',
+              '#a79f8f':'#a8a6a0', '#c9c1b0':'#a8a6a0', '#8099ad':'#a8a6a0',
+              '#d6c19e':'#a8a6a0', '#c6a08a':'#7bafc9', '#ece4d3':'#f5f4f0',
+              '#1c2026':'#14171c', '#3a3f47':'#3a3d38', '#72cdb4':'#4ade80',
+              '#dc8f50':'#38bdf8', '#b6905a':'#38bdf8',
+          }.items():
+              s = s.replace(old, new)
+          s = re.sub(r'rgba\(220,\s*143,\s*80,\s*([^)]+)\)', r'rgba(56,189,248,\1)', s)
+          s = re.sub(r'rgba\(114,\s*205,\s*180,\s*([^)]+)\)', r'rgba(74,222,128,\1)', s)
+          s = re.sub(r'rgba\(182,\s*144,\s*90,\s*([^)]+)\)', r'rgba(168,166,160,\1)', s)
+          s = re.sub(r'rgba\(167,\s*159,\s*143,\s*([^)]+)\)', r'rgba(168,166,160,\1)', s)
+          s = s.replace('orange', 'blue').replace('Orange', 'Blue')
+
+          # The wordmark is a brand element and intentionally retains its previous cream.
+          s = re.sub(r'(h1\{.*?color:)var\(--text-primary\)(;)', r'\1#ece4d3\2', s, count=1, flags=re.S)
+
+          # Give the real header row an explicit class so it can share one grid definition
+          # with the callout row.
+          needle = '''        </tr>\n        <tr>\n          <th class="chevron-col"></th>'''
+          replacement = '''        </tr>\n        <tr class="column-header-row">\n          <th class="chevron-col"></th>'''
+          assert needle in s, 'Could not find main column header row'
+          s = s.replace(needle, replacement, 1)
+
+          # Add a colgroup so tbody cells obey the exact same physical widths even though
+          # some dynamically rendered cells do not carry the column class themselves.
+          needle = '''  <div class="table-wrap">\n    <table>\n      <thead>'''
+          colgroup = '''  <div class="table-wrap">\n    <table>\n      <colgroup>\n        <col class="chevron-col"><col class="id-col"><col class="state-col"><col class="status-col">\n        <col class="price-col"><col class="down-col"><col class="invested-col"><col class="rent-col">\n        <col class="cash-return-col"><col class="principal-return-col"><col class="appreciation-col"><col class="modeled-return-col">\n      </colgroup>\n      <thead>'''
+          assert needle in s, 'Could not find main table opening'
+          s = s.replace(needle, colgroup, 1)
+
+          overrides = r'''
+
+          /* ===== 2026-09-04 unified site color system + exact table/callout grid ===== */
+          body{background:var(--bg);color:var(--text-primary);}
+          h1{color:#ece4d3;} /* brand wordmark: intentionally unchanged */
+
+          /* One muted text gray site-wide. */
+          .lede,
+          .masthead-disclosure > summary,
+          .ledger-note,
+          .legend-row,
+          .click-hint,
+          .control-label,
+          .chip,
+          .count-note,
+          .payoff-subtitle,
+          .table-scroll-hint,
+          thead th,
+          .th-unit-sub,
+          .tr-modeled-label,
+          .receipt-section-title,
+          .mp-detail-section-title,
+          .receipt-line,
+          .math-note,
+          .math-group-title,
+          .math-meaning,
+          .math-formula,
+          .math-example,
+          .decline-note,
+          .why-body,
+          .curve-caption,
+          .curve-method-note,
+          .lev-label,
+          .lev-punch,
+          .lev-copy,
+          .mp-row2,
+          .mp-metric-label,
+          .mp-modeled-label,
+          .mp-detail-line,
+          .faq-sub,
+          .faq-body{color:var(--text-secondary);}
+
+          .lede b,
+          .ledger-note strong,
+          .decline-note b,
+          .why-body strong,
+          .lev-label b,
+          .lev-punch b,
+          .lev-copy b,
+          .faq-body strong,
+          .math-name,
+          .math-example strong{color:var(--text-primary);}
+
+          .masthead-disclosure > summary::before,
+          .ledger-note .label,
+          details.methodology-more summary,
+          .property-page-link,
+          .mp-property-page-link,
+          tr.data-row.open .chevron,
+          .fx-dot,
+          .tip .tip-label,
+          .receipt-title,
+          .receipt-section-title.purchase,
+          .mp-detail-section-title.purchase,
+          .math-toggle,
+          .math-kicker,
+          details.why summary,
+          details.faq-item summary::before{color:var(--text-secondary);}
+
+          .property-page-link:hover,
+          .mp-property-page-link:hover,
+          .chip:hover{color:var(--text-primary);}
+
+          .methodology-disclosure > summary,
+          .ledger-note,
+          .example-line,
+          .why-conclusion{border-left-color:var(--status-border);background:transparent;}
+
+          .chip{border-color:var(--status-border);background:transparent;}
+          .chip:hover{border-color:var(--text-secondary);}
+          .chip.active{background:var(--status-fill);border-color:var(--text-secondary);color:var(--text-secondary);}
+          select#sortSelect{background:var(--bg);color:var(--text-primary);border-color:var(--status-border);}
+
+          .info-dot{border-color:var(--text-secondary);color:var(--text-secondary);}
+          .fx-dot{border-color:var(--status-border);}
+          .info-dot .tip,.fx-dot .tip{background:var(--bg);border-color:var(--status-border);color:var(--text-secondary);}
+          .fx-dot .tip{border-color:var(--status-border);}
+
+          /* Actual operating data = green. */
+          .legend-dot.actual,
+          .payoff-mini-bars .actual,
+          .tr-actual{background:var(--actual-primary);}
+          .payoff-card.cash,
+          .payoff-card.principal{background:var(--actual-fill);border-color:var(--actual-border);}
+          .payoff-card.cash .payoff-card-name,
+          .payoff-card.principal .payoff-card-name,
+          .payoff-card.cash .payoff-arrow,
+          .payoff-card.principal .payoff-arrow,
+          .num-mid,
+          .return-pair .rp-month,
+          .tr-split .tr-a-num,
+          .mp-metric-val,
+          .mp-modeled-split .mp-a{color:var(--actual-primary);}
+          .payoff-card.cash .payoff-card-copy,
+          .payoff-card.principal .payoff-card-copy,
+          .return-pair .rp-year,
+          .tr-split .tr-a-word,
+          .mp-metric-sub,
+          .mp-modeled-split .mp-a-w{color:var(--actual-secondary);}
+
+          /* Forecast appreciation = blue everywhere; no amber/orange. */
+          .legend-dot.predicted,
+          .tr-predicted{
+            background:repeating-linear-gradient(135deg,var(--forecast-primary),var(--forecast-primary) 2px,var(--forecast-secondary) 2px,var(--forecast-secondary) 4px);
+            border-color:var(--forecast-border);
+          }
+          thead th.th-predicted,
+          th.th-predicted .info-dot,
+          th.th-predicted .fx-dot,
+          th.th-predicted .tip .tip-label,
+          .payoff-card.appreciation .payoff-card-name,
+          .payoff-card.appreciation .payoff-arrow,
+          .predicted-cell .pv,
+          .tr-split .tr-f-num,
+          .th-modeled-sub,
+          .receipt-section-title.forecast,
+          .mp-detail-section-title.forecast,
+          .receipt-line.predicted-line .rl-val,
+          .math-item.predicted-math .math-name,
+          .math-item.predicted-math .math-kicker,
+          .mp-modeled-split .mp-f,
+          .mp-action.forecast,
+          .mp-detail-line.predicted .mp-dl-val{color:var(--forecast-primary);}
+          .payoff-card.appreciation{background:var(--forecast-fill);border:1px dashed var(--forecast-border);}
+          .payoff-card.appreciation .payoff-card-copy,
+          .predicted-cell .pc-caret,
+          .predicted-cell .ps,
+          .tr-split .tr-f-word,
+          .receipt-line.predicted-line .rl-label,
+          .mp-modeled-split .mp-f-w,
+          .mp-detail-line.predicted .mp-dl-label{color:var(--forecast-secondary);}
+          .predicted-cell{background:var(--forecast-fill);border-color:var(--forecast-border);}
+          .predicted-cell:hover,.predicted-cell.open{background:var(--forecast-fill);}
+          th.th-predicted .info-dot,
+          th.th-predicted .fx-dot,
+          th.th-predicted .info-dot .tip,
+          th.th-predicted .fx-dot .tip{border-color:var(--forecast-border);}
+          .receipt-line.predicted-line,
+          .mp-detail-line.predicted{border-bottom-color:var(--forecast-border);}
+
+          /* Modeled return and key identifying data stay primary, not data-color coded. */
+          .payoff-card.modeled{background:var(--status-fill);border-color:var(--status-border);}
+          .payoff-card.modeled .payoff-card-name,
+          .payoff-card.modeled .payoff-arrow,
+          .state-cell,
+          .id-cell,
+          .tr-num,
+          .mp-state,
+          .mp-state .mp-id,
+          .mp-modeled-val{color:var(--text-primary);}
+          .payoff-card.modeled .payoff-card-copy{color:var(--text-secondary);}
+          .payoff-mini-bars .forecast{background:var(--forecast-primary);}
+          .tr-bar,.mp-bar{background:var(--status-fill);}
+
+          /* Neutral status badges: identical treatment for every state. */
+          .status-badge{
+            font-size:10px;
+            background:var(--status-fill);
+            color:var(--status-text);
+            border:1px solid var(--status-border);
+          }
+          .status-closed,
+          .status-under_contract,
+          .status-proposed{
+            background:var(--status-fill);
+            color:var(--status-text);
+            border:1px solid var(--status-border);
+          }
+          .desktop-table .status-badge{margin-right:12px;}
+
+          /* Forecast/leverage explainer follows the blue system. */
+          .lev-base{background:var(--forecast-fill);border-color:var(--forecast-border);}
+          .lev-gain{background:var(--forecast-primary);}
+          .lev-tag,.lev-driver{color:var(--forecast-primary);}
+          .lev-tag span{color:var(--forecast-secondary);}
+          .lev-driver{border-color:var(--forecast-border);background:var(--forecast-fill);}
+          .close-box-btn{border-color:var(--status-border);color:var(--text-secondary);}
+          .close-box-btn:hover{background:var(--status-fill);color:var(--text-primary);border-color:var(--text-secondary);}
+
+          /* Chart: neutral benchmark + blue modeled rental curve. */
+          .curve-wrap svg line{stroke:var(--status-border);}
+          .curve-wrap svg polyline{stroke:var(--forecast-primary);}
+          .curve-wrap svg circle{fill:var(--forecast-primary);}
+
+          /* One exact column definition powers both callouts and the real header. */
+          .desktop-table{
+            --table-columns:24px 52px 128px 124px 86px 90px 146px 114px 114px 110px 140px 154px;
+            --table-width:1282px;
+          }
+          .table-wrap > table{width:var(--table-width);min-width:var(--table-width);table-layout:fixed;}
+          .table-wrap > table col.chevron-col{width:24px;}
+          .table-wrap > table col.id-col{width:52px;}
+          .table-wrap > table col.state-col{width:128px;}
+          .table-wrap > table col.status-col{width:124px;}
+          .table-wrap > table col.price-col{width:86px;}
+          .table-wrap > table col.down-col{width:90px;}
+          .table-wrap > table col.invested-col{width:146px;}
+          .table-wrap > table col.rent-col{width:114px;}
+          .table-wrap > table col.cash-return-col{width:114px;}
+          .table-wrap > table col.principal-return-col{width:110px;}
+          .table-wrap > table col.appreciation-col{width:140px;}
+          .table-wrap > table col.modeled-return-col{width:154px;}
+          thead .payoff-intro-row,
+          thead .payoff-box-row,
+          thead .column-header-row{
+            display:grid;
+            grid-template-columns:var(--table-columns);
+            width:var(--table-width);
+          }
+          thead .payoff-intro-row > th:first-child{grid-column:1 / 9;}
+          thead .payoff-intro-row > th:last-child{grid-column:9 / 13;}
+          thead .payoff-box-row > th:first-child{grid-column:1 / 9;}
+          thead .payoff-box-row > th.cash-return-col{grid-column:9;}
+          thead .payoff-box-row > th.principal-return-col{grid-column:10;}
+          thead .payoff-box-row > th.appreciation-col{grid-column:11;}
+          thead .payoff-box-row > th.modeled-return-col{grid-column:12;}
+          .payoff-arrow{left:50%;transform:translateX(-50%);}
+          '''
+
+          marker = '</style>'
+          assert marker in s
+          s = s.replace(marker, overrides + '\n' + marker, 1)
+
+          # Final source-level guards for this update.
+          lowered = s.lower()
+          for forbidden in ['#dc8f50', 'rgba(220,143,80', '#72cdb4', '#a79f8f', '#cfc7b6', '#c9c1b0']:
+              assert forbidden not in lowered, f'Legacy color still present: {forbidden}'
+          assert 'orange' not in lowered, 'Orange wording still present'
+          for required in ['#14171c','#f5f4f0','#a8a6a0','#4ade80','#7fbd94','#16321f','#285437','#38bdf8','#7bafc9','#132430','#245068','#232720','#3a3d38']:
+              assert required in lowered, f'Missing palette value: {required}'
+          assert 'grid-template-columns:var(--table-columns)' in s
+          assert 'font-size:10px' in s
+          assert 'margin-right:12px' in s
+
+          path.write_text(s)
+          PY
+      - name: Commit updated index
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html
+          git diff --cached --quiet && exit 0
+          git commit -m "Update Open Book site color system and table alignment"
+          git push origin HEAD:main
