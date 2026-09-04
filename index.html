@@ -1471,6 +1471,85 @@ thead .payoff-box-row > th.appreciation-col{grid-column:11;}
 thead .payoff-box-row > th.modeled-return-col{grid-column:12;}
 .payoff-arrow{left:50%;transform:translateX(-50%);}
 
+
+/* ===== 2026-09-04 requested payoff/table refinements ===== */
+/* Put the operating/forecast key directly between the payoff subtitle and cards. */
+thead .payoff-intro-row > th:first-child{grid-column:1 / 13;}
+thead .payoff-intro-row > th:last-child{display:none;}
+.payoff-inline-legend{
+  display:flex;
+  flex-wrap:wrap;
+  align-items:center;
+  gap:5px 24px;
+  margin-top:8px;
+  max-width:100%;
+  font-family:'IBM Plex Mono',monospace;
+  font-size:10.5px;
+  line-height:1.35;
+  color:var(--text-secondary);
+}
+.payoff-inline-legend .legend-swatch{gap:7px;}
+.payoff-inline-legend .legend-dot{width:9px;height:9px;}
+
+/* Let each callout begin slightly left of its data column while keeping its arrow
+   centered over the data below. The appreciation card is intentionally a little
+   shorter on the right than the other three. */
+.payoff-card{
+  width:calc(100% - 1px);
+  margin-left:-4px;
+  margin-right:0;
+}
+.payoff-card .payoff-arrow{left:calc(50% + 5px);}
+.payoff-card.appreciation{width:calc(100% - 10px);}
+.payoff-card.appreciation .payoff-arrow{left:calc(50% + 9px);}
+.payoff-card.appreciation .payoff-op{right:-24px;}
+
+/* Show the same + + = relationship on every desktop data row. */
+tbody tr.data-row td.cash-return-col,
+tbody tr.data-row td.principal-return-col,
+tbody tr.data-row td.appreciation-col{position:relative;}
+tbody tr.data-row td.cash-return-col::after,
+tbody tr.data-row td.principal-return-col::after,
+tbody tr.data-row td.appreciation-col::after{
+  position:absolute;
+  right:-8px;
+  top:50%;
+  transform:translateY(-50%);
+  z-index:4;
+  width:16px;
+  height:16px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  border:1px solid var(--status-border);
+  border-radius:50%;
+  background:var(--bg);
+  color:var(--text-secondary);
+  font-family:'IBM Plex Mono',monospace;
+  font-size:10px;
+  line-height:1;
+  pointer-events:none;
+}
+tbody tr.data-row td.cash-return-col::after,
+tbody tr.data-row td.principal-return-col::after{content:'+';}
+tbody tr.data-row td.appreciation-col::after{content:'=';}
+tbody tr.data-row td.principal-return-col,
+tbody tr.data-row td.appreciation-col,
+tbody tr.data-row td.modeled-return-col{padding-left:13px;}
+
+/* Center the status treatment inside its column. */
+tbody tr.data-row td.status-cell{text-align:center;}
+tbody tr.data-row td.status-cell .property-page-link{
+  margin-left:auto;
+  margin-right:auto;
+}
+
+/* Property-page links use the exact amber/gold used by the Open Book mark. */
+.property-page-link,
+.mp-property-page-link{color:#E1B85F;}
+.property-page-link:hover,
+.mp-property-page-link:hover{color:#F0CF82;}
+
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
 <link rel="icon" href="assets/artemis-favicon.svg" type="image/svg+xml">
@@ -1507,12 +1586,6 @@ thead .payoff-box-row > th.modeled-return-col{grid-column:12;}
     </div>
   </details>
 
-  <div class="legend-row">
-    <span class="legend-swatch"><span class="legend-dot actual"></span> Operating figures — actual for closed properties, underwritten for pipeline properties</span>
-    <span class="legend-swatch"><span class="legend-dot predicted"></span> Forecast — appreciation assumption, not guaranteed</span>
-    <span class="legend-swatch"><span class="fx-dot" aria-hidden="true">ƒx</span> Formula — hover or tap ƒx beside a calculated field</span>
-  </div>
-  <p class="click-hint">Click any blue Appreciation box in the table below to see exactly how that number breaks down for that property.</p>
 
   <div class="controls">
     <div class="control-group">
@@ -1537,7 +1610,6 @@ thead .payoff-box-row > th.modeled-return-col{grid-column:12;}
   </div>
 
   <div class="desktop-table">
-  <p class="table-scroll-hint">Scroll horizontally to see all columns →</p>
   <div class="sticky-table-header" aria-hidden="true">
     <div class="sticky-table-header-viewport">
       <table class="sticky-table-header-table"></table>
@@ -1556,6 +1628,10 @@ thead .payoff-box-row > th.modeled-return-col{grid-column:12;}
             <div class="payoff-copy">
               <div class="payoff-title">How this kind of real estate pays you</div>
               <div class="payoff-subtitle">3 real levers add up to the modeled return</div>
+              <div class="payoff-inline-legend">
+                <span class="legend-swatch"><span class="legend-dot actual"></span> Operating figures — actual for closed properties, underwritten for pipeline properties</span>
+                <span class="legend-swatch"><span class="legend-dot predicted"></span> Forecast — appreciation assumption, not guaranteed</span>
+              </div>
             </div>
           </th>
           <th colspan="4"></th>
@@ -1581,7 +1657,7 @@ thead .payoff-box-row > th.modeled-return-col{grid-column:12;}
           <th class="appreciation-col">
             <div class="payoff-card appreciation">
               <span class="payoff-card-name">Appreciation</span>
-              <span class="payoff-card-copy">Forecast — 3% ×<br>3.33× leverage</span>
+              <span class="payoff-card-copy">Forecast — 3% annual ×<br>3.33× leverage</span>
               <span class="payoff-op" aria-hidden="true">=</span>
               <span class="payoff-arrow" aria-hidden="true"></span>
             </div>
