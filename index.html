@@ -1697,15 +1697,19 @@ thead .payoff-box-row th{
 .tr-bar{width:100%;height:5px;margin-top:2px;}
 
 /* Bright green + signs; a green/blue hybrid = sign. */
-.payoff-equation-operator,
-.equation-operator-cell{
-  padding:0 !important;
+.payoff-equation-operator{
+  padding:0 0 20px !important;
   display:flex;
   align-items:center;
   justify-content:center;
   text-align:center;
 }
-.payoff-equation-operator{padding-bottom:20px !important;}
+.equation-operator-cell{
+  padding:0 !important;
+  text-align:center;
+  vertical-align:middle;
+}
+.equation-operator-cell .equation-op{vertical-align:middle;}
 .equation-op{
   width:21px;
   height:21px;
