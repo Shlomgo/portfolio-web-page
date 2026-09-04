@@ -22,7 +22,7 @@ jobs:
         shell: bash
         run: |
           cat .property-media/media.b64.part-* | base64 --decode > /tmp/property-media.tar.gz
-          echo 'f1b7bc923902490629b1debdbb6e69d1430ba4cdde1137aa135f4b3e32912c0e  /tmp/property-media.tar.gz' | sha256sum -c -
+          echo 'a1b55ee53712d251b4be05cb49677a88e0defca47e7147f1575160e861d2e0bc  /tmp/property-media.tar.gz' | sha256sum -c -
           tar -xzf /tmp/property-media.tar.gz -C .
           test -f properties/1649-rambling-brook-drive/images/1649-rambling-brook-street-view.jpg
           test -f properties/1649-rambling-brook-drive/images/1649-rambling-brook-floorplan.png
