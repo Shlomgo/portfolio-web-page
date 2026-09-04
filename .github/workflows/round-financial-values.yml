@@ -1,0 +1,68 @@
+name: Round financial values to one decimal
+
+on:
+  push:
+    paths:
+      - '.github/workflows/round-financial-values.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  update-index:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Update display precision
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          path = Path('index.html')
+          text = path.read_text()
+
+          replacements = [
+              (
+                  r'''const fmt$ = n => "$" + Math.round(n).toLocaleString("en-US");
+          const fmtPct = n => n.toFixed(2).replace(/\.?0+$/,"") + "%";
+          const fmt1 = n => n.toFixed(1).replace(/\.0$/,"");
+          const fmtLev = n => Number.isFinite(n) ? n.toFixed(2).replace(/\.?0+$/g,"") : "—";''',
+                  r'''const fmtNumber1 = n => Number.isFinite(n) ? n.toLocaleString("en-US",{minimumFractionDigits:1,maximumFractionDigits:1}) : "—";
+          const fmt$ = n => Number.isFinite(n) ? "$" + fmtNumber1(n) : "—";
+          const fmtPct = n => Number.isFinite(n) ? n.toFixed(1) + "%" : "—";
+          const fmt1 = n => Number.isFinite(n) ? n.toFixed(1) : "—";
+          const fmtLev = n => Number.isFinite(n) ? n.toFixed(1) : "—";'''
+              ),
+              (
+                  r'''function fmtMathMoney(n){
+            if(!Number.isFinite(n)) return "—";
+            const rounded = Math.round(Math.abs(n)).toLocaleString("en-US");
+            return n < 0 ? `−$${rounded}` : `$${rounded}`;
+          }''',
+                  r'''function fmtMathMoney(n){
+            if(!Number.isFinite(n)) return "—";
+            const formatted = Math.abs(n).toLocaleString("en-US",{minimumFractionDigits:1,maximumFractionDigits:1});
+            return n < 0 ? `−$${formatted}` : `$${formatted}`;
+          }'''
+              ),
+              ("const capexMath = Number(det.capex) === 0 ? '$0' : fmtMathMoney(det.capex);", "const capexMath = Number(det.capex) === 0 ? '$0.0' : fmtMathMoney(det.capex);"),
+              ('${det.rate}%', '${fmt1(det.rate)}%'),
+              ('${det.points}%', '${fmt1(det.points)}%'),
+              ('${Math.round(actualShare)}% ${operatingLabel(d)}, ${Math.round(predictedShare)}% forecast', '${fmt1(actualShare)}% ${operatingLabel(d)}, ${fmt1(predictedShare)}% forecast'),
+          ]
+
+          for old, new in replacements:
+              if old not in text:
+                  raise SystemExit(f'Expected source pattern not found:\n{old}')
+              text = text.replace(old, new)
+
+          path.write_text(text)
+          PY
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html
+          git diff --cached --check
+          git commit -m "Format portfolio financial values to one decimal"
+          git push
