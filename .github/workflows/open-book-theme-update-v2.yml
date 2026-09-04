@@ -1,0 +1,43 @@
+name: Retry Open Book theme update
+
+on:
+  push:
+    paths:
+      - '.github/workflows/open-book-theme-update-v2.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  apply-theme:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - name: Apply corrected theme patch
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import textwrap
+
+          workflow = Path('.github/workflows/open-book-theme-update.yml').read_text()
+          start = workflow.index("          from pathlib import Path")
+          end = workflow.index("\n          PY", start)
+          code = textwrap.dedent(workflow[start:end])
+          code = code.replace(
+              '/* Forecast appreciation = blue everywhere; no amber/orange. */',
+              '/* Forecast appreciation = blue everywhere. */'
+          )
+          exec(compile(code, 'theme_patch', 'exec'))
+          PY
+      - name: Commit updated index
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html
+          git diff --cached --quiet && exit 0
+          git commit -m "Update Open Book site color system and table alignment"
+          git push origin HEAD:main
