@@ -8,21 +8,27 @@
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
   :root{
-    --ink:#14171c;
-    --ink-2:#1c2026;
-    --paper:#ece4d3;
-    --paper-dim:#a79f8f;
-    --brass:#b6905a;
-    --sage:#72cdb4;
-    --rust:#dc8f50;
-    --line:#3a3f47;
-    --radius:2px;
-  }
+  --bg:#14171c;
+  --text-primary:#f5f4f0;
+  --text-secondary:#a8a6a0;
+  --actual-primary:#4ade80;
+  --actual-secondary:#7fbd94;
+  --actual-fill:#16321f;
+  --actual-border:#285437;
+  --forecast-primary:#38bdf8;
+  --forecast-secondary:#7bafc9;
+  --forecast-fill:#132430;
+  --forecast-border:#245068;
+  --status-fill:#232720;
+  --status-text:#a8a6a0;
+  --status-border:#3a3d38;
+  --radius:2px;
+}
   *{box-sizing:border-box;}
   html,body{margin:0;padding:0;}
   body{
-    background:var(--ink);
-    color:var(--paper);
+    background:var(--bg);
+    color:var(--text-primary);
     font-family:'IBM Plex Sans', sans-serif;
     -webkit-font-smoothing:antialiased;
     line-height:1.5;
@@ -37,15 +43,15 @@
     font-size:clamp(34px,5vw,54px);
     line-height:1.05;
     margin:0 0 18px;
-    color:var(--paper);
+    color:#ece4d3;
   }
   .lede{
     font-size:17px;
     max-width:660px;
-    color:#cfc7b6;
+    color:#a8a6a0;
     margin:0 0 40px;
   }
-  .lede b{color:var(--paper);font-weight:600;}
+  .lede b{color:var(--text-primary);font-weight:600;}
 
   .masthead-disclosure{
     max-width:760px;
@@ -59,7 +65,7 @@
     gap:9px;
     width:max-content;
     max-width:100%;
-    color:#cfc7b6;
+    color:#a8a6a0;
     font-family:'IBM Plex Mono',monospace;
     font-size:11.5px;
     letter-spacing:.02em;
@@ -74,24 +80,24 @@
     justify-content:center;
     width:17px;
     height:17px;
-    border:1px solid var(--line);
+    border:1px solid var(--status-border);
     border-radius:50%;
-    color:var(--brass);
+    color:var(--text-secondary);
     font-size:12px;
     line-height:1;
     flex:0 0 auto;
   }
   .masthead-disclosure[open] > summary::before{content:'−';}
-  .masthead-disclosure[open] > summary{color:var(--paper);}
+  .masthead-disclosure[open] > summary{color:var(--text-primary);}
   .masthead-disclosure .lede{
     max-width:660px;
     margin:6px 0 22px;
   }
   .methodology-disclosure > summary{
     width:100%;
-    border:1px solid var(--line);
-    border-left:3px solid var(--brass);
-    background:rgba(182,144,90,.05);
+    border:1px solid var(--status-border);
+    border-left:3px solid var(--text-secondary);
+    background:rgba(168,166,160,.05);
     padding:9px 12px;
   }
   .methodology-disclosure[open] > summary{
@@ -105,16 +111,16 @@
 
   /* ---------- Ledger note (assumptions) ---------- */
   .ledger-note{
-    border:1px solid var(--line);
-    border-left:3px solid var(--brass);
+    border:1px solid var(--status-border);
+    border-left:3px solid var(--text-secondary);
     padding:20px 24px;
     margin-bottom:20px;
-    background:rgba(182,144,90,0.05);
+    background:rgba(168,166,160,0.05);
     font-size:14.5px;
     line-height:1.6;
-    color:#d8d0c0;
+    color:#a8a6a0;
   }
-  .ledger-note strong{color:var(--paper);}
+  .ledger-note strong{color:var(--text-primary);}
   .ledger-note p{max-width:760px;margin:0 0 12px;}
   .ledger-note p:last-child{margin-bottom:0;}
   .ledger-note .label{
@@ -122,14 +128,14 @@
     font-size:11px;
     letter-spacing:.1em;
     text-transform:uppercase;
-    color:var(--brass);
+    color:var(--text-secondary);
     display:block;
     margin-bottom:10px;
   }
   details.methodology-more{margin-top:12px;}
   details.methodology-more summary{
     cursor:pointer;
-    color:var(--brass);
+    color:var(--text-secondary);
     font-family:'IBM Plex Mono',monospace;
     font-size:12px;
     letter-spacing:.03em;
@@ -149,19 +155,19 @@
     margin-bottom:28px;
     font-family:'IBM Plex Mono',monospace;
     font-size:12px;
-    color:#cfc7b6;
+    color:#a8a6a0;
   }
   .legend-swatch{display:inline-flex;align-items:center;gap:8px;}
   .legend-dot{width:11px;height:11px;border-radius:2px;flex-shrink:0;}
-  .legend-dot.actual{background:var(--sage);}
+  .legend-dot.actual{background:var(--actual-primary);}
   .legend-dot.predicted{
-    background:repeating-linear-gradient(135deg, var(--rust), var(--rust) 2px, rgba(220,143,80,0.3) 2px, rgba(220,143,80,0.3) 4px);
-    border:1px solid var(--rust);
+    background:repeating-linear-gradient(135deg, var(--forecast-primary), var(--forecast-primary) 2px, rgba(56,189,248,0.3) 2px, rgba(56,189,248,0.3) 4px);
+    border:1px solid var(--forecast-primary);
   }
   .click-hint{
     font-family:'IBM Plex Mono',monospace;
     font-size:12px;
-    color:var(--paper-dim);
+    color:var(--text-secondary);
     margin:-16px 0 24px;
   }
 
@@ -173,7 +179,7 @@
     align-items:flex-end;
     margin-bottom:22px;
     padding-bottom:22px;
-    border-bottom:1px solid var(--line);
+    border-bottom:1px solid var(--status-border);
   }
   .control-group{display:flex;flex-direction:column;gap:8px;}
   .control-label{
@@ -181,34 +187,34 @@
     font-size:10.5px;
     letter-spacing:.1em;
     text-transform:uppercase;
-    color:var(--paper-dim);
+    color:var(--text-secondary);
   }
   .chips{display:flex;flex-wrap:wrap;gap:6px;}
   .chip{
     font-family:'IBM Plex Mono',monospace;
     font-size:12px;
     padding:6px 11px;
-    border:1px solid var(--line);
+    border:1px solid var(--status-border);
     border-radius:100px;
     background:transparent;
-    color:var(--paper-dim);
+    color:var(--text-secondary);
     font-weight:400;
     cursor:pointer;
     transition:all .15s ease;
   }
-  .chip:hover{border-color:rgba(182,144,90,.65);color:#d8d0c0;}
+  .chip:hover{border-color:rgba(168,166,160,.65);color:#a8a6a0;}
   .chip.active{
-    background:rgba(182,144,90,.10);
-    border-color:rgba(182,144,90,.55);
-    color:#d6c19e;
+    background:rgba(168,166,160,.10);
+    border-color:rgba(168,166,160,.55);
+    color:#a8a6a0;
     font-weight:500;
   }
   select#sortSelect{
     font-family:'IBM Plex Mono',monospace;
     font-size:12.5px;
-    background:var(--ink-2);
-    color:var(--paper);
-    border:1px solid var(--line);
+    background:var(--bg);
+    color:var(--text-primary);
+    border:1px solid var(--status-border);
     padding:8px 12px;
     border-radius:2px;
     min-width:230px;
@@ -217,7 +223,7 @@
     margin-left:auto;
     font-family:'IBM Plex Mono',monospace;
     font-size:12px;
-    color:var(--paper-dim);
+    color:var(--text-secondary);
     align-self:flex-end;
     padding-bottom:9px;
   }
@@ -250,13 +256,13 @@
     font-size:15px;
     line-height:1.25;
     font-weight:600;
-    color:var(--paper);
+    color:var(--text-primary);
   }
   .payoff-subtitle{
     margin-top:2px;
     font-size:12px;
     line-height:1.3;
-    color:var(--paper-dim);
+    color:var(--text-secondary);
   }
   .payoff-card{
     position:relative;
@@ -274,16 +280,16 @@
   }
   .payoff-card.cash,
   .payoff-card.principal{
-    background:rgba(114,205,180,.12);
-    border:1px solid rgba(114,205,180,.38);
+    background:rgba(74,222,128,.12);
+    border:1px solid rgba(74,222,128,.38);
   }
   .payoff-card.appreciation{
-    background:rgba(220,143,80,.09);
-    border:1px dashed rgba(220,143,80,.70);
+    background:rgba(56,189,248,.09);
+    border:1px dashed rgba(56,189,248,.70);
   }
   .payoff-card.modeled{
-    background:rgba(182,144,90,.06);
-    border:1px solid rgba(182,144,90,.28);
+    background:rgba(168,166,160,.06);
+    border:1px solid rgba(168,166,160,.28);
   }
   .payoff-card-name{
     display:block;
@@ -293,11 +299,11 @@
     font-weight:500;
   }
   .payoff-card.cash .payoff-card-name,
-  .payoff-card.principal .payoff-card-name{color:#72cdb4;}
-  .payoff-card.appreciation .payoff-card-name{color:#dc8f50;font-style:italic;}
-  .payoff-card.modeled .payoff-card-name{color:var(--paper);}
-  .payoff-card-copy{color:#aeb6c0;}
-  .payoff-card.appreciation .payoff-card-copy{color:#c6a08a;}
+  .payoff-card.principal .payoff-card-name{color:#4ade80;}
+  .payoff-card.appreciation .payoff-card-name{color:#38bdf8;font-style:italic;}
+  .payoff-card.modeled .payoff-card-name{color:var(--text-primary);}
+  .payoff-card-copy{color:#a8a6a0;}
+  .payoff-card.appreciation .payoff-card-copy{color:#7bafc9;}
   .payoff-mini-bars{
     display:inline-flex;
     align-items:center;
@@ -306,8 +312,8 @@
     vertical-align:1px;
   }
   .payoff-mini-bars i{display:block;width:6px;height:6px;border-radius:1px;}
-  .payoff-mini-bars .actual{background:#72cdb4;}
-  .payoff-mini-bars .forecast{background:#dc8f50;}
+  .payoff-mini-bars .actual{background:#4ade80;}
+  .payoff-mini-bars .forecast{background:#38bdf8;}
   .payoff-op{
     position:absolute;
     right:-15px;
@@ -316,9 +322,9 @@
     width:20px;
     height:20px;
     border-radius:50%;
-    border:1px solid var(--line);
-    background:var(--ink);
-    color:#aeb6c0;
+    border:1px solid var(--status-border);
+    background:var(--bg);
+    color:#a8a6a0;
     display:flex;
     align-items:center;
     justify-content:center;
@@ -338,14 +344,14 @@
     border-top:5px solid currentColor;
   }
   .payoff-card.cash .payoff-arrow,
-  .payoff-card.principal .payoff-arrow{color:#72cdb4;}
-  .payoff-card.appreciation .payoff-arrow{color:#dc8f50;}
-  .payoff-card.modeled .payoff-arrow{color:#8099ad;}
+  .payoff-card.principal .payoff-arrow{color:#4ade80;}
+  .payoff-card.appreciation .payoff-arrow{color:#38bdf8;}
+  .payoff-card.modeled .payoff-arrow{color:#a8a6a0;}
   .table-scroll-hint{
     display:none;
     font-family:'IBM Plex Mono',monospace;
     font-size:11px;
-    color:var(--paper-dim);
+    color:var(--text-secondary);
     margin:0 0 8px;
   }
   @media (max-width:1400px){
@@ -379,14 +385,14 @@
     font-size:10px;
     letter-spacing:.04em;
     text-transform:uppercase;
-    color:var(--paper-dim);
+    color:var(--text-secondary);
     font-weight:500;
     padding:0 8px 10px 5px;
-    border-bottom:1px solid var(--line);
+    border-bottom:1px solid var(--status-border);
     white-space:normal;
     overflow-wrap:break-word;
   }
-  thead th.th-predicted{color:var(--rust);}
+  thead th.th-predicted{color:var(--forecast-primary);}
   thead th .th-inner{display:flex;align-items:center;gap:5px;}
   tbody td{
     padding:10px 5px;
@@ -395,10 +401,10 @@
     vertical-align:middle;
   }
   tbody tr.data-row{cursor:pointer;transition:background .12s ease;}
-  tbody tr.data-row:hover{background:rgba(182,144,90,0.06);}
+  tbody tr.data-row:hover{background:rgba(168,166,160,0.06);}
   .num{font-family:'IBM Plex Mono',monospace;white-space:nowrap;}
-  .num-muted{color:#a79f8f;font-weight:400;}
-  .num-mid{color:var(--sage);font-weight:600;}
+  .num-muted{color:#a8a6a0;font-weight:400;}
+  .num-mid{color:var(--actual-primary);font-weight:600;}
   .return-pair{
     display:flex;
     flex-direction:column;
@@ -408,13 +414,13 @@
     font-family:'IBM Plex Mono',monospace;
   }
   .return-pair .rp-month{
-    color:var(--sage);
+    color:var(--actual-primary);
     font-size:13px;
     font-weight:600;
     white-space:nowrap;
   }
   .return-pair .rp-year{
-    color:rgba(114,205,180,.78);
+    color:rgba(74,222,128,.78);
     font-size:9.5px;
     font-weight:500;
     white-space:nowrap;
@@ -432,12 +438,12 @@
     font-size:8.5px;
     line-height:1.15;
     letter-spacing:.04em;
-    color:var(--paper-dim);
+    color:var(--text-secondary);
     font-weight:400;
     white-space:nowrap;
   }
   .state-cell{font-weight:600;}
-  .id-cell{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--brass);white-space:nowrap;}
+  .id-cell{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--text-secondary);white-space:nowrap;}
   .status-badge{
     font-family:'IBM Plex Mono',monospace;
     font-size:10.5px;
@@ -446,27 +452,27 @@
     display:inline-block;
     white-space:nowrap;
   }
-  .status-closed{background:rgba(114,205,180,0.16);color:var(--sage);border:1px solid rgba(114,205,180,0.4);}
-  .status-under_contract{background:rgba(182,144,90,0.16);color:var(--brass);border:1px solid rgba(182,144,90,0.4);}
-  .status-proposed{background:rgba(255,255,255,0.06);color:var(--paper-dim);border:1px solid var(--line);}
+  .status-closed{background:rgba(74,222,128,0.16);color:var(--actual-primary);border:1px solid rgba(74,222,128,0.4);}
+  .status-under_contract{background:rgba(168,166,160,0.16);color:var(--text-secondary);border:1px solid rgba(168,166,160,0.4);}
+  .status-proposed{background:rgba(255,255,255,0.06);color:var(--text-secondary);border:1px solid var(--status-border);}
   .property-page-link,
   .mp-property-page-link{
-    color:var(--brass);
+    color:var(--text-secondary);
     font-family:'IBM Plex Mono',monospace;
     text-decoration:none;
     white-space:nowrap;
   }
   .property-page-link{display:block;width:max-content;margin-top:5px;font-size:9.5px;line-height:1.25;}
   .mp-property-page-link{display:inline-block;margin:5px 0 2px;font-size:11px;}
-  .property-page-link:hover,.mp-property-page-link:hover{text-decoration:underline;color:#d6c19e;}
+  .property-page-link:hover,.mp-property-page-link:hover{text-decoration:underline;color:#a8a6a0;}
   .chevron{
     display:inline-block;
     transition:transform .15s ease;
-    color:var(--paper-dim);
+    color:var(--text-secondary);
     font-size:11px;
     width:14px;
   }
-  tr.data-row.open .chevron{transform:rotate(90deg);color:var(--brass);}
+  tr.data-row.open .chevron{transform:rotate(90deg);color:var(--text-secondary);}
 
   /* info + formula tooltips */
   .info-dot,
@@ -484,23 +490,23 @@
   }
   .info-dot{
     width:13px;height:13px;border-radius:50%;
-    border:1px solid var(--paper-dim);
-    color:var(--paper-dim);
+    border:1px solid var(--text-secondary);
+    color:var(--text-secondary);
     font-size:9px;
   }
   .fx-dot{
     min-width:19px;height:13px;
     padding:0 3px;
     margin-left:3px;
-    border:1px solid rgba(182,144,90,.58);
+    border:1px solid rgba(168,166,160,.58);
     border-radius:2px;
-    color:var(--brass);
+    color:var(--text-secondary);
     font-size:8.5px;
     letter-spacing:-.02em;
     text-transform:none;
   }
-  th.th-predicted .info-dot{border-color:var(--rust);color:var(--rust);}
-  th.th-predicted .fx-dot{border-color:rgba(220,143,80,.7);color:var(--rust);}
+  th.th-predicted .info-dot{border-color:var(--forecast-primary);color:var(--forecast-primary);}
+  th.th-predicted .fx-dot{border-color:rgba(56,189,248,.7);color:var(--forecast-primary);}
   .info-dot .tip,
   .fx-dot .tip{
     position:absolute;
@@ -508,9 +514,9 @@
     left:50%;
     transform:translateX(-50%) translateY(4px);
     width:250px;
-    background:var(--ink-2);
-    border:1px solid var(--brass);
-    color:#d8d0c0;
+    background:var(--bg);
+    border:1px solid var(--text-secondary);
+    color:#a8a6a0;
     font-family:'IBM Plex Sans',sans-serif;
     font-size:12.5px;
     line-height:1.45;
@@ -529,10 +535,10 @@
   }
   .fx-dot .tip{
     width:285px;
-    border-color:rgba(182,144,90,.8);
+    border-color:rgba(168,166,160,.8);
   }
   th.th-predicted .info-dot .tip,
-  th.th-predicted .fx-dot .tip{border-color:var(--rust);}
+  th.th-predicted .fx-dot .tip{border-color:var(--forecast-primary);}
   .info-dot:hover .tip,.info-dot:focus .tip,.info-dot.open .tip,
   .fx-dot:hover .tip,.fx-dot:focus .tip,.fx-dot.open .tip{
     opacity:1;visibility:visible;transform:translateX(-50%) translateY(0);
@@ -544,9 +550,9 @@
     font-size:9.5px;
     letter-spacing:.08em;
     text-transform:uppercase;
-    color:var(--brass);
+    color:var(--text-secondary);
   }
-  th.th-predicted .tip .tip-label{color:var(--rust);}
+  th.th-predicted .tip .tip-label{color:var(--forecast-primary);}
 
 
   /* Column-header help bubbles open DOWNWARD. The table lives inside an
@@ -605,18 +611,18 @@
     align-items:flex-start;
     gap:1px;
     padding:4px 16px 4px 6px;
-    border:1px dashed var(--rust);
+    border:1px dashed var(--forecast-primary);
     border-radius:3px;
-    background:rgba(220,143,80,0.08);
+    background:rgba(56,189,248,0.08);
     line-height:1.3;
     position:relative;
     cursor:pointer;
     transition:background .12s ease;
   }
-  .predicted-cell:hover,.predicted-cell.open{background:rgba(220,143,80,0.18);}
+  .predicted-cell:hover,.predicted-cell.open{background:rgba(56,189,248,0.18);}
   .predicted-cell .pc-caret{
     position:absolute;right:6px;bottom:5px;
-    font-size:9px;color:#c6a08a;opacity:.75;
+    font-size:9px;color:#7bafc9;opacity:.75;
     transition:transform .15s ease;
   }
   .predicted-cell.open .pc-caret{transform:rotate(90deg);}
@@ -624,26 +630,26 @@
     font-family:'IBM Plex Mono',monospace;
     font-weight:600;
     font-style:italic;
-    color:var(--rust);
+    color:var(--forecast-primary);
     font-size:13px;
     white-space:nowrap;
   }
   .predicted-cell .ps{
     font-family:'IBM Plex Mono',monospace;
     font-size:10px;
-    color:#c6a08a;
+    color:#7bafc9;
     white-space:nowrap;
   }
 
   /* modeled return: number + actual/forecast breakdown + bar */
   .tr-wrap{display:flex;flex-direction:column;gap:3px;align-items:flex-start;}
-  .tr-num{font-family:'IBM Plex Mono',monospace;font-weight:600;font-size:15.5px;color:var(--paper);white-space:nowrap;}
+  .tr-num{font-family:'IBM Plex Mono',monospace;font-weight:600;font-size:15.5px;color:var(--text-primary);white-space:nowrap;}
   .tr-modeled-label{
     font-family:'IBM Plex Mono',monospace;
     font-size:8.5px;
     letter-spacing:.08em;
     text-transform:uppercase;
-    color:var(--paper-dim);
+    color:var(--text-secondary);
   }
   .tr-split{
     font-family:'IBM Plex Mono',monospace;
@@ -651,16 +657,16 @@
     white-space:nowrap;
     margin-top:1px;
   }
-  .tr-split .tr-a-num{color:var(--sage);font-weight:600;}
-  .tr-split .tr-a-word{color:rgba(114,205,180,.65);}
-  .tr-split .tr-plus{color:var(--paper-dim);}
-  .tr-split .tr-f-num{color:var(--rust);font-weight:600;}
-  .tr-split .tr-f-word{color:rgba(220,143,80,.7);}
+  .tr-split .tr-a-num{color:var(--actual-primary);font-weight:600;}
+  .tr-split .tr-a-word{color:rgba(74,222,128,.65);}
+  .tr-split .tr-plus{color:var(--text-secondary);}
+  .tr-split .tr-f-num{color:var(--forecast-primary);font-weight:600;}
+  .tr-split .tr-f-word{color:rgba(56,189,248,.7);}
   .tr-bar{width:68px;height:5px;border-radius:3px;overflow:hidden;display:flex;background:rgba(255,255,255,0.06);margin-top:2px;}
-  .tr-actual{height:100%;background:var(--sage);}
+  .tr-actual{height:100%;background:var(--actual-primary);}
   .tr-predicted{
     height:100%;
-    background:repeating-linear-gradient(135deg, var(--rust), var(--rust) 2px, rgba(220,143,80,0.35) 2px, rgba(220,143,80,0.35) 4px);
+    background:repeating-linear-gradient(135deg, var(--forecast-primary), var(--forecast-primary) 2px, rgba(56,189,248,0.35) 2px, rgba(56,189,248,0.35) 4px);
   }
   .th-modeled-sub{
     display:block;
@@ -668,7 +674,7 @@
     font-size:9px;
     letter-spacing:.05em;
     text-transform:uppercase;
-    color:var(--rust);
+    color:var(--forecast-primary);
     font-weight:400;
     margin-top:2px;
   }
@@ -684,8 +690,8 @@
     visibility:hidden;
     opacity:0;
     pointer-events:none;
-    background:var(--ink);
-    box-shadow:0 1px 0 var(--line),0 8px 14px rgba(20,23,28,.28);
+    background:var(--bg);
+    box-shadow:0 1px 0 var(--status-border),0 8px 14px rgba(20,23,28,.28);
     transition:opacity .10s ease;
   }
   .sticky-table-header.is-active{
@@ -695,19 +701,19 @@
   .sticky-table-header-viewport{
     width:100%;
     overflow:hidden;
-    background:var(--ink);
+    background:var(--bg);
   }
   .sticky-table-header-table{
     width:auto;
     min-width:0;
     table-layout:fixed;
     border-collapse:collapse;
-    background:var(--ink);
+    background:var(--bg);
     transform:translateX(0);
     will-change:transform;
   }
   .sticky-table-header thead th{
-    background:var(--ink);
+    background:var(--bg);
   }
   /* The frozen header is a visual label clone only. Hide help controls there
      so it never presents duplicate/non-semantic interactive controls. */
@@ -730,7 +736,7 @@
     font-size:13px;
   }
   .receipt-title{
-    color:var(--brass);
+    color:var(--text-secondary);
     font-size:10.5px;
     letter-spacing:.1em;
     text-transform:uppercase;
@@ -748,11 +754,11 @@
     font-size:9.5px;
     letter-spacing:.10em;
     text-transform:uppercase;
-    color:var(--paper-dim);
+    color:var(--text-secondary);
     font-weight:500;
   }
-  .receipt-section-title.purchase{color:var(--brass);}
-  .receipt-section-title.forecast{color:var(--rust);}
+  .receipt-section-title.purchase{color:var(--text-secondary);}
+  .receipt-section-title.forecast{color:var(--forecast-primary);}
   .receipt-grid{
     display:grid;
     grid-template-columns:repeat(4, minmax(0,1fr));
@@ -779,39 +785,39 @@
     font-size:9.5px;
     letter-spacing:.10em;
     text-transform:uppercase;
-    color:var(--paper-dim);
+    color:var(--text-secondary);
   }
-  .mp-detail-section-title.purchase{color:var(--brass);}
-  .mp-detail-section-title.forecast{color:var(--rust);}
+  .mp-detail-section-title.purchase{color:var(--text-secondary);}
+  .mp-detail-section-title.forecast{color:var(--forecast-primary);}
   .receipt-line{
     display:flex;
     align-items:flex-start;
     gap:6px;
-    color:#c9c1b0;
-    border-bottom:1px dotted rgba(167,159,143,.35);
+    color:#a8a6a0;
+    border-bottom:1px dotted rgba(168,166,160,.35);
     padding:3px 0;
     min-width:0;
   }
   .receipt-line .rl-label{white-space:normal;overflow-wrap:break-word;}
   .receipt-line .rl-fill{flex:1;min-width:8px;}
-  .receipt-line .rl-val{color:var(--paper);font-weight:500;white-space:nowrap;flex-shrink:0;}
-  .receipt-line.predicted-line{border-bottom:1px dashed rgba(220,143,80,.55);}
-  .receipt-line.predicted-line .rl-label{color:#c6a08a;}
-  .receipt-line.predicted-line .rl-val{color:var(--rust);font-style:italic;}
+  .receipt-line .rl-val{color:var(--text-primary);font-weight:500;white-space:nowrap;flex-shrink:0;}
+  .receipt-line.predicted-line{border-bottom:1px dashed rgba(56,189,248,.55);}
+  .receipt-line.predicted-line .rl-label{color:#7bafc9;}
+  .receipt-line.predicted-line .rl-val{color:var(--forecast-primary);font-style:italic;}
 
 
   /* ---------- Formula transparency / show-the-math ---------- */
   .math-tools{
     margin-top:16px;
     padding-top:12px;
-    border-top:1px dotted rgba(167,159,143,.28);
+    border-top:1px dotted rgba(168,166,160,.28);
   }
   .math-toggle{
     appearance:none;
     border:0;
     background:none;
     padding:0;
-    color:var(--brass);
+    color:var(--text-secondary);
     font-family:'IBM Plex Mono',monospace;
     font-size:11.5px;
     letter-spacing:.02em;
@@ -822,7 +828,7 @@
     display:inline-block;
     margin-left:5px;
     padding:1px 4px;
-    border:1px solid rgba(182,144,90,.55);
+    border:1px solid rgba(168,166,160,.55);
     border-radius:2px;
     font-size:9px;
     line-height:1.15;
@@ -836,7 +842,7 @@
   .math-panel.open{display:block;}
   .math-note{
     margin:0 0 12px;
-    color:var(--paper-dim);
+    color:var(--text-secondary);
     font-family:'IBM Plex Sans',sans-serif;
     font-size:12px;
     line-height:1.5;
@@ -848,7 +854,7 @@
     font-size:9.5px;
     letter-spacing:.09em;
     text-transform:uppercase;
-    color:var(--paper-dim);
+    color:var(--text-secondary);
   }
   .math-item{
     padding:10px 0;
@@ -856,14 +862,14 @@
   }
   .math-item:last-child{border-bottom:1px solid rgba(58,63,71,.58);}
   .math-name{
-    color:var(--paper);
+    color:var(--text-primary);
     font-family:'IBM Plex Sans',sans-serif;
     font-size:13px;
     font-weight:600;
     margin-bottom:2px;
   }
   .math-meaning{
-    color:#c9c1b0;
+    color:#a8a6a0;
     font-family:'IBM Plex Sans',sans-serif;
     font-size:12.5px;
     line-height:1.45;
@@ -876,12 +882,12 @@
     line-height:1.55;
     overflow-wrap:anywhere;
   }
-  .math-formula{color:var(--paper-dim);}
-  .math-example{color:#d8d0c0;margin-top:2px;}
-  .math-example strong{color:var(--paper);font-weight:600;}
-  .math-kicker{color:var(--brass);}
+  .math-formula{color:var(--text-secondary);}
+  .math-example{color:#a8a6a0;margin-top:2px;}
+  .math-example strong{color:var(--text-primary);font-weight:600;}
+  .math-kicker{color:var(--text-secondary);}
   .math-item.predicted-math .math-name,
-  .math-item.predicted-math .math-kicker{color:var(--rust);}
+  .math-item.predicted-math .math-kicker{color:var(--forecast-primary);}
   .math-item.predicted-math{border-top-style:dashed;}
   .mp-actions{flex-wrap:wrap;row-gap:10px;}
   .mp-math-panel{margin-top:8px;}
@@ -890,15 +896,15 @@
   .decline-note{
     margin-top:26px;
     font-size:14px;
-    color:#cfc7b6;
+    color:#a8a6a0;
     padding-top:18px;
-    border-top:1px solid var(--line);
+    border-top:1px solid var(--status-border);
   }
-  .decline-note b{color:var(--paper);}
+  .decline-note b{color:var(--text-primary);}
   details.why{margin-top:10px;}
   details.why summary{
     cursor:pointer;
-    color:var(--brass);
+    color:var(--text-secondary);
     font-family:'IBM Plex Mono',monospace;
     font-size:12.5px;
     letter-spacing:.03em;
@@ -906,7 +912,7 @@
   details.why[open] summary{margin-bottom:14px;}
   .why-body{
     font-size:13.5px;
-    color:#c9c1b0;
+    color:#a8a6a0;
     max-width:680px;
   }
   .why-body p{margin:0 0 12px;}
@@ -914,28 +920,28 @@
   .example-line{
     font-family:'IBM Plex Mono',monospace;
     font-size:13px;
-    color:#d8d0c0;
-    background:rgba(182,144,90,0.06);
-    border:1px solid var(--line);
-    border-left:3px solid var(--brass);
+    color:#a8a6a0;
+    background:rgba(168,166,160,0.06);
+    border:1px solid var(--status-border);
+    border-left:3px solid var(--text-secondary);
     padding:10px 14px;
     margin:14px 0;
     line-height:1.6;
   }
   .example-line div{margin:2px 0;}
-  .example-line .eq{color:var(--paper-dim);}
+  .example-line .eq{color:var(--text-secondary);}
   .why-conclusion{
     margin:14px 0 0;
     padding:12px 14px;
-    background:rgba(182,144,90,0.08);
-    border-left:3px solid var(--brass);
+    background:rgba(168,166,160,0.08);
+    border-left:3px solid var(--text-secondary);
     font-size:13.5px;
   }
   .curve-wrap{margin:16px 0;}
   .curve-caption{
     font-family:'IBM Plex Mono',monospace;
     font-size:10.5px;
-    color:var(--paper-dim);
+    color:var(--text-secondary);
     letter-spacing:.04em;
   }
   .curve-method-note{
@@ -944,30 +950,30 @@
     font-family:'IBM Plex Sans',sans-serif;
     font-size:11.5px;
     line-height:1.5;
-    color:var(--paper-dim);
+    color:var(--text-secondary);
   }
 
   /* ---------- Leverage explainer ---------- */
   .lev-wrap{margin:18px 0 6px;display:flex;flex-direction:column;gap:18px;}
   .lev-row{display:flex;align-items:center;gap:16px;flex-wrap:wrap;}
-  .lev-label{width:150px;flex-shrink:0;font-size:13px;color:#c9c1b0;}
-  .lev-label b{color:var(--paper);display:block;font-size:13.5px;}
+  .lev-label{width:150px;flex-shrink:0;font-size:13px;color:#a8a6a0;}
+  .lev-label b{color:var(--text-primary);display:block;font-size:13.5px;}
   .lev-track{position:relative;height:22px;background:rgba(255,255,255,0.05);border-radius:2px;}
-  .lev-base{position:absolute;top:0;left:0;height:100%;background:rgba(182,144,90,0.18);border:1px solid rgba(182,144,90,0.4);border-radius:2px;box-sizing:border-box;}
-  .lev-gain{position:absolute;top:0;height:100%;background:var(--brass);border-radius:0 2px 2px 0;}
-  .lev-tag{font-family:'IBM Plex Mono',monospace;font-size:12.5px;color:var(--brass);white-space:nowrap;font-weight:600;}
-  .lev-tag span{color:var(--paper-dim);font-weight:400;}
-  .lev-punch{font-size:13.5px;color:#c9c1b0;max-width:680px;margin-top:2px;}
-  .lev-punch b{color:var(--paper);}
-  .lev-copy{font-size:13.5px;line-height:1.6;color:#c9c1b0;max-width:680px;margin:0 0 10px;}
-  .lev-copy b{color:var(--paper);}
+  .lev-base{position:absolute;top:0;left:0;height:100%;background:rgba(168,166,160,0.18);border:1px solid rgba(168,166,160,0.4);border-radius:2px;box-sizing:border-box;}
+  .lev-gain{position:absolute;top:0;height:100%;background:var(--text-secondary);border-radius:0 2px 2px 0;}
+  .lev-tag{font-family:'IBM Plex Mono',monospace;font-size:12.5px;color:var(--text-secondary);white-space:nowrap;font-weight:600;}
+  .lev-tag span{color:var(--text-secondary);font-weight:400;}
+  .lev-punch{font-size:13.5px;color:#a8a6a0;max-width:680px;margin-top:2px;}
+  .lev-punch b{color:var(--text-primary);}
+  .lev-copy{font-size:13.5px;line-height:1.6;color:#a8a6a0;max-width:680px;margin:0 0 10px;}
+  .lev-copy b{color:var(--text-primary);}
   .lev-driver{
     display:inline-block;
     font-family:'IBM Plex Mono',monospace;
     font-size:12.5px;
-    color:var(--brass);
-    border:1px solid rgba(182,144,90,.5);
-    background:rgba(182,144,90,.08);
+    color:var(--text-secondary);
+    border:1px solid rgba(168,166,160,.5);
+    background:rgba(168,166,160,.08);
     border-radius:3px;
     padding:6px 10px;
     margin:2px 0 14px;
@@ -982,9 +988,9 @@
     align-items:center;
     gap:5px;
     background:none;
-    border:1px solid rgba(182,144,90,.5);
+    border:1px solid rgba(168,166,160,.5);
     border-radius:3px;
-    color:var(--brass);
+    color:var(--text-secondary);
     font-family:'IBM Plex Mono',monospace;
     font-size:11px;
     letter-spacing:.02em;
@@ -994,9 +1000,9 @@
     transition:background .12s ease, color .12s ease, border-color .12s ease;
   }
   .close-box-btn:hover{
-    background:rgba(182,144,90,.12);
-    color:#d6c19e;
-    border-color:rgba(182,144,90,.8);
+    background:rgba(168,166,160,.12);
+    color:#a8a6a0;
+    border-color:rgba(168,166,160,.8);
   }
   .lev-detail-head{
     display:flex;
@@ -1011,24 +1017,24 @@
     display:flex;
     margin-top:18px;
     padding-top:14px;
-    border-top:1px dotted rgba(167,159,143,.28);
+    border-top:1px dotted rgba(168,166,160,.28);
   }
 
   /* ---------- Mobile property list ---------- */
   .mobile-property-list{display:none;}
   .mp-card{
-    border-top:1px solid var(--line);
+    border-top:1px solid var(--status-border);
     padding:18px 2px 20px;
   }
-  .mp-card:last-child{border-bottom:1px solid var(--line);}
+  .mp-card:last-child{border-bottom:1px solid var(--status-border);}
   .mp-row1{display:flex;align-items:center;justify-content:space-between;gap:10px;}
-  .mp-state{font-family:'IBM Plex Sans',sans-serif;font-size:15px;font-weight:600;color:var(--paper);}
-  .mp-state .mp-id{font-family:'IBM Plex Mono',monospace;color:var(--brass);}
-  .mp-state .mp-id-sep{color:var(--paper-dim);font-weight:400;}
+  .mp-state{font-family:'IBM Plex Sans',sans-serif;font-size:15px;font-weight:600;color:var(--text-primary);}
+  .mp-state .mp-id{font-family:'IBM Plex Mono',monospace;color:var(--text-secondary);}
+  .mp-state .mp-id-sep{color:var(--text-secondary);font-weight:400;}
   .mp-row2{
     font-family:'IBM Plex Mono',monospace;
     font-size:11.5px;
-    color:var(--paper-dim);
+    color:var(--text-secondary);
     margin-top:8px;
   }
   .mp-metrics{
@@ -1042,7 +1048,7 @@
     font-size:9px;
     letter-spacing:.08em;
     text-transform:uppercase;
-    color:var(--paper-dim);
+    color:var(--text-secondary);
     display:block;
     margin-bottom:3px;
   }
@@ -1050,14 +1056,14 @@
     font-family:'IBM Plex Mono',monospace;
     font-size:17px;
     font-weight:600;
-    color:var(--sage);
+    color:var(--actual-primary);
   }
   .mp-metric-sub{
     display:block;
     margin-top:2px;
     font-family:'IBM Plex Mono',monospace;
     font-size:10.5px;
-    color:rgba(114,205,180,.78);
+    color:rgba(74,222,128,.78);
     white-space:nowrap;
   }
   .mp-modeled{
@@ -1071,18 +1077,18 @@
     font-size:10.5px;
     letter-spacing:.06em;
     text-transform:uppercase;
-    color:var(--paper-dim);
+    color:var(--text-secondary);
   }
-  .mp-modeled-val{font-size:17px;font-weight:600;color:var(--paper);}
+  .mp-modeled-val{font-size:17px;font-weight:600;color:var(--text-primary);}
   .mp-modeled-split{
     font-family:'IBM Plex Mono',monospace;
     font-size:11px;
     margin-top:3px;
   }
-  .mp-modeled-split .mp-a{color:var(--sage);font-weight:600;}
-  .mp-modeled-split .mp-a-w{color:rgba(114,205,180,.65);}
-  .mp-modeled-split .mp-f{color:var(--rust);font-weight:600;}
-  .mp-modeled-split .mp-f-w{color:rgba(220,143,80,.7);}
+  .mp-modeled-split .mp-a{color:var(--actual-primary);font-weight:600;}
+  .mp-modeled-split .mp-a-w{color:rgba(74,222,128,.65);}
+  .mp-modeled-split .mp-f{color:var(--forecast-primary);font-weight:600;}
+  .mp-modeled-split .mp-f-w{color:rgba(56,189,248,.7);}
   .mp-bar{width:100%;max-width:180px;height:6px;border-radius:3px;overflow:hidden;display:flex;background:rgba(255,255,255,0.06);margin-top:8px;}
   .mp-bar .tr-actual, .mp-bar .tr-predicted{height:100%;}
   .mp-actions{
@@ -1098,22 +1104,22 @@
     padding:0;
     cursor:pointer;
   }
-  .mp-action.underwriting{color:var(--brass);}
-  .mp-action.forecast{color:var(--rust);}
+  .mp-action.underwriting{color:var(--text-secondary);}
+  .mp-action.forecast{color:var(--forecast-primary);}
   .mp-detail{display:none;margin-top:14px;font-family:'IBM Plex Mono',monospace;font-size:12.5px;}
   .mp-detail.open{display:block;}
   .mp-detail-line{
     display:flex;
     justify-content:space-between;
     gap:10px;
-    border-bottom:1px dotted rgba(167,159,143,.35);
+    border-bottom:1px dotted rgba(168,166,160,.35);
     padding:6px 0;
-    color:#c9c1b0;
+    color:#a8a6a0;
   }
-  .mp-detail-line.predicted{border-bottom:1px dashed rgba(220,143,80,.55);}
-  .mp-detail-line.predicted .mp-dl-label{color:#c6a08a;}
-  .mp-detail-line.predicted .mp-dl-val{color:var(--rust);font-style:italic;}
-  .mp-detail-line .mp-dl-val{color:var(--paper);font-weight:500;white-space:nowrap;}
+  .mp-detail-line.predicted{border-bottom:1px dashed rgba(56,189,248,.55);}
+  .mp-detail-line.predicted .mp-dl-label{color:#7bafc9;}
+  .mp-detail-line.predicted .mp-dl-val{color:var(--forecast-primary);font-style:italic;}
+  .mp-detail-line .mp-dl-val{color:var(--text-primary);font-weight:500;white-space:nowrap;}
   .mp-lev .lev-label{width:auto;}
   .mp-lev .lev-row{flex-direction:column;align-items:flex-start;gap:6px;}
   .mp-lev .lev-track{width:100% !important;max-width:100%;}
@@ -1122,33 +1128,33 @@
   .faq-section{
     margin-top:52px;
     padding-top:32px;
-    border-top:1px solid var(--line);
+    border-top:1px solid var(--status-border);
   }
   .faq-heading{
     font-family:'Fraunces',serif;
     font-weight:500;
     font-size:clamp(24px,3vw,32px);
-    color:var(--paper);
+    color:var(--text-primary);
     margin:0 0 8px;
   }
   .faq-sub{
     font-size:14px;
-    color:var(--paper-dim);
+    color:var(--text-secondary);
     max-width:640px;
     margin:0 0 28px;
   }
   details.faq-item{
-    border-top:1px solid var(--line);
+    border-top:1px solid var(--status-border);
     padding:16px 0;
   }
-  details.faq-item:last-child{border-bottom:1px solid var(--line);}
+  details.faq-item:last-child{border-bottom:1px solid var(--status-border);}
   details.faq-item summary{
     cursor:pointer;
     list-style:none;
     font-family:'IBM Plex Sans',sans-serif;
     font-weight:600;
     font-size:15.5px;
-    color:var(--paper);
+    color:var(--text-primary);
     display:flex;
     align-items:baseline;
     gap:10px;
@@ -1157,7 +1163,7 @@
   details.faq-item summary::before{
     content:"+";
     font-family:'IBM Plex Mono',monospace;
-    color:var(--brass);
+    color:var(--text-secondary);
     font-weight:400;
     flex-shrink:0;
     width:14px;
@@ -1167,13 +1173,13 @@
   .faq-body{
     font-size:14.5px;
     line-height:1.65;
-    color:#c9c1b0;
+    color:#a8a6a0;
     max-width:720px;
     padding-left:24px;
   }
   .faq-body p{margin:0 0 12px;}
   .faq-body p:last-child{margin-bottom:0;}
-  .faq-body strong{color:var(--paper);}
+  .faq-body strong{color:var(--text-primary);}
   .faq-body ul{margin:0 0 12px;padding-left:20px;}
   .faq-body li{margin-bottom:8px;}
   .faq-body li:last-child{margin-bottom:0;}
@@ -1237,6 +1243,234 @@
   @keyframes artemis-fade-in{
     from{opacity:0;}
   }
+
+
+/* ===== 2026-09-04 unified site color system + exact table/callout grid ===== */
+body{background:var(--bg);color:var(--text-primary);}
+h1{color:#ece4d3;} /* brand wordmark: intentionally unchanged */
+
+/* One muted text gray site-wide. */
+.lede,
+.masthead-disclosure > summary,
+.ledger-note,
+.legend-row,
+.click-hint,
+.control-label,
+.chip,
+.count-note,
+.payoff-subtitle,
+.table-scroll-hint,
+thead th,
+.th-unit-sub,
+.tr-modeled-label,
+.receipt-section-title,
+.mp-detail-section-title,
+.receipt-line,
+.math-note,
+.math-group-title,
+.math-meaning,
+.math-formula,
+.math-example,
+.decline-note,
+.why-body,
+.curve-caption,
+.curve-method-note,
+.lev-label,
+.lev-punch,
+.lev-copy,
+.mp-row2,
+.mp-metric-label,
+.mp-modeled-label,
+.mp-detail-line,
+.faq-sub,
+.faq-body{color:var(--text-secondary);}
+
+.lede b,
+.ledger-note strong,
+.decline-note b,
+.why-body strong,
+.lev-label b,
+.lev-punch b,
+.lev-copy b,
+.faq-body strong,
+.math-name,
+.math-example strong{color:var(--text-primary);}
+
+.masthead-disclosure > summary::before,
+.ledger-note .label,
+details.methodology-more summary,
+.property-page-link,
+.mp-property-page-link,
+tr.data-row.open .chevron,
+.fx-dot,
+.tip .tip-label,
+.receipt-title,
+.receipt-section-title.purchase,
+.mp-detail-section-title.purchase,
+.math-toggle,
+.math-kicker,
+details.why summary,
+details.faq-item summary::before{color:var(--text-secondary);}
+
+.property-page-link:hover,
+.mp-property-page-link:hover,
+.chip:hover{color:var(--text-primary);}
+
+.methodology-disclosure > summary,
+.ledger-note,
+.example-line,
+.why-conclusion{border-left-color:var(--status-border);background:transparent;}
+
+.chip{border-color:var(--status-border);background:transparent;}
+.chip:hover{border-color:var(--text-secondary);}
+.chip.active{background:var(--status-fill);border-color:var(--text-secondary);color:var(--text-secondary);}
+select#sortSelect{background:var(--bg);color:var(--text-primary);border-color:var(--status-border);}
+
+.info-dot{border-color:var(--text-secondary);color:var(--text-secondary);}
+.fx-dot{border-color:var(--status-border);}
+.info-dot .tip,.fx-dot .tip{background:var(--bg);border-color:var(--status-border);color:var(--text-secondary);}
+.fx-dot .tip{border-color:var(--status-border);}
+
+/* Actual operating data = green. */
+.legend-dot.actual,
+.payoff-mini-bars .actual,
+.tr-actual{background:var(--actual-primary);}
+.payoff-card.cash,
+.payoff-card.principal{background:var(--actual-fill);border-color:var(--actual-border);}
+.payoff-card.cash .payoff-card-name,
+.payoff-card.principal .payoff-card-name,
+.payoff-card.cash .payoff-arrow,
+.payoff-card.principal .payoff-arrow,
+.num-mid,
+.return-pair .rp-month,
+.tr-split .tr-a-num,
+.mp-metric-val,
+.mp-modeled-split .mp-a{color:var(--actual-primary);}
+.payoff-card.cash .payoff-card-copy,
+.payoff-card.principal .payoff-card-copy,
+.return-pair .rp-year,
+.tr-split .tr-a-word,
+.mp-metric-sub,
+.mp-modeled-split .mp-a-w{color:var(--actual-secondary);}
+
+/* Forecast appreciation = blue everywhere. */
+.legend-dot.predicted,
+.tr-predicted{
+  background:repeating-linear-gradient(135deg,var(--forecast-primary),var(--forecast-primary) 2px,var(--forecast-secondary) 2px,var(--forecast-secondary) 4px);
+  border-color:var(--forecast-border);
+}
+thead th.th-predicted,
+th.th-predicted .info-dot,
+th.th-predicted .fx-dot,
+th.th-predicted .tip .tip-label,
+.payoff-card.appreciation .payoff-card-name,
+.payoff-card.appreciation .payoff-arrow,
+.predicted-cell .pv,
+.tr-split .tr-f-num,
+.th-modeled-sub,
+.receipt-section-title.forecast,
+.mp-detail-section-title.forecast,
+.receipt-line.predicted-line .rl-val,
+.math-item.predicted-math .math-name,
+.math-item.predicted-math .math-kicker,
+.mp-modeled-split .mp-f,
+.mp-action.forecast,
+.mp-detail-line.predicted .mp-dl-val{color:var(--forecast-primary);}
+.payoff-card.appreciation{background:var(--forecast-fill);border:1px dashed var(--forecast-border);}
+.payoff-card.appreciation .payoff-card-copy,
+.predicted-cell .pc-caret,
+.predicted-cell .ps,
+.tr-split .tr-f-word,
+.receipt-line.predicted-line .rl-label,
+.mp-modeled-split .mp-f-w,
+.mp-detail-line.predicted .mp-dl-label{color:var(--forecast-secondary);}
+.predicted-cell{background:var(--forecast-fill);border-color:var(--forecast-border);}
+.predicted-cell:hover,.predicted-cell.open{background:var(--forecast-fill);}
+th.th-predicted .info-dot,
+th.th-predicted .fx-dot,
+th.th-predicted .info-dot .tip,
+th.th-predicted .fx-dot .tip{border-color:var(--forecast-border);}
+.receipt-line.predicted-line,
+.mp-detail-line.predicted{border-bottom-color:var(--forecast-border);}
+
+/* Modeled return and key identifying data stay primary, not data-color coded. */
+.payoff-card.modeled{background:var(--status-fill);border-color:var(--status-border);}
+.payoff-card.modeled .payoff-card-name,
+.payoff-card.modeled .payoff-arrow,
+.state-cell,
+.id-cell,
+.tr-num,
+.mp-state,
+.mp-state .mp-id,
+.mp-modeled-val{color:var(--text-primary);}
+.payoff-card.modeled .payoff-card-copy{color:var(--text-secondary);}
+.payoff-mini-bars .forecast{background:var(--forecast-primary);}
+.tr-bar,.mp-bar{background:var(--status-fill);}
+
+/* Neutral status badges: identical treatment for every state. */
+.status-badge{
+  font-size:10px;
+  background:var(--status-fill);
+  color:var(--status-text);
+  border:1px solid var(--status-border);
+}
+.status-closed,
+.status-under_contract,
+.status-proposed{
+  background:var(--status-fill);
+  color:var(--status-text);
+  border:1px solid var(--status-border);
+}
+.desktop-table .status-badge{margin-right:12px;}
+
+/* Forecast/leverage explainer follows the blue system. */
+.lev-base{background:var(--forecast-fill);border-color:var(--forecast-border);}
+.lev-gain{background:var(--forecast-primary);}
+.lev-tag,.lev-driver{color:var(--forecast-primary);}
+.lev-tag span{color:var(--forecast-secondary);}
+.lev-driver{border-color:var(--forecast-border);background:var(--forecast-fill);}
+.close-box-btn{border-color:var(--status-border);color:var(--text-secondary);}
+.close-box-btn:hover{background:var(--status-fill);color:var(--text-primary);border-color:var(--text-secondary);}
+
+/* Chart: neutral benchmark + blue modeled rental curve. */
+.curve-wrap svg line{stroke:var(--status-border);}
+.curve-wrap svg polyline{stroke:var(--forecast-primary);}
+.curve-wrap svg circle{fill:var(--forecast-primary);}
+
+/* One exact column definition powers both callouts and the real header. */
+.desktop-table{
+  --table-columns:24px 52px 128px 124px 86px 90px 146px 114px 114px 110px 140px 154px;
+  --table-width:1282px;
+}
+.table-wrap > table{width:var(--table-width);min-width:var(--table-width);table-layout:fixed;}
+.table-wrap > table col.chevron-col{width:24px;}
+.table-wrap > table col.id-col{width:52px;}
+.table-wrap > table col.state-col{width:128px;}
+.table-wrap > table col.status-col{width:124px;}
+.table-wrap > table col.price-col{width:86px;}
+.table-wrap > table col.down-col{width:90px;}
+.table-wrap > table col.invested-col{width:146px;}
+.table-wrap > table col.rent-col{width:114px;}
+.table-wrap > table col.cash-return-col{width:114px;}
+.table-wrap > table col.principal-return-col{width:110px;}
+.table-wrap > table col.appreciation-col{width:140px;}
+.table-wrap > table col.modeled-return-col{width:154px;}
+thead .payoff-intro-row,
+thead .payoff-box-row,
+thead .column-header-row{
+  display:grid;
+  grid-template-columns:var(--table-columns);
+  width:var(--table-width);
+}
+thead .payoff-intro-row > th:first-child{grid-column:1 / 9;}
+thead .payoff-intro-row > th:last-child{grid-column:9 / 13;}
+thead .payoff-box-row > th:first-child{grid-column:1 / 9;}
+thead .payoff-box-row > th.cash-return-col{grid-column:9;}
+thead .payoff-box-row > th.principal-return-col{grid-column:10;}
+thead .payoff-box-row > th.appreciation-col{grid-column:11;}
+thead .payoff-box-row > th.modeled-return-col{grid-column:12;}
+.payoff-arrow{left:50%;transform:translateX(-50%);}
+
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
 <link rel="icon" href="assets/artemis-favicon.svg" type="image/svg+xml">
@@ -1266,7 +1500,7 @@
       <summary>Methodology, appreciation &amp; return framing →</summary>
       <div class="methodology-more-body">
         <p><strong>Also not shown:</strong> tax benefits like depreciation, which can meaningfully boost real returns for many investors — but depend entirely on your individual situation, so that's a conversation for your CPA, not this table.</p>
-        <p><strong>On appreciation:</strong> The appreciation rate is my underwriting assumption for that specific submarket—not a historical market average or a guarantee. It's set deliberately at the <strong>low end</strong> of what a long-term hold there should average, not a best-case number. It's still a forecast, not a closed transaction, which is why it's marked in orange everywhere it shows up below.</p>
+        <p><strong>On appreciation:</strong> The appreciation rate is my underwriting assumption for that specific submarket—not a historical market average or a guarantee. It's set deliberately at the <strong>low end</strong> of what a long-term hold there should average, not a best-case number. It's still a forecast, not a closed transaction, which is why it's marked in blue everywhere it shows up below.</p>
         <p><strong>One more framing note:</strong> Modeled Return is labeled "this year," but two of its three ingredients — appreciation and the vacancy already built into rent — are long-run averages, not a literal trailing-12-month report. That's on purpose: any single real year is too noisy to underwrite from (one vacant month or one hot comp can swing it), so the stabilized long-run figure is the more honest input for a snapshot. For closed properties, cash flow and principal paydown are pulled from the property's actual year; for pipeline properties, those operating figures are underwritten.</p>
       </div>
     </details>
@@ -1278,7 +1512,7 @@
     <span class="legend-swatch"><span class="legend-dot predicted"></span> Forecast — appreciation assumption, not guaranteed</span>
     <span class="legend-swatch"><span class="fx-dot" aria-hidden="true">ƒx</span> Formula — hover or tap ƒx beside a calculated field</span>
   </div>
-  <p class="click-hint">Click any orange Appreciation box in the table below to see exactly how that number breaks down for that property.</p>
+  <p class="click-hint">Click any blue Appreciation box in the table below to see exactly how that number breaks down for that property.</p>
 
   <div class="controls">
     <div class="control-group">
@@ -1311,6 +1545,11 @@
   </div>
   <div class="table-wrap">
     <table>
+      <colgroup>
+        <col class="chevron-col"><col class="id-col"><col class="state-col"><col class="status-col">
+        <col class="price-col"><col class="down-col"><col class="invested-col"><col class="rent-col">
+        <col class="cash-return-col"><col class="principal-return-col"><col class="appreciation-col"><col class="modeled-return-col">
+      </colgroup>
       <thead>
         <tr class="payoff-intro-row">
           <th colspan="8">
@@ -1355,7 +1594,7 @@
             </div>
           </th>
         </tr>
-        <tr>
+        <tr class="column-header-row">
           <th class="chevron-col"></th>
           <th class="id-col"><span class="th-title-row">ID</span></th>
           <th class="state-col"><span class="th-title-row">State</span></th>
@@ -1402,7 +1641,7 @@
           </th>
           <th class="modeled-return-col">
             <span class="th-title-row">Modeled Return
-              <span class="info-dot" tabindex="0">i<span class="tip">Modeled Return combines cash-on-cash return, principal paydown, and the appreciation assumption. Green components are actual for closed properties (underwritten for pipeline properties); orange components depend on forecast appreciation.</span></span>
+              <span class="info-dot" tabindex="0">i<span class="tip">Modeled Return combines cash-on-cash return, principal paydown, and the appreciation assumption. Green components are actual for closed properties (underwritten for pipeline properties); blue components depend on forecast appreciation.</span></span>
               <span class="fx-dot" tabindex="0">ƒx<span class="tip"><span class="tip-label">Formula</span>Cash-on-cash return + principal return contribution + modeled appreciation contribution.</span></span>
             </span>
             <span class="th-modeled-sub">Operating + Forecast</span>
@@ -1447,20 +1686,20 @@
 
         <div class="curve-wrap">
           <svg viewBox="0 0 640 200" width="100%" height="200" preserveAspectRatio="xMidYMid meet">
-            <line x1="40" y1="20" x2="40" y2="170" stroke="#3a3f47" stroke-width="1"/>
-            <line x1="40" y1="170" x2="620" y2="170" stroke="#3a3f47" stroke-width="1"/>
-            <text x="10" y="30" fill="#a79f8f" font-family="IBM Plex Mono" font-size="10">25%</text>
-            <text x="10" y="100" fill="#a79f8f" font-family="IBM Plex Mono" font-size="10">15%</text>
-            <text x="18" y="174" fill="#a79f8f" font-family="IBM Plex Mono" font-size="10">0%</text>
-            <line x1="235" y1="170" x2="235" y2="20" stroke="#3a3f47" stroke-width="1" stroke-dasharray="2,3"/>
-            <text x="205" y="14" fill="#72cdb4" font-family="IBM Plex Mono" font-size="10">S&amp;P 500 — 9% CAGR</text>
-            <line x1="40" y1="126" x2="620" y2="126" stroke="#72cdb4" stroke-width="1.5" stroke-dasharray="3,3"/>
-            <polyline fill="none" stroke="#b6905a" stroke-width="2.5"
+            <line x1="40" y1="20" x2="40" y2="170" stroke="#3a3d38" stroke-width="1"/>
+            <line x1="40" y1="170" x2="620" y2="170" stroke="#3a3d38" stroke-width="1"/>
+            <text x="10" y="30" fill="#a8a6a0" font-family="IBM Plex Mono" font-size="10">25%</text>
+            <text x="10" y="100" fill="#a8a6a0" font-family="IBM Plex Mono" font-size="10">15%</text>
+            <text x="18" y="174" fill="#a8a6a0" font-family="IBM Plex Mono" font-size="10">0%</text>
+            <line x1="235" y1="170" x2="235" y2="20" stroke="#3a3d38" stroke-width="1" stroke-dasharray="2,3"/>
+            <text x="205" y="14" fill="#4ade80" font-family="IBM Plex Mono" font-size="10">S&amp;P 500 — 9% CAGR</text>
+            <line x1="40" y1="126" x2="620" y2="126" stroke="#4ade80" stroke-width="1.5" stroke-dasharray="3,3"/>
+            <polyline fill="none" stroke="#38bdf8" stroke-width="2.5"
               points="40,32 69,45 98,55 127,63 156,70 185,76 214,81 243,86 272,90 301,94 330,97 359,100 388,103 417,106 446,108 475,110 504,112 533,114 562,116 591,118 620,120" />
-            <circle cx="40" cy="32" r="3" fill="#b6905a"/>
-            <circle cx="620" cy="120" r="3" fill="#b6905a"/>
-            <text x="30" y="24" fill="#ece4d3" font-family="IBM Plex Mono" font-size="11">22%</text>
-            <text x="595" y="112" fill="#ece4d3" font-family="IBM Plex Mono" font-size="11">12%</text>
+            <circle cx="40" cy="32" r="3" fill="#38bdf8"/>
+            <circle cx="620" cy="120" r="3" fill="#38bdf8"/>
+            <text x="30" y="24" fill="#f5f4f0" font-family="IBM Plex Mono" font-size="11">22%</text>
+            <text x="595" y="112" fill="#f5f4f0" font-family="IBM Plex Mono" font-size="11">12%</text>
           </svg>
           <div class="curve-caption">ILLUSTRATIVE — modeled rental CAGR over time vs. a 9% S&amp;P 500 benchmark</div>
           <div class="curve-method-note">Both sides assume returns are reinvested and compounded. The S&amp;P 500 benchmark assumes a 9% annual total return with dividends reinvested. The rental model assumes cash generated by the investment is reinvested back into the same investment strategy. Actual results will vary.</div>
@@ -2157,7 +2396,7 @@ function render(){
       <td class="num num-muted">${fmt$(d.price)}</td>
       <td class="num num-muted">${fmt$(d.down)}</td>
       <td class="num num-muted">${fmt$(d.invested)}</td>
-      <td class="num num-muted rent-col">${fmt$(d.rent)}<span style="font-size:9px;color:var(--paper-dim);">/mo</span></td>
+      <td class="num num-muted rent-col">${fmt$(d.rent)}<span style="font-size:9px;color:var(--text-secondary);">/mo</span></td>
       <td class="cash-return-col">
         <div class="return-pair">
           <span class="rp-month">${fmt$(d.cashflow)}/mo</span>
@@ -2434,7 +2673,7 @@ function loadData(){
     error: function(err){
       console.error("Could not load the Google Sheet:", err);
       if(wrap){
-        wrap.innerHTML = '<p style="color:#dc8f50;font-family:monospace;">Could not load data from the Google Sheet. Check that SHEET_CSV_URL is set correctly and the sheet is published to the web.</p>';
+        wrap.innerHTML = '<p style="color:#38bdf8;font-family:monospace;">Could not load data from the Google Sheet. Check that SHEET_CSV_URL is set correctly and the sheet is published to the web.</p>';
       }
       if(stickyHeaderState.initialized){
         stickyHeaderState.shell.classList.remove('is-active');
