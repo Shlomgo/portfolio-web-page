@@ -1,0 +1,170 @@
+name: One-time Open Book UI update
+
+on:
+  push:
+    paths:
+      - '.github/workflows/openbook-ui-update.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  patch-index:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - name: Apply availability-first UI changes
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+
+          path = Path('index.html')
+          s = path.read_text(encoding='utf-8')
+
+          def repl(old, new, expected=1):
+              global s
+              actual = s.count(old)
+              if actual != expected:
+                  raise SystemExit(f'Expected {expected} occurrence(s), found {actual}: {old[:100]!r}')
+              s = s.replace(old, new)
+
+          # Make the top logo 2x its prior size and match the FAQ/footer logo sizes to it.
+          marker = '''.property-page-link:hover,
+          .mp-property-page-link:hover{color:#F0CF82;}
+
+          </style>'''
+          replacement = '''.property-page-link:hover,
+          .mp-property-page-link:hover{color:#F0CF82;}
+
+          /* ===== Availability-first status hierarchy + logo sizing ===== */
+          .status-proposed{
+            background:rgba(225,184,95,.10);
+            color:#E1B85F;
+            border-color:rgba(225,184,95,.58);
+            font-weight:600;
+            white-space:normal;
+            line-height:1.18;
+            text-align:center;
+            min-width:108px;
+          }
+          .desktop-table .status-badge{margin-right:0;}
+          .chip.chip-recommended{
+            color:#E1B85F;
+            border-color:rgba(225,184,95,.55);
+          }
+          .chip.chip-recommended.active{
+            color:#F0CF82;
+            background:rgba(225,184,95,.10);
+            border-color:rgba(225,184,95,.72);
+          }
+          tbody tr.data-row.status-proposed-row{
+            background:linear-gradient(90deg,rgba(225,184,95,.085),rgba(225,184,95,.025) 23%,rgba(20,23,28,0) 48%);
+          }
+          tbody tr.data-row.status-proposed-row:hover{
+            background:linear-gradient(90deg,rgba(225,184,95,.13),rgba(225,184,95,.045) 25%,rgba(168,166,160,.025) 52%);
+          }
+          tbody tr.data-row.status-proposed-row td:first-child{
+            box-shadow:inset 3px 0 0 #E1B85F;
+          }
+          .artemis-mark,
+          .artemis-faq-mark,
+          .artemis-footer-mark{width:164px;}
+          @media (max-width:900px){
+            .artemis-mark,
+            .artemis-faq-mark,
+            .artemis-footer-mark{width:144px;}
+          }
+          @media (max-width:640px){
+            .artemis-mark,
+            .artemis-faq-mark,
+            .artemis-footer-mark{width:124px;}
+          }
+
+          </style>'''
+          repl(marker, replacement)
+
+          # The recommended properties are fully evaluated and currently actionable.
+          repl('or am currently analyzing —', 'or have finished evaluating and currently recommend as available opportunities —')
+          repl('Closed = owned and rented. Under Contract = in the buying process. Proposed = analyzed, not yet purchased.', 'Closed = owned and rented. Under Contract = in the buying process. Recommended + Available = fully evaluated, selected, and currently available for consideration.')
+
+          # Default sort: status first, then newest date inside each status group.
+          old_sort = '''        <option value="date_desc" selected>Closing date (newest first)</option>
+                  <option value="date_asc">Closing date (oldest first)</option>
+                  <option value="coc_desc">Cash-on-cash return (high to low)</option>
+                  <option value="total_desc">Modeled return, this year (high to low)</option>
+                  <option value="state_asc">State (A–Z)</option>'''
+          new_sort = '''        <option value="status_date_desc" selected>Status, then date (newest first)</option>
+                  <option value="date_desc">Date (newest first)</option>
+                  <option value="date_asc">Date (oldest first)</option>
+                  <option value="coc_desc">Cash-on-cash return (high to low)</option>
+                  <option value="total_desc">Modeled return, this year (high to low)</option>
+                  <option value="state_asc">State (A–Z)</option>'''
+          repl(old_sort, new_sort)
+
+          # Move Status to the first data column, immediately after the chevron.
+          repl('<col class="chevron-col"><col class="id-col"><col class="state-col"><col class="status-col">', '<col class="chevron-col"><col class="status-col"><col class="id-col"><col class="state-col">')
+          repl('--table-columns:24px 52px 128px 124px 86px 90px 146px 114px 114px 110px 140px 154px;', '--table-columns:24px 124px 52px 128px 86px 90px 146px 114px 114px 110px 140px 154px;')
+
+          old_headers = '''          <th class="id-col"><span class="th-title-row">ID</span></th>
+                    <th class="state-col"><span class="th-title-row">State</span></th>
+                    <th class="status-col">
+                      <span class="th-title-row">Status
+                        <span class="info-dot" tabindex="0">i<span class="tip">Closed = owned and rented. Under Contract = in the buying process. Recommended + Available = fully evaluated, selected, and currently available for consideration.</span></span>
+                      </span>
+                    </th>'''
+          new_headers = '''          <th class="status-col">
+                      <span class="th-title-row">Status
+                        <span class="info-dot" tabindex="0">i<span class="tip">Closed = owned and rented. Under Contract = in the buying process. Recommended + Available = fully evaluated, selected, and currently available for consideration.</span></span>
+                      </span>
+                    </th>
+                    <th class="id-col"><span class="th-title-row">ID</span></th>
+                    <th class="state-col"><span class="th-title-row">State</span></th>'''
+          repl(old_headers, new_headers)
+
+          # Keep "proposed" as the internal spreadsheet code, but change its customer-facing wording.
+          repl('const STATUS_LABEL = {closed:"Closed", under_contract:"Under Contract", proposed:"Proposed"};', 'const STATUS_LABEL = {closed:"Closed", under_contract:"Under Contract", proposed:"Recommended + Available"};')
+
+          # Pipeline dates are expected closing dates; completed deals use purchase date.
+          repl('  const dateTag = d.status === "proposed" ? "Analyzed" : "Closing Date";', '  const dateTag = d.status === "closed" ? "Purchase Date" : "Expected Closing Date";')
+
+          # Update the wording used in the appreciation explanation for recommended properties.
+          old_verb = '  const verb = d.status === "closed" ? "was purchased" : d.status === "under_contract" ? "is under contract to be purchased" : "was analyzed as a potential purchase";'
+          new_verb = '  const verb = d.status === "closed" ? "was purchased" : d.status === "under_contract" ? "is under contract to be purchased" : "is currently recommended and available to purchase";'
+          repl(old_verb, new_verb, expected=2)
+
+          # Status chips are shown in the same lifecycle order as the table.
+          repl('let sortMode = "date_desc";', 'let sortMode = "status_date_desc";')
+          repl('  const statuses = ["closed","under_contract","proposed"];', '  const statuses = ["proposed","under_contract","closed"];')
+          repl('    b.className = activeStatuses.has(s) ? "chip active" : "chip";', '    b.className = (activeStatuses.has(s) ? "chip active" : "chip") + (s === "proposed" ? " chip-recommended" : "");')
+
+          # Primary status order: Recommended + Available, Under Contract, Closed.
+          repl('function sortRows(rows){\n  const r = [...rows];\n  switch(sortMode){\n    case "date_asc":', 'const STATUS_SORT_ORDER = {proposed:0, under_contract:1, closed:2};\n\nfunction sortRows(rows){\n  const r = [...rows];\n  switch(sortMode){\n    case "status_date_desc": return r.sort((a,b)=> (STATUS_SORT_ORDER[a.status] ?? 99) - (STATUS_SORT_ORDER[b.status] ?? 99) || String(b.date||"").localeCompare(String(a.date||"")));\n    case "date_asc":')
+
+          # Give recommended rows the subtle amber row accent and put Status first in each row.
+          repl('    tr.className = "data-row";', '    tr.className = `data-row status-${d.status}-row`;')
+          old_cells = '''      <td><span class="chevron">▶</span></td>
+                <td class="id-cell id-col">${d.id}</td>
+                <td class="state-cell">${d.state}</td>
+                <td class="status-cell"><span class="status-badge status-${d.status}">${STATUS_LABEL[d.status]}</span>${propertyPageLinkHTML(d)}</td>'''
+          new_cells = '''      <td><span class="chevron">▶</span></td>
+                <td class="status-cell"><span class="status-badge status-${d.status}">${STATUS_LABEL[d.status]}</span>${propertyPageLinkHTML(d)}</td>
+                <td class="id-cell id-col">${d.id}</td>
+                <td class="state-cell">${d.state}</td>'''
+          repl(old_cells, new_cells)
+
+          path.write_text(s, encoding='utf-8')
+          PY
+
+          # Remove this one-time workflow in the same commit so the repository stays clean.
+          rm -f .github/workflows/openbook-ui-update.yml
+          rmdir .github/workflows 2>/dev/null || true
+          rmdir .github 2>/dev/null || true
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "Prioritize recommended available properties in portfolio UI"
+          git push origin HEAD:main
