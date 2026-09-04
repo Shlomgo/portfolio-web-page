@@ -24,14 +24,19 @@ jobs:
           path = Path('index.html')
           text = path.read_text(encoding='utf-8')
 
-          parser_old = '  if (!v) return "closed";\n  if (v.includes("propos")) return "proposed";'
-          parser_new = '  if (!v) return "closed";\n  if (v.includes("hide")) return "hide";\n  if (v.includes("propos")) return "proposed";'
+          comment_old = '// Turns a Status cell into one of the three codes the page understands.'
+          comment_new = '// Turns a Status cell into one of the four codes the page understands.'
+          if comment_old in text:
+              text = text.replace(comment_old, comment_new, 1)
+
+          parser_old = '  const s = String(raw||"").trim().toLowerCase();\n  if(s.includes("under")) return "under_contract";'
+          parser_new = '  const s = String(raw||"").trim().toLowerCase();\n  if(s.includes("hide")) return "hide";\n  if(s.includes("under")) return "under_contract";'
           if parser_old not in text:
               raise SystemExit('Status parser target not found; no changes made.')
           text = text.replace(parser_old, parser_new, 1)
 
-          filter_old = '.filter(d => d.address.trim() && Number.isFinite(d.price) && d.price > 0);'
-          filter_new = '.filter(d => d.status !== "hide" && d.address.trim() && Number.isFinite(d.price) && d.price > 0);'
+          filter_old = 'DATA = results.data.map(rowToRecord).filter(d=>d.state && !isNaN(d.price) && d.price > 0);'
+          filter_new = 'DATA = results.data.map(rowToRecord).filter(d=>d.status !== "hide" && d.state && !isNaN(d.price) && d.price > 0);'
           if filter_old not in text:
               raise SystemExit('DATA filter target not found; no changes made.')
           text = text.replace(filter_old, filter_new, 1)
