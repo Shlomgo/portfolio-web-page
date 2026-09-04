@@ -2290,6 +2290,85 @@ thead th.sortable:focus-visible{
   .filter-toolbar .count-note{font-size:10.5px;}
 }
 
+
+
+/* ===== 2026-09-04 consolidated explanatory popups ===== */
+.info-dot .tip{
+  width:min(440px,calc(100vw - 32px));
+  max-height:min(72vh,620px);
+  overflow-y:auto;
+  text-align:left;
+  pointer-events:auto;
+}
+.comparison-info .tip{width:min(500px,calc(100vw - 32px));}
+.tip .tip-heading{
+  display:block;
+  color:var(--text-primary);
+  font-family:'IBM Plex Sans',sans-serif;
+  font-size:12.5px;
+  font-weight:600;
+  line-height:1.4;
+  margin:0 0 5px;
+  text-transform:none;
+  letter-spacing:normal;
+}
+.tip .tip-heading-spaced{margin-top:13px;}
+.tip .tip-paragraph,
+.tip .tip-bullet,
+.tip .tip-formula{
+  display:block;
+  margin-top:7px;
+  color:var(--text-secondary);
+  font-family:'IBM Plex Sans',sans-serif;
+  font-size:12.5px;
+  line-height:1.5;
+  font-weight:400;
+  text-transform:none;
+  letter-spacing:normal;
+}
+.tip .tip-bullet{margin-top:3px;padding-left:2px;}
+.tip .tip-formula{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:11.5px;
+  color:var(--text-primary);
+}
+.tip .tip-formula-spaced{margin-top:8px;}
+.tip strong{color:var(--text-primary);font-weight:600;}
+
+.comparison-section{
+  margin-top:34px;
+  padding-top:26px;
+  border-top:1px solid var(--status-border);
+  max-width:760px;
+}
+.comparison-title-row{
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+.comparison-title{
+  margin:0;
+  color:var(--text-primary);
+  font-family:'Fraunces',serif;
+  font-size:clamp(20px,2.5vw,27px);
+  line-height:1.2;
+  font-weight:500;
+}
+.comparison-info{flex:0 0 auto;}
+.comparison-sub{
+  margin:7px 0 14px;
+  max-width:660px;
+  color:var(--text-secondary);
+  font-size:13px;
+  line-height:1.5;
+}
+.comparison-curve{max-width:680px;margin:8px 0 0;}
+@media (max-width:640px){
+  .comparison-title-row{align-items:flex-start;}
+  .comparison-title{font-size:22px;}
+  .comparison-curve svg{height:auto;}
+}
+
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
 <link rel="icon" href="assets/artemis-favicon.svg" type="image/svg+xml">
@@ -2307,23 +2386,6 @@ thead th.sortable:focus-visible{
   <details class="masthead-disclosure intro-disclosure">
     <summary>About this track record →</summary>
     <p class="lede">Here's every buy-and-hold rental I've closed on, have under contract, or have finished evaluating and currently recommend as available opportunities — some I bought for my own portfolio, some I helped an investor buy. No flips, no wholesale deals, just properties meant to be held and rented. <b>A lower number here doesn't mean a weaker deal</b> — a Texas property banking on long-term growth and a stable Oklahoma rental can both be right, for different reasons. For closed properties, operating numbers are actual; for pipeline properties, they're underwritten. Appreciation assumptions are forecasts. Neither tells the whole story. Click any row for the numbers behind it.</p>
-  </details>
-
-  <details class="masthead-disclosure methodology-disclosure">
-    <summary>What's already accounted for →</summary>
-    <div class="ledger-note">
-    <span class="label">What's already accounted for</span>
-    <p>Every cash flow figure below already subtracts a <strong>10% property management fee</strong> and an average vacancy allowance — these aren't "if everything goes perfectly" numbers. Every home here is new construction, so there's typically nothing to repair in the first couple of years beyond the builder's warranty.</p>
-    <p><strong>Not included:</strong> leasing fees, repairs, tenant-turnover costs, or future capital reserves.</p>
-    <details class="methodology-more">
-      <summary>Methodology, appreciation &amp; return framing →</summary>
-      <div class="methodology-more-body">
-        <p><strong>Also not shown:</strong> tax benefits like depreciation, which can meaningfully boost real returns for many investors — but depend entirely on your individual situation, so that's a conversation for your CPA, not this table.</p>
-        <p><strong>On appreciation:</strong> The appreciation rate is my underwriting assumption for that specific submarket—not a historical market average or a guarantee. It's set deliberately at the <strong>low end</strong> of what a long-term hold there should average, not a best-case number. It's still a forecast, not a closed transaction, which is why it's marked in blue everywhere it shows up below.</p>
-        <p><strong>One more framing note:</strong> Modeled Return is labeled "this year," but two of its three ingredients — appreciation and the vacancy already built into rent — are long-run averages, not a literal trailing-12-month report. That's on purpose: any single real year is too noisy to underwrite from (one vacant month or one hot comp can swing it), so the stabilized long-run figure is the more honest input for a snapshot. For closed properties, cash flow and principal paydown are pulled from the property's actual year; for pipeline properties, those operating figures are underwritten.</p>
-      </div>
-    </details>
-    </div>
   </details>
 
 
@@ -2469,60 +2531,54 @@ thead th.sortable:focus-visible{
   </th>
 </tr>
 <tr class="column-header-row">
-          <th class="chevron-col"></th>
-          <th class="status-col">
-            <span class="th-title-row">Status
-              <span class="info-dot" tabindex="0">i<span class="tip">Closed = owned and rented. Under Contract = in the buying process. Recommended + Available = fully evaluated, selected, and currently available for consideration.</span></span>
-            </span>
-          </th>
-          <th class="id-col"><span class="th-title-row">ID</span></th>
-          <th class="state-col"><span class="th-title-row">State</span></th>
-          <th class="price-col"><span class="th-title-row">Price</span></th>
-          <th class="down-col">
-            <span class="th-title-row">Down Pmt
-              <span class="info-dot" tabindex="0">i<span class="tip">The cash you put in upfront (rest is financed by the mortgage).</span></span>
-            </span>
-          </th>
-          <th class="invested-col">
-            <span class="th-title-row">Total Invested
-              <span class="info-dot" tabindex="0">i<span class="tip">Down payment + closing costs + any capital expenses = the real cash out of pocket.</span></span>
-              <span class="fx-dot" tabindex="0">ƒx<span class="tip"><span class="tip-label">Formula</span>Down payment + closing costs + capex.</span></span>
-            </span>
-          </th>
-          <th class="rent-col">
-            <span class="th-title-row">Rent (avg)
-              <span class="info-dot" tabindex="0">i<span class="tip">Monthly rent after the underwriting vacancy allowance — roughly one vacant month after an average 30-month tenancy.</span></span>
-              <span class="fx-dot" tabindex="0">ƒx<span class="tip"><span class="tip-label">Formula</span>Base rent × 30 occupied months ÷ 31 total months.</span></span>
-            </span>
-          </th>
-          <th class="cash-return-col">
-            <span class="th-title-row">Cash Flow
-              <span class="info-dot" tabindex="0">i<span class="tip">Top line: cash left each month after mortgage, taxes, insurance, HOA, management and the vacancy allowance. Bottom line: that same cash flow annualized as cash-on-cash return on total cash invested.</span></span>
-              <span class="fx-dot" tabindex="0">ƒx<span class="tip"><span class="tip-label">Formulas</span>Monthly cash flow = vacancy-adjusted rent − mortgage P&amp;I − taxes/12 − insurance/12 − HOA/12 − 10% management. Cash-on-cash = (monthly cash flow × 12) ÷ total invested.</span></span>
-            </span>
-          </th>
-          <th class="equation-operator-col" aria-hidden="true"></th>
-          <th class="principal-return-col">
-            <span class="th-title-row">Principal
-              <span class="info-dot" tabindex="0">i<span class="tip">Top line: mortgage principal paid down each month. Bottom line: that principal paydown annualized as a percentage of total cash invested.</span></span>
-              <span class="fx-dot" tabindex="0">ƒx<span class="tip"><span class="tip-label">Formula used in return</span>(Monthly principal × 12) ÷ total cash invested. The monthly principal itself comes from the mortgage amortization.</span></span>
-            </span>
-          </th>
-          <th class="equation-operator-col" aria-hidden="true"></th>
-          <th class="th-predicted appreciation-col">
-            <span class="th-title-row">Appreciation*
-              <span class="info-dot" tabindex="0">i<span class="tip">My best guess for this property's yearly value growth — from analyzing the market, not a guarantee. The page converts it to a return on total cash invested using effective leverage: purchase price ÷ total invested. Closing costs and capex therefore reduce the multiplier. Click the box below for the exact math on any property.</span></span>
-              <span class="fx-dot" tabindex="0">ƒx<span class="tip"><span class="tip-label">Formula</span>Appreciation assumption × effective leverage, where effective leverage = purchase price ÷ total cash invested.</span></span>
-            </span>
-          </th>
-          <th class="equation-operator-col" aria-hidden="true"></th>
-          <th class="modeled-return-col">
-            <span class="th-title-row">Modeled Return
-              <span class="info-dot" tabindex="0">i<span class="tip">Modeled Return combines cash-on-cash return, principal paydown, and the appreciation assumption. Green components are actual for closed properties (underwritten for pipeline properties); blue components depend on forecast appreciation.</span></span>
-              <span class="fx-dot" tabindex="0">ƒx<span class="tip"><span class="tip-label">Formula</span>Cash-on-cash return + principal return contribution + modeled appreciation contribution.</span></span>
-            </span>
-            <span class="th-modeled-sub">Operating + Forecast</span>
-          </th>
+<th class="chevron-col"></th>
+<th class="status-col">
+  <span class="th-title-row">Status
+    <span class="info-dot" tabindex="0">i<span class="tip"><span class="tip-heading">What it means</span><span class="tip-paragraph"><strong>Closed</strong> — The property has been purchased and is operating as a rental. Operating figures shown for closed properties are actual.</span><span class="tip-paragraph"><strong>Under Contract</strong> — The property is in the purchase process for another investor. Operating figures are underwritten until the property closes and begins operating.</span><span class="tip-paragraph"><strong>Recommended + Available</strong> — I have fully evaluated the property, selected it as one I would currently recommend, and it is still available for consideration. Operating figures are underwritten.</span><span class="tip-paragraph">Appreciation is a forecast regardless of property status.</span></span></span>
+  </span>
+</th>
+<th class="id-col"><span class="th-title-row">ID</span></th>
+<th class="state-col"><span class="th-title-row">State</span></th>
+<th class="price-col"><span class="th-title-row">Price</span></th>
+<th class="down-col">
+  <span class="th-title-row">Down Pmt
+    <span class="info-dot" tabindex="0">i<span class="tip"><span class="tip-heading">What it means</span><span class="tip-paragraph">The portion of the purchase price paid with cash rather than financed with the mortgage.</span><span class="tip-paragraph">This is not the same as <strong>Total Invested</strong>. Total Invested also includes closing costs and any upfront capital expenses.</span><span class="tip-heading tip-heading-spaced">Calculation</span><span class="tip-formula">Down payment = purchase price − original loan amount</span></span></span>
+  </span>
+</th>
+<th class="invested-col">
+  <span class="th-title-row">Total Invested
+    <span class="info-dot" tabindex="0">i<span class="tip"><span class="tip-heading">What it means</span><span class="tip-paragraph">The total cash actually put into the property at purchase — not just the down payment.</span><span class="tip-paragraph">It includes the down payment, closing costs, and any upfront capital expenses.</span><span class="tip-paragraph">This is the cash basis used for the return percentages shown elsewhere in the table.</span><span class="tip-heading tip-heading-spaced">Calculation</span><span class="tip-formula">Total invested = down payment + closing costs + upfront capital expenses</span></span></span>
+  </span>
+</th>
+<th class="rent-col">
+  <span class="th-title-row">Rent (avg)
+    <span class="info-dot" tabindex="0">i<span class="tip"><span class="tip-heading">What it means</span><span class="tip-paragraph">The average monthly rent used for underwriting <strong>after allowing for vacancy</strong>.</span><span class="tip-paragraph">The base rent is reduced to reflect approximately one vacant month between average 30-month tenancies. This is a long-run underwriting allowance, not a prediction that every property will be vacant for exactly 30 days.</span><span class="tip-paragraph">When projecting rent, I also try to use a rent at which I believe a good tenant should be obtainable in roughly 30 days, rather than simply using the highest advertised rent I can find.</span><span class="tip-paragraph">In the track record shown here, most properties have either leased in less than 30 days, rented for more than originally projected, or both. Some have not — including two that took about two months — and those misses remain in the record.</span><span class="tip-heading tip-heading-spaced">Calculation</span><span class="tip-formula">Vacancy-adjusted rent = base monthly rent × 30 occupied months ÷ 31 total months</span></span></span>
+  </span>
+</th>
+<th class="cash-return-col">
+  <span class="th-title-row">Cash Flow
+    <span class="info-dot" tabindex="0">i<span class="tip"><span class="tip-heading">What it means</span><span class="tip-paragraph">The <strong>top number</strong> is the estimated cash left each month after the recurring expenses included in this model.</span><span class="tip-paragraph">The <strong>bottom number</strong> converts that monthly cash flow into an annual cash-on-cash return based on Total Invested.</span><span class="tip-heading tip-heading-spaced">Already deducted</span><span class="tip-bullet">• Mortgage principal and interest</span><span class="tip-bullet">• Property taxes</span><span class="tip-bullet">• Insurance</span><span class="tip-bullet">• HOA, when applicable</span><span class="tip-bullet">• A 10% property-management fee</span><span class="tip-bullet">• The vacancy allowance already reflected in Rent (avg)</span><span class="tip-heading tip-heading-spaced">Not included</span><span class="tip-bullet">• Leasing or tenant-placement fees</span><span class="tip-bullet">• Repairs</span><span class="tip-bullet">• Tenant-turnover expenses</span><span class="tip-bullet">• Future capital-replacement reserves</span><span class="tip-paragraph">All properties shown here are new construction, so early repair exposure is lower and most issues are covered by a builder warranty. Repairs are nevertheless <strong>not</strong> included in the cash-flow calculation.</span><span class="tip-heading tip-heading-spaced">Calculations</span><span class="tip-formula">Monthly cash flow = vacancy-adjusted rent − mortgage P&amp;I − property taxes ÷ 12 − insurance ÷ 12 − HOA ÷ 12 − 10% management fee</span><span class="tip-formula tip-formula-spaced">Cash-on-cash return = monthly cash flow × 12 ÷ total invested</span></span></span>
+  </span>
+</th>
+<th class="equation-operator-col" aria-hidden="true"></th>
+<th class="principal-return-col">
+  <span class="th-title-row">Principal
+    <span class="info-dot" tabindex="0">i<span class="tip"><span class="tip-heading">What it means</span><span class="tip-paragraph">The <strong>top number</strong> is the portion of the monthly mortgage payment that pays down loan principal.</span><span class="tip-paragraph">That money does not go into your bank account like cash flow does. Instead, it reduces the mortgage balance and increases your equity in the property.</span><span class="tip-paragraph">The <strong>bottom number</strong> shows that annual principal paydown as a percentage of Total Invested so it can be compared with the other return components.</span><span class="tip-paragraph">The amount of principal paid each month comes from the property's mortgage amortization schedule and changes over time.</span><span class="tip-heading tip-heading-spaced">Calculation</span><span class="tip-formula">Principal return contribution = monthly principal paid × 12 ÷ total invested</span></span></span>
+  </span>
+</th>
+<th class="equation-operator-col" aria-hidden="true"></th>
+<th class="th-predicted appreciation-col">
+  <span class="th-title-row">Appreciation*
+    <span class="info-dot" tabindex="0">i<span class="tip"><span class="tip-heading">What it means</span><span class="tip-paragraph">This is my underwriting assumption for the property's annual value growth in its specific submarket.</span><span class="tip-paragraph">It is <strong>not</strong> a historical market average, an appraisal, a realized return, or a guarantee.</span><span class="tip-paragraph">I intentionally use a conservative long-term assumption rather than a best-case appreciation forecast. Appreciation remains a forecast even for properties that have already closed.</span><span class="tip-paragraph">I still model appreciation because leaving it out completely would also give an incomplete picture of leveraged real estate. But I do not think you should buy a property simply because the appreciation assumption makes the total-return number look exciting.</span><span class="tip-paragraph">When evaluating a deal, I want you to look at it at <strong>0% appreciation first</strong>: What does the property produce from rent? How much principal is being paid down? Are you still comfortable owning it if its value goes nowhere for several years?</span><span class="tip-paragraph">Because the property is partly financed with a mortgage, a change in the value of the entire property can represent a much larger percentage of the cash originally invested. That effect is leverage.</span><span class="tip-paragraph">The calculation uses <strong>effective leverage</strong>, which compares the property's purchase price with Total Invested. Closing costs and capital expenses increase Total Invested and therefore reduce the leverage multiplier.</span><span class="tip-paragraph">Click an individual property's appreciation value to see the exact calculation for that property.</span><span class="tip-heading tip-heading-spaced">Calculations</span><span class="tip-formula">Effective leverage = purchase price ÷ total invested</span><span class="tip-formula tip-formula-spaced">Modeled appreciation contribution = annual appreciation assumption × effective leverage</span></span></span>
+  </span>
+</th>
+<th class="equation-operator-col" aria-hidden="true"></th>
+<th class="modeled-return-col">
+  <span class="th-title-row">Modeled Return
+    <span class="info-dot" tabindex="0">i<span class="tip"><span class="tip-heading">What it means</span><span class="tip-paragraph">Modeled Return combines the three ways this analysis treats the property as producing a return:</span><span class="tip-bullet">1. Cash-on-cash return</span><span class="tip-bullet">2. Mortgage principal paydown</span><span class="tip-bullet">3. Modeled appreciation</span><span class="tip-paragraph">For <strong>closed properties</strong>, cash flow and principal paydown are based on actual operating results for the period shown.</span><span class="tip-paragraph">For <strong>pipeline properties</strong>, those operating figures are underwritten.</span><span class="tip-paragraph">Appreciation is always a forecast.</span><span class="tip-paragraph">This number is a <strong>snapshot</strong>, not a promise that the property will earn this percentage every year. In particular, the vacancy allowance and appreciation assumption are stabilized long-run underwriting assumptions rather than literal predictions for one specific 12-month period.</span><span class="tip-paragraph">It is also not an IRR or a multi-year CAGR.</span><span class="tip-paragraph">Tax benefits such as depreciation are <strong>not included</strong>. Those can materially affect an investor's actual after-tax return, but they depend on the investor's individual tax situation.</span><span class="tip-paragraph">Over a long holding period, percentage returns can also change as the mortgage is paid down and the investor owns more equity. The property does not necessarily have to perform worse for the percentage return on equity to decline — leverage is simply providing less of a boost.</span><span class="tip-heading tip-heading-spaced">Calculation</span><span class="tip-formula">Modeled Return = cash-on-cash return + principal return contribution + modeled appreciation contribution</span></span></span>
+  </span>
+  <span class="th-modeled-sub">Operating + Forecast</span>
+</th>
         </tr>
       </thead>
       <tbody id="tableBody"></tbody>
@@ -2532,74 +2588,31 @@ thead th.sortable:focus-visible{
 
   <div id="mobilePropertyList" class="mobile-property-list"></div>
 
-  <div class="decline-note">
-    <b>Modeled Return shown is a snapshot of this year only.</b> These numbers shift the longer a property is held — typically settling lower after several years, even when the investment is performing the same or better.
-    <details class="why" id="whyDetails">
-      <summary>Why does the return percentage get smaller over time? →</summary>
-      <div class="why-body">
-        <p>Because early on, you're using a lot of the bank's money and relatively little of your own.</p>
+  <section class="comparison-section">
+    <div class="comparison-title-row">
+      <h2 class="comparison-title">Illustrative rental CAGR vs. S&amp;P 500</h2>
+      <span class="info-dot comparison-info" tabindex="0">i<span class="tip"><span class="tip-heading">What this chart shows</span><span class="tip-paragraph">This chart compares the modeled multi-year growth rate of the rental-property strategy with an illustrative <strong>9% annual S&amp;P 500 total-return benchmark</strong>.</span><span class="tip-paragraph">It uses <strong>CAGR — compound annual growth rate</strong>. CAGR answers a simple question: “What constant yearly return would have taken the investment from its starting value to its ending value over this period?”</span><span class="tip-paragraph">Both sides of the comparison assume returns are reinvested and compounded rather than spent.</span><span class="tip-paragraph">For the S&amp;P 500 benchmark, the illustration assumes a 9% annual total return with dividends reinvested.</span><span class="tip-paragraph">For the rental-property model, cash generated by the investment is assumed to be reinvested back into the same investment strategy.</span><span class="tip-paragraph">The 9% S&amp;P 500 figure is <strong>an illustrative benchmark, not a prediction</strong>, and it does not mean the market earns 9% every year.</span><span class="tip-heading tip-heading-spaced">Why the rental percentage can decline over time</span><span class="tip-paragraph">Early in a leveraged real-estate investment, a relatively small amount of investor cash controls a much larger asset.</span><span class="tip-paragraph">For example, if you invest $50,000 in a $250,000 property and the property rises 4%, the $10,000 increase in value is large relative to the $50,000 you initially invested.</span><span class="tip-paragraph">As the mortgage is paid down and your equity grows, the same dollar increase in property value represents a smaller percentage of the amount you now own.</span><span class="tip-paragraph">That does not necessarily mean the property is performing worse. It means leverage is contributing less to the percentage return as your equity grows.</span><span class="tip-paragraph">Actual results for both real estate and stocks will vary.</span></span></span>
+    </div>
+    <p class="comparison-sub">How modeled rental returns compare with a 9% illustrative stock-market benchmark over time.</p>
 
-        <p>Imagine you put <strong>$50,000</strong> into a <strong>$250,000</strong> house. If the house goes up <strong>4%</strong>, that's a <strong>$10,000 increase in value</strong>.</p>
-
-        <p>Early on, that $10,000 is large compared with the $50,000 of your own money you started with — about a <strong>20% gain</strong> relative to that starting amount.</p>
-
-        <div class="example-line">
-          <div>Early: $10,000 ÷ $50,000 <span class="eq">=</span> <strong>20%</strong></div>
-        </div>
-
-        <p>Over time, you pay down the mortgage and own more of the house yourself. That ownership is called <strong>equity</strong>.</p>
-
-        <p><strong>Equity is the part of the house you actually own — roughly the home's value minus what you still owe on the mortgage.</strong></p>
-
-        <p>Years later, imagine you now have about <strong>$200,000 of equity</strong> in the house. If the house rises by that same $10,000, the gain is now only about <strong>5%</strong> relative to the $200,000 you own.</p>
-
-        <div class="example-line">
-          <div>Later: $10,000 ÷ $200,000 <span class="eq">=</span> <strong>5%</strong></div>
-        </div>
-
-        <div class="why-conclusion"><strong>The house didn't perform worse. You simply own much more of it, so borrowed money is giving your return less of a boost.</strong> That boost from using borrowed money is what investors mean by leverage.</div>
-
-        <p>That's what the downward curve below is illustrating.</p>
-
-        <div class="curve-wrap">
-          <svg viewBox="0 0 640 200" width="100%" height="200" preserveAspectRatio="xMidYMid meet">
-            <line x1="40" y1="20" x2="40" y2="170" stroke="#3a3d38" stroke-width="1"/>
-            <line x1="40" y1="170" x2="620" y2="170" stroke="#3a3d38" stroke-width="1"/>
-            <text x="10" y="30" fill="#a8a6a0" font-family="IBM Plex Mono" font-size="10">25%</text>
-            <text x="10" y="100" fill="#a8a6a0" font-family="IBM Plex Mono" font-size="10">15%</text>
-            <text x="18" y="174" fill="#a8a6a0" font-family="IBM Plex Mono" font-size="10">0%</text>
-            <line x1="235" y1="170" x2="235" y2="20" stroke="#3a3d38" stroke-width="1" stroke-dasharray="2,3"/>
-            <text x="205" y="14" fill="#4ade80" font-family="IBM Plex Mono" font-size="10">S&amp;P 500 — 9% CAGR</text>
-            <line x1="40" y1="126" x2="620" y2="126" stroke="#4ade80" stroke-width="1.5" stroke-dasharray="3,3"/>
-            <polyline fill="none" stroke="#38bdf8" stroke-width="2.5"
-              points="40,32 69,45 98,55 127,63 156,70 185,76 214,81 243,86 272,90 301,94 330,97 359,100 388,103 417,106 446,108 475,110 504,112 533,114 562,116 591,118 620,120" />
-            <circle cx="40" cy="32" r="3" fill="#38bdf8"/>
-            <circle cx="620" cy="120" r="3" fill="#38bdf8"/>
-            <text x="30" y="24" fill="#f5f4f0" font-family="IBM Plex Mono" font-size="11">22%</text>
-            <text x="595" y="112" fill="#f5f4f0" font-family="IBM Plex Mono" font-size="11">12%</text>
-          </svg>
-          <div class="curve-caption">ILLUSTRATIVE — modeled rental CAGR over time vs. a 9% S&amp;P 500 benchmark</div>
-          <div class="curve-method-note">Both sides assume returns are reinvested and compounded. The S&amp;P 500 benchmark assumes a 9% annual total return with dividends reinvested. The rental model assumes cash generated by the investment is reinvested back into the same investment strategy. Actual results will vary.</div>
-        </div>
-
-        <p><strong>What exactly is this chart comparing?</strong></p>
-
-        <p>The chart uses <strong>CAGR</strong>, which is just a way of turning a multi-year result into one average yearly growth rate. Think of it as:</p>
-
-        <p><strong>"What yearly return would have gotten me from where I started to where I ended?"</strong></p>
-
-        <p>For this comparison, money produced along the way is assumed to be reinvested rather than spent.</p>
-
-        <p>The S&amp;P 500 line uses a <strong>9% assumed long-term annual total return</strong>, with dividends reinvested. The rental-property model similarly assumes cash generated by the investment is reinvested back into the same investment strategy.</p>
-
-        <p>The 9% isn't a prediction, and it doesn't mean the S&amp;P 500 earns 9% every year. It's simply the benchmark used in this illustration.</p>
-
-        <div class="why-close-row">
-          <button type="button" class="close-box-btn why-close-btn" aria-label="Close this explanation">Close ✕</button>
-        </div>
-      </div>
-    </details>
-  </div>
+    <div class="curve-wrap comparison-curve">
+      <svg viewBox="0 0 640 200" width="100%" height="200" preserveAspectRatio="xMidYMid meet" aria-label="Illustrative modeled rental CAGR declining over time compared with a 9 percent S&amp;P 500 benchmark">
+        <line x1="40" y1="20" x2="40" y2="170" stroke="#3a3d38" stroke-width="1"/>
+        <line x1="40" y1="170" x2="620" y2="170" stroke="#3a3d38" stroke-width="1"/>
+        <text x="10" y="30" fill="#a8a6a0" font-family="IBM Plex Mono" font-size="10">25%</text>
+        <text x="10" y="100" fill="#a8a6a0" font-family="IBM Plex Mono" font-size="10">15%</text>
+        <text x="18" y="174" fill="#a8a6a0" font-family="IBM Plex Mono" font-size="10">0%</text>
+        <text x="205" y="14" fill="#4ade80" font-family="IBM Plex Mono" font-size="10">S&amp;P 500 — 9% CAGR</text>
+        <line x1="40" y1="126" x2="620" y2="126" stroke="#4ade80" stroke-width="1.5" stroke-dasharray="3,3"/>
+        <polyline fill="none" stroke="#38bdf8" stroke-width="2.5" points="40,32 69,45 98,55 127,63 156,70 185,76 214,81 243,86 272,90 301,94 330,97 359,100 388,103 417,106 446,108 475,110 504,112 533,114 562,116 591,118 620,120" />
+        <circle cx="40" cy="32" r="3" fill="#38bdf8"/>
+        <circle cx="620" cy="120" r="3" fill="#38bdf8"/>
+        <text x="30" y="24" fill="#f5f4f0" font-family="IBM Plex Mono" font-size="11">22%</text>
+        <text x="595" y="112" fill="#f5f4f0" font-family="IBM Plex Mono" font-size="11">12%</text>
+      </svg>
+      <div class="curve-caption">ILLUSTRATIVE — modeled rental CAGR over time vs. a 9% S&amp;P 500 benchmark</div>
+    </div>
+  </section>
 
   <div class="faq-section">
     <img class="artemis-faq-mark" src="assets/artemis-mark.svg" alt="" aria-hidden="true">
@@ -2653,15 +2666,6 @@ thead th.sortable:focus-visible{
       </div>
     </details>
 
-    <details class="faq-item">
-      <summary>Why is vacancy estimated at 30 days?</summary>
-      <div class="faq-body">
-        <p>Thirty days isn't a promise. It's an underwriting standard.</p>
-        <p>When I give you a projected rent, I'm deliberately trying to choose a number at which I believe a good tenant should be obtainable within about 30 days, rather than showing you the highest rent I can find on Zillow and assuming somebody will eventually pay it.</p>
-        <p>The real test is what happened afterward.</p>
-        <p>Most of the properties on this page have either leased in less than 30 days, rented for more than I originally projected, or both. Some haven't — two took about two months, and those misses included in the record too.</p>
-      </div>
-    </details>
 
     <details class="faq-item">
       <summary>What does the process actually look like?</summary>
@@ -2686,23 +2690,6 @@ thead th.sortable:focus-visible{
       </div>
     </details>
 
-    <details class="faq-item">
-      <summary>Why include appreciation in ROI when you don't actually know what it'll be?</summary>
-      <div class="faq-body">
-        <p>Because leaving appreciation out completely would also give you an incomplete picture of leveraged real estate — but treating an appreciation estimate like cash flow would be misleading.</p>
-        <p>So I separate the two.</p>
-        <p>Cash flow and mortgage principal paydown are things we can observe. Future appreciation isn't. It's an assumption about what the property may be worth later.</p>
-        <p>I still model it because even relatively modest changes in the value of a leveraged property can materially affect the investor's long-term result. But I don't think you should buy a property simply because the appreciation assumption makes the total-return number look exciting.</p>
-        <p>When we're evaluating a deal, I want you to look at it at <strong>0% appreciation first</strong>:</p>
-        <ul>
-          <li>What does the property produce from rent?</li>
-          <li>How much principal is being paid down?</li>
-          <li>Are you still comfortable owning it if its value goes nowhere for several years?</li>
-        </ul>
-        <p>Then we can look at appreciation as a range of possible outcomes rather than a promise.</p>
-        <p>That's also why appreciation is visually separated throughout this page. <strong>The estimate matters, but it doesn't deserve the same confidence as money that has actually been earned.</strong></p>
-      </div>
-    </details>
 
     <details class="faq-item">
       <summary>When is it clear I shouldn't buy an investment like this?</summary>
@@ -3051,6 +3038,7 @@ function leverageDetailHTML(d){
 // listener makes them work on tap too: tapping an icon toggles it open,
 // tapping anywhere else closes whatever's open.
 document.addEventListener("click", (e)=>{
+  if(e.target.closest(".tip")){ e.stopPropagation(); return; }
   const dot = e.target.closest(".info-dot, .fx-dot");
   document.querySelectorAll(".info-dot.open, .fx-dot.open").forEach(el=>{ if(el!==dot) el.classList.remove("open"); });
   if(dot){
@@ -3379,7 +3367,7 @@ function detailReceiptLinesHTML(d){
       <div class="mp-detail-line"><span class="mp-dl-label">Total invested</span><span class="mp-dl-val">${fmt$(d.invested)}</span></div>
       <div class="mp-detail-line"><span class="mp-dl-label">Interest rate</span><span class="mp-dl-val">${fmt1(det.rate)}%</span></div>
       <div class="mp-detail-line"><span class="mp-dl-label">Points</span><span class="mp-dl-val">${fmt1(det.points)}%</span></div>
-      <div class="mp-detail-line"><span class="mp-dl-label">Effective leverage <span class="info-dot" tabindex="0">i<span class="tip">Purchase price ÷ total cash invested. Closing costs and capex reduce this multiplier because they add cash invested without increasing the purchase price.</span></span><span class="fx-dot" tabindex="0">ƒx<span class="tip"><span class="tip-label">Formula</span>Purchase price ÷ total cash invested.</span></span></span><span class="mp-dl-val">${fmtLev(d.leverage)}×</span></div>
+      <div class="mp-detail-line"><span class="mp-dl-label">Effective leverage <span class="info-dot" tabindex="0">i<span class="tip">Purchase price ÷ total cash invested. Closing costs and capex reduce this multiplier because they add cash invested without increasing the purchase price.<span class="tip-heading tip-heading-spaced">Formula</span><span class="tip-formula">Effective leverage = purchase price ÷ total cash invested</span></span></span></span><span class="mp-dl-val">${fmtLev(d.leverage)}×</span></div>
     </div>
 
     <div class="mp-detail-section">
@@ -3582,7 +3570,7 @@ function render(){
                 <div class="receipt-line"><span class="rl-label">Total invested</span><span class="rl-fill"></span><span class="rl-val">${fmt$(d.invested)}</span></div>
                 <div class="receipt-line"><span class="rl-label">Interest rate</span><span class="rl-fill"></span><span class="rl-val">${fmt1(det.rate)}%</span></div>
                 <div class="receipt-line"><span class="rl-label">Points</span><span class="rl-fill"></span><span class="rl-val">${fmt1(det.points)}%</span></div>
-                <div class="receipt-line"><span class="rl-label">Effective leverage <span class="info-dot" tabindex="0">i<span class="tip">Purchase price ÷ total cash invested. Closing costs and capex reduce this multiplier because they add cash invested without increasing the purchase price.</span></span><span class="fx-dot" tabindex="0">ƒx<span class="tip"><span class="tip-label">Formula</span>Purchase price ÷ total cash invested.</span></span></span><span class="rl-fill"></span><span class="rl-val">${fmtLev(d.leverage)}×</span></div>
+                <div class="receipt-line"><span class="rl-label">Effective leverage <span class="info-dot" tabindex="0">i<span class="tip">Purchase price ÷ total cash invested. Closing costs and capex reduce this multiplier because they add cash invested without increasing the purchase price.<span class="tip-heading tip-heading-spaced">Formula</span><span class="tip-formula">Effective leverage = purchase price ÷ total cash invested</span></span></span></span><span class="rl-fill"></span><span class="rl-val">${fmtLev(d.leverage)}×</span></div>
               </div>
             </section>
 
