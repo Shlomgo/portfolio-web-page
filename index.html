@@ -277,6 +277,16 @@
   .status-closed{background:rgba(127,156,110,0.16);color:var(--sage);border:1px solid rgba(127,156,110,0.4);}
   .status-under_contract{background:rgba(182,144,90,0.16);color:var(--brass);border:1px solid rgba(182,144,90,0.4);}
   .status-proposed{background:rgba(255,255,255,0.06);color:var(--paper-dim);border:1px solid var(--line);}
+  .property-page-link,
+  .mp-property-page-link{
+    color:var(--brass);
+    font-family:'IBM Plex Mono',monospace;
+    text-decoration:none;
+    white-space:nowrap;
+  }
+  .property-page-link{display:block;width:max-content;margin-top:5px;font-size:9.5px;line-height:1.25;}
+  .mp-property-page-link{display:inline-block;margin:5px 0 2px;font-size:11px;}
+  .property-page-link:hover,.mp-property-page-link:hover{text-decoration:underline;color:#d6c19e;}
   .chevron{
     display:inline-block;
     transition:transform .15s ease;
@@ -1445,6 +1455,7 @@ function rowToRecord(row){
     date, label,
     state: String(row["State"]||"").trim(),
     status: normalizeStatus(row["Status"]),
+    pageSlug: String(row["Property Page Slug"]||"").trim(),
     price,
     down,
     downPctSource: num(row["% down"]),
@@ -1529,6 +1540,18 @@ function formatCapex(value){
 // underwriting projections, so the label used across the page follows status.
 function operatingLabel(d){
   return d.status === "closed" ? "actual" : "underwritten";
+}
+
+function propertyPageHref(d){
+  if(!d.pageSlug) return "";
+  return `properties/${encodeURIComponent(d.pageSlug)}/`;
+}
+
+function propertyPageLinkHTML(d, mobile=false){
+  const href = propertyPageHref(d);
+  if(!href) return "";
+  const cls = mobile ? "mp-property-page-link" : "property-page-link";
+  return `<a class="${cls}" href="${href}" onclick="event.stopPropagation()">View property →</a>`;
 }
 
 // Shared heading text for a property's expanded underwriting/details panel,
@@ -1846,6 +1869,7 @@ function renderMobile(rows){
         <span class="status-badge status-${d.status}">${STATUS_LABEL[d.status]}</span>
       </div>
       <div class="mp-row2">${fmt$(d.price)} purchase · ${fmt$(d.invested)} invested</div>
+      ${propertyPageLinkHTML(d,true)}
       <div class="mp-metrics">
         <div>
           <span class="mp-metric-label">Cash Flow</span>
@@ -1907,7 +1931,7 @@ function render(){
       <td><span class="chevron">▶</span></td>
       <td class="id-cell id-col">${d.id}</td>
       <td class="state-cell">${d.state}</td>
-      <td><span class="status-badge status-${d.status}">${STATUS_LABEL[d.status]}</span></td>
+      <td class="status-cell"><span class="status-badge status-${d.status}">${STATUS_LABEL[d.status]}</span>${propertyPageLinkHTML(d)}</td>
       <td class="num num-muted">${fmt$(d.price)}</td>
       <td class="num num-muted">${fmt$(d.down)}</td>
       <td class="num num-muted">${fmt$(d.invested)}</td>
