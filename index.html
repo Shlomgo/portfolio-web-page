@@ -2823,10 +2823,11 @@ function rowToRecord(row){
 }
 
 const STATUS_LABEL = {closed:"Closed", under_contract:"Under Contract", proposed:"Recommended + Available"};
-const fmt$ = n => "$" + Math.round(n).toLocaleString("en-US");
-const fmtPct = n => n.toFixed(2).replace(/\.?0+$/,"") + "%";
-const fmt1 = n => n.toFixed(1).replace(/\.0$/,"");
-const fmtLev = n => Number.isFinite(n) ? n.toFixed(2).replace(/\.?0+$/g,"") : "—";
+const fmtNumber1 = n => Number.isFinite(n) ? n.toLocaleString("en-US",{minimumFractionDigits:1,maximumFractionDigits:1}) : "—";
+const fmt$ = n => Number.isFinite(n) ? "$" + fmtNumber1(n) : "—";
+const fmtPct = n => Number.isFinite(n) ? n.toFixed(1) + "%" : "—";
+const fmt1 = n => Number.isFinite(n) ? n.toFixed(1) : "—";
+const fmtLev = n => Number.isFinite(n) ? n.toFixed(1) : "—";
 
 // Turns a full state name into its two-letter abbreviation, e.g. "Arkansas" -> "AR".
 // Falls back gracefully if a sheet ever uses a state this map doesn't know.
@@ -2929,8 +2930,8 @@ const TOTAL_MONTHS_PER_TURN = 31;
 
 function fmtMathMoney(n){
   if(!Number.isFinite(n)) return "—";
-  const rounded = Math.round(Math.abs(n)).toLocaleString("en-US");
-  return n < 0 ? `−$${rounded}` : `$${rounded}`;
+  const formatted = Math.abs(n).toLocaleString("en-US",{minimumFractionDigits:1,maximumFractionDigits:1});
+  return n < 0 ? `−$${formatted}` : `$${formatted}`;
 }
 
 function mathItemHTML(name, meaning, formula, example, predicted=false){
@@ -2954,7 +2955,7 @@ function propertyMathHTML(d){
   const calculatedCoc = d.cashflow * 12 / d.invested * 100;
   const calculatedPrincipalPct = d.principal * 12 / d.invested * 100;
 
-  const capexMath = Number(det.capex) === 0 ? '$0' : fmtMathMoney(det.capex);
+  const capexMath = Number(det.capex) === 0 ? '$0.0' : fmtMathMoney(det.capex);
   const totalInvestedExample = `${fmtMathMoney(d.down)} + ${fmtMathMoney(det.closing)} + ${capexMath} = <strong>${fmtMathMoney(d.invested)}</strong>`;
   const rentExample = `${fmtMathMoney(det.rentBase)} × 30 ÷ 31 ≈ <strong>${fmtMathMoney(d.rent)}/mo</strong>`;
   const cashFlowExample = `${fmtMathMoney(d.rent)} − ${fmtMathMoney(det.mortPI)} P&amp;I − ${fmtMathMoney(monthlyTax)} tax − ${fmtMathMoney(monthlyIns)} insurance − ${fmtMathMoney(monthlyHoa)} HOA − ${fmtMathMoney(management)} management ≈ <strong>${fmtMathMoney(d.cashflow)}/mo</strong>`;
@@ -3376,8 +3377,8 @@ function detailReceiptLinesHTML(d){
       <div class="mp-detail-line"><span class="mp-dl-label">Closing costs</span><span class="mp-dl-val">${fmt$(det.closing)}</span></div>
       <div class="mp-detail-line"><span class="mp-dl-label">Initial capex</span><span class="mp-dl-val">${formatCapex(det.capex)}</span></div>
       <div class="mp-detail-line"><span class="mp-dl-label">Total invested</span><span class="mp-dl-val">${fmt$(d.invested)}</span></div>
-      <div class="mp-detail-line"><span class="mp-dl-label">Interest rate</span><span class="mp-dl-val">${det.rate}%</span></div>
-      <div class="mp-detail-line"><span class="mp-dl-label">Points</span><span class="mp-dl-val">${det.points}%</span></div>
+      <div class="mp-detail-line"><span class="mp-dl-label">Interest rate</span><span class="mp-dl-val">${fmt1(det.rate)}%</span></div>
+      <div class="mp-detail-line"><span class="mp-dl-label">Points</span><span class="mp-dl-val">${fmt1(det.points)}%</span></div>
       <div class="mp-detail-line"><span class="mp-dl-label">Effective leverage <span class="info-dot" tabindex="0">i<span class="tip">Purchase price ÷ total cash invested. Closing costs and capex reduce this multiplier because they add cash invested without increasing the purchase price.</span></span><span class="fx-dot" tabindex="0">ƒx<span class="tip"><span class="tip-label">Formula</span>Purchase price ÷ total cash invested.</span></span></span><span class="mp-dl-val">${fmtLev(d.leverage)}×</span></div>
     </div>
 
@@ -3552,7 +3553,7 @@ function render(){
           <span class="tr-num">${fmtPct(d.totalReturn)}</span>
           <span class="tr-modeled-label">Modeled</span>
           <span class="tr-split" title="${fmt1(actualPct)}% ${operatingLabel(d)} operating return + ${fmt1(predictedPct)}% forecast appreciation"><span class="tr-a-num">${fmt1(actualPct)}%</span> <span class="tr-plus">+</span> <span class="tr-f-num">${fmt1(predictedPct)}%</span></span>
-          <div class="tr-bar" title="${Math.round(actualShare)}% ${operatingLabel(d)}, ${Math.round(predictedShare)}% forecast">
+          <div class="tr-bar" title="${fmt1(actualShare)}% ${operatingLabel(d)}, ${fmt1(predictedShare)}% forecast">
             <span class="tr-actual" style="width:${actualShare}%"></span>
             <span class="tr-predicted" style="width:${predictedShare}%"></span>
           </div>
@@ -3579,8 +3580,8 @@ function render(){
                 <div class="receipt-line"><span class="rl-label">Closing costs</span><span class="rl-fill"></span><span class="rl-val">${fmt$(det.closing)}</span></div>
                 <div class="receipt-line"><span class="rl-label">Initial capex</span><span class="rl-fill"></span><span class="rl-val">${formatCapex(det.capex)}</span></div>
                 <div class="receipt-line"><span class="rl-label">Total invested</span><span class="rl-fill"></span><span class="rl-val">${fmt$(d.invested)}</span></div>
-                <div class="receipt-line"><span class="rl-label">Interest rate</span><span class="rl-fill"></span><span class="rl-val">${det.rate}%</span></div>
-                <div class="receipt-line"><span class="rl-label">Points</span><span class="rl-fill"></span><span class="rl-val">${det.points}%</span></div>
+                <div class="receipt-line"><span class="rl-label">Interest rate</span><span class="rl-fill"></span><span class="rl-val">${fmt1(det.rate)}%</span></div>
+                <div class="receipt-line"><span class="rl-label">Points</span><span class="rl-fill"></span><span class="rl-val">${fmt1(det.points)}%</span></div>
                 <div class="receipt-line"><span class="rl-label">Effective leverage <span class="info-dot" tabindex="0">i<span class="tip">Purchase price ÷ total cash invested. Closing costs and capex reduce this multiplier because they add cash invested without increasing the purchase price.</span></span><span class="fx-dot" tabindex="0">ƒx<span class="tip"><span class="tip-label">Formula</span>Purchase price ÷ total cash invested.</span></span></span><span class="rl-fill"></span><span class="rl-val">${fmtLev(d.leverage)}×</span></div>
               </div>
             </section>
