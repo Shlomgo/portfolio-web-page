@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>248 Colton Court — The Open Book</title>
+<style>
+:root{--bg:#0b0c10;--surface:#14161b;--surface-2:#191c22;--border:#2a2d34;--text:#e9e6de;--muted:#9c988f;--green:#7ea884;--green-dim:#4d6b52;--orange:#c98a4b;--orange-dim:#8a5e33;}
+*{box-sizing:border-box} body{margin:0;background:var(--bg);color:var(--text);font-family:Georgia,'Source Serif 4',serif;line-height:1.6}.wrap{max-width:1180px;margin:0 auto;padding:0 32px 100px}.prose{max-width:760px}.mono{font-family:'IBM Plex Mono','Courier New',monospace}
+.topbar{display:flex;justify-content:space-between;align-items:center;padding:20px 0;border-bottom:1px solid var(--border);margin-bottom:36px}.back{color:var(--muted);text-decoration:none;font-size:14px;font-family:'IBM Plex Mono',monospace}.status-pill{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--orange);border:1px solid var(--orange-dim);padding:4px 10px;border-radius:2px}
+.hero-grid{display:grid;grid-template-columns:1.1fr 1fr;gap:48px;align-items:start;margin-bottom:44px}.hero-photo{border:1px solid var(--border);border-radius:3px;overflow:hidden;background:var(--surface);margin:0}.hero-photo img{display:block;width:100%;height:440px;object-fit:cover}.hero-photo figcaption{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--green);padding:10px 14px;border-top:1px solid var(--green-dim);background:rgba(126,168,132,.06)}.photo-actions{display:flex;gap:10px;margin-top:10px}.photo-btn{flex:1;text-align:center;padding:11px 10px;border:1px solid var(--border);border-radius:3px;background:var(--surface);color:var(--text);font-family:'IBM Plex Mono',monospace;font-size:12px;text-decoration:none}.hero-eyebrow{color:var(--muted);font-family:'IBM Plex Mono',monospace;font-size:13px;margin-bottom:8px}h1{font-size:34px;font-weight:400;margin:0 0 6px;line-height:1.2}.hero-sub{color:var(--muted);font-size:16px;margin-bottom:28px}.hero-tags{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:26px}.tag{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--muted);border:1px solid var(--border);padding:4px 10px;border-radius:2px}
+section{margin-bottom:44px}.section-label{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:14px;border-bottom:1px solid var(--border);padding-bottom:8px}p{margin:0 0 14px}.muted{color:var(--muted)}
+.fin-group{border:1px solid var(--border);border-radius:3px;margin-bottom:16px;overflow:hidden}.fin-group.modeled{border-style:dashed;border-color:var(--orange-dim);background:rgba(201,138,75,.04)}.fin-group.returns{border-color:var(--green-dim)}.fin-group-title{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);padding:10px 16px;border-bottom:1px solid var(--border);background:var(--surface)}.fin-group.modeled .fin-group-title{color:var(--orange);border-bottom-color:var(--orange-dim)}.fin-group.returns .fin-group-title{color:var(--green);border-bottom-color:var(--green-dim)}.fin-item{padding:12px 16px;border-bottom:1px solid var(--border)}.fin-item:last-child{border-bottom:none}.fin-item.total{background:var(--surface-2)}.fin-row{display:flex;justify-content:space-between;align-items:baseline;gap:16px}.fin-label{display:flex;align-items:center;gap:6px;font-size:14px;color:var(--text)}.fin-item.total .fin-label{font-weight:bold}.fin-value{font-family:'IBM Plex Mono',monospace;font-size:15px;white-space:nowrap}.fin-item.total .fin-value{font-size:19px}.fin-value.actual{color:var(--green)}.fin-value.forecast{color:var(--orange)}.fin-note{font-size:11.5px;color:var(--muted);margin-top:5px;font-family:'IBM Plex Mono',monospace}.info-btn{display:inline-flex;align-items:center;justify-content:center;width:15px;height:15px;border-radius:50%;border:1px solid var(--muted);color:var(--muted);font-family:'IBM Plex Mono',monospace;font-size:10px;cursor:help;flex:0 0 auto;line-height:1}.info-btn:hover{border-color:var(--text);color:var(--text)}.split-bar{height:6px;border-radius:3px;overflow:hidden;display:flex;margin-top:8px;background:var(--surface-2)}.split-bar .seg-actual{background:var(--green);width:33.4%}.split-bar .seg-forecast{background:var(--orange);width:66.6%}
+.callout{border:1px dashed var(--orange-dim);background:rgba(201,138,75,.06);border-radius:3px;padding:18px 20px}.callout-title{font-size:17px;margin-bottom:8px;color:var(--orange);font-style:italic}.good-callout{border:1px solid var(--green-dim);background:rgba(126,168,132,.06);border-radius:3px;padding:18px 20px;margin-top:18px}.good-callout strong{color:var(--green)}
+.kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);border:1px solid var(--border);border-radius:3px;overflow:hidden;margin:18px 0}.kpi{padding:16px 14px;border-right:1px solid var(--border)}.kpi:last-child{border-right:none}.kpi-label{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--muted);text-transform:uppercase}.kpi-value{font-family:'IBM Plex Mono',monospace;font-size:20px;margin-top:4px}.kpi-note{font-size:10px;color:var(--muted);font-family:'IBM Plex Mono',monospace;margin-top:4px}
+.amenity-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.amenity{border:1px solid var(--border);background:var(--surface);padding:18px;border-radius:3px}.amenity .n{font-family:'IBM Plex Mono',monospace;color:var(--green);font-size:12px;text-transform:uppercase;letter-spacing:.05em}.amenity p{font-size:13px;color:var(--muted);margin:8px 0 0}
+.spec-table{width:100%;border-collapse:collapse}.spec-table td{padding:8px 0;border-bottom:1px solid var(--border);font-size:14px}.spec-table td:first-child{color:var(--muted);width:40%;font-family:'IBM Plex Mono',monospace;font-size:12px}
+.media-grid{display:flex;flex-wrap:wrap;gap:14px}.media-grid figure{width:calc(50% - 7px)}figure{margin:0;border:1px solid var(--border);border-radius:3px;overflow:hidden;background:var(--surface)}figure img{display:block;width:100%;height:255px;object-fit:cover}figure video{display:block;width:100%;background:#000;max-height:360px}figcaption{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--muted);padding:8px 10px;border-top:1px solid var(--border)}.full-span{width:100%!important}.floorplan{margin-top:14px}.floorplan img{display:block;width:100%;height:auto;max-height:none;object-fit:contain;background:#f8f8f6;padding:12px}.link-row{display:flex;gap:16px;flex-wrap:wrap;margin-top:14px}.link-row a{color:var(--green);font-size:13px;font-family:'IBM Plex Mono',monospace;text-decoration:none;border-bottom:1px solid var(--green-dim)}footer{border-top:1px solid var(--border);padding-top:20px;color:var(--muted);font-size:12px;font-family:'IBM Plex Mono',monospace}
+@media(max-width:860px){.hero-grid{grid-template-columns:1fr}.hero-photo img{height:300px}.kpi-grid{grid-template-columns:repeat(2,1fr)}.amenity-grid{grid-template-columns:1fr}}
+@media(max-width:600px){.media-grid figure{width:100%}.wrap{padding:0 18px 70px}}
+</style>
+</head>
+<body><div class="wrap">
+<div class="topbar"><a class="back" href="../../">← back to The Open Book</a><span class="status-pill">PROPOSED — underwriting in progress</span></div>
+
+<div class="hero-grid">
+ <div>
+  <figure class="hero-photo"><img src="images/248-colton-exterior.jpg" alt="248 Colton Court exterior"><figcaption>248 Colton Court — actual home in Brinkley Ridge.</figcaption></figure>
+  <div class="photo-actions"><a class="photo-btn" href="https://www.google.com/maps/search/?api=1&query=248+Colton+Ct+Kings+Mountain+NC+28086" target="_blank">Exact location ↗</a><a class="photo-btn" href="#layout">Floor plan ↓</a></div>
+ </div>
+ <div>
+  <div class="hero-eyebrow">BRINKLEY RIDGE · KINGS MOUNTAIN, NORTH CAROLINA · NC-02</div>
+  <h1>248 Colton Court</h1>
+  <p class="hero-sub">A dual-primary Winston plan in a small city with two unusually large employment catalysts.</p>
+  <div class="hero-tags"><span class="tag">Single-family · 4 bed · 3.5 bath* · 2,565 sqft</span><span class="tag">New construction</span><span class="tag">D.R. Horton · Winston</span><span class="tag">Owner’s suite downstairs</span></div>
+  <p>This is a four-bedroom Winston plan in Brinkley Ridge. The house itself is a big part of why I like the deal: 2,565 square feet, a large loft, two-car garage, and — most importantly — a full owner’s suite downstairs plus a second owner’s suite upstairs.</p>
+  <p>The bigger reason I like it is Kings Mountain. It sits in the Charlotte metro — roughly 35 miles west of uptown, about a 35–40 minute drive via I-85 in normal traffic — so I think of it as a Charlotte-area suburb/exurb rather than an isolated small town. It also has two economic projects nearby that are enormous relative to the size of the town: the permanent Catawba Two Kings Casino resort being built out now, and Albemarle’s proposed reopening of the Kings Mountain lithium mine. I don’t think today’s home prices fully reflect what the town may look like if both projects reach maturity. That’s the appreciation thesis here — not a guarantee, but the main reason I’m comfortable with lower current cash flow.</p>
+ </div>
+</div>
+
+<section>
+ <div class="section-label">The numbers</div>
+
+ <div class="fin-group">
+  <div class="fin-group-title">Acquisition</div>
+  <div class="fin-item">
+   <div class="fin-row"><span class="fin-label">Purchase price <span class="info-btn" title="Purchase price in the current NC-02 spreadsheet row.">i</span></span><span class="fin-value">$365,000</span></div>
+   <div class="fin-note">note: pending</div>
+  </div>
+  <div class="fin-item">
+   <div class="fin-row"><span class="fin-label">Closing costs <span class="info-btn" title="Total closing costs in the current NC-02 spreadsheet row.">i</span></span><span class="fin-value">$2,509</span></div>
+  </div>
+  <div class="fin-item">
+   <div class="fin-row"><span class="fin-label">Capex / rehab <span class="info-btn" title="Rent-ready setup / capex in the current NC-02 spreadsheet row.">i</span></span><span class="fin-value">$7,000</span></div>
+   <div class="fin-note">note: pending</div>
+  </div>
+  <div class="fin-item total">
+   <div class="fin-row"><span class="fin-label">Total invested</span><span class="fin-value">$100,759</span></div>
+  </div>
+ </div>
+
+ <div class="fin-group modeled">
+  <div class="fin-group-title">Financing scenario — modeled</div>
+  <div class="fin-item">
+   <div class="fin-row"><span class="fin-label">Down payment <span class="info-btn" title="Cash paid toward the purchase price.">i</span></span><span class="fin-value">$91,250 · 25%</span></div>
+  </div>
+  <div class="fin-item">
+   <div class="fin-row"><span class="fin-label">Loan amount <span class="info-btn" title="Purchase price minus down payment.">i</span></span><span class="fin-value">$273,750</span></div>
+  </div>
+  <div class="fin-item">
+   <div class="fin-row"><span class="fin-label">Interest rate <span class="info-btn" title="Initial rate in the current NC-02 underwriting. This is an ARM rate, not a 30-year fixed rate.">i</span></span><span class="fin-value">4.25%</span></div>
+   <div class="fin-note">note: 7-year initial fixed period; ARM terms thereafter</div>
+  </div>
+  <div class="fin-item">
+   <div class="fin-row"><span class="fin-label">Mortgage type <span class="info-btn" title="Current financing structure in the NC-02 underwriting.">i</span></span><span class="fin-value">7/6 ARM</span></div>
+   <div class="fin-note">note: exact index, margin and adjustment caps pending final loan documentation</div>
+  </div>
+ </div>
+
+ <div class="fin-group">
+  <div class="fin-group-title">Monthly income</div>
+  <div class="fin-item">
+   <div class="fin-row"><span class="fin-label">Rent expected <span class="info-btn" title="Expected monthly market rent in the current NC-02 spreadsheet row.">i</span></span><span class="fin-value">$2,400</span></div>
+   <div class="fin-note">note: pending</div>
+  </div>
+ </div>
+
+ <div class="fin-group">
+  <div class="fin-group-title">Monthly expenses</div>
+  <div class="fin-item">
+   <div class="fin-row"><span class="fin-label">Vacancy loss <span class="info-btn" title="Vacancy allowance used in the portfolio model.">i</span></span><span class="fin-value">$78</span></div>
+   <div class="fin-note">3.23% portfolio vacancy assumption · $2,322 vacancy-adjusted rent</div>
+  </div>
+  <div class="fin-item">
+   <div class="fin-row"><span class="fin-label">Property management (10%) <span class="info-btn" title="10% of vacancy-adjusted collected rent.">i</span></span><span class="fin-value">$232</span></div>
+  </div>
+  <div class="fin-item">
+   <div class="fin-row"><span class="fin-label">Mortgage P&amp;I <span class="info-btn" title="Monthly principal-and-interest payment at the modeled initial ARM rate.">i</span></span><span class="fin-value">$1,347</span></div>
+  </div>
+  <div class="fin-item">
+   <div class="fin-row"><span class="fin-label">Property taxes <span class="info-btn" title="Annual spreadsheet amount shown monthly.">i</span></span><span class="fin-value">$347</span></div>
+   <div class="fin-note">$4,164/year in the spreadsheet.</div>
+  </div>
+  <div class="fin-item">
+   <div class="fin-row"><span class="fin-label">Insurance <span class="info-btn" title="Annual spreadsheet amount shown monthly.">i</span></span><span class="fin-value">$108</span></div>
+   <div class="fin-note">$1,300/year in the spreadsheet.</div>
+  </div>
+  <div class="fin-item">
+   <div class="fin-row"><span class="fin-label">HOA <span class="info-btn" title="Annual spreadsheet amount shown monthly.">i</span></span><span class="fin-value">$64</span></div>
+   <div class="fin-note">$770/year in the spreadsheet.</div>
+  </div>
+ </div>
+
+ <div class="fin-group returns">
+  <div class="fin-group-title">Returns</div>
+  <div class="fin-item">
+   <div class="fin-row"><span class="fin-label">Cash flow / month <span class="info-btn" title="Vacancy-adjusted rent less management, mortgage P&amp;I, taxes, insurance and HOA.">i</span></span><span class="fin-value actual">$224</span></div>
+  </div>
+  <div class="fin-item">
+   <div class="fin-row"><span class="fin-label">Cash-on-cash return <span class="info-btn" title="Annual cash flow after management divided by total cash invested.">i</span></span><span class="fin-value actual">2.67%</span></div>
+  </div>
+  <div class="fin-item">
+   <div class="fin-row"><span class="fin-label">Principal paydown / month <span class="info-btn" title="Year-one monthly principal reduction in the current spreadsheet model.">i</span></span><span class="fin-value actual">$385</span></div>
+  </div>
+  <div class="fin-item">
+   <div class="fin-row"><span class="fin-label">Modeled appreciation <span class="info-btn" title="Appreciation assumption in the current spreadsheet. This is a forecast, not a guarantee.">i</span></span><span class="fin-value forecast">4.0%</span></div>
+  </div>
+  <div class="fin-item total">
+   <div class="fin-row"><span class="fin-label">Modeled total return <span class="info-btn" title="Spreadsheet total return combining modeled cash flow, principal paydown and leveraged appreciation.">i</span></span><span class="fin-value forecast">21.74%</span></div>
+   <div class="split-bar"><div class="seg-actual"></div><div class="seg-forecast"></div></div>
+   <div class="fin-note">green = underwritten operating return (cash flow + principal) · orange = forecast appreciation</div>
+  </div>
+ </div>
+</section>
+
+<section class="prose"><div class="section-label">Why I like this one</div>
+ <p>I already own this exact Winston floor plan, and that experience is one of the reasons I’m comfortable buying another one. When the other house became available, I had a line of people interested in renting it. There are floor plans that look fine on a spreadsheet and floor plans that tenants actually respond to; this is one I’ve already watched people respond to.</p>
+ <p>The downstairs owner’s suite is probably my favorite feature. It isn’t just a bedroom downstairs — it is a real primary suite with its own full bathroom and walk-in closet. That works for multigenerational families, households with an older parent, couples who prefer living mainly on one floor, or tenants who simply want the primary bedroom separated from the upstairs bedrooms.</p>
+ <div class="good-callout"><strong>Two real owner’s suites.</strong> The second owner’s suite upstairs gives the house a flexibility most four-bedroom rentals do not have. I expect that to help both tenant demand now and the resale buyer pool later.</div>
+</section>
+
+<section class="prose"><div class="section-label">One thing to plan around</div>
+ <div class="callout"><div class="callout-title">The low rate has an expiration date</div>
+  <p>The 4.25% rate is attractive, but this is not a 30-year fixed mortgage. It is a 7/6 adjustable-rate mortgage: the initial rate is fixed for seven years, then the rate can adjust every six months according to the loan’s index, margin and caps.</p>
+  <p>I’m underwriting this as a seven-year financing window. Before the first reset, the investment needs to be looked at again from scratch: value, rent, market rates, remaining loan balance and whether the property still earns enough at the reset rate.</p>
+  <p>The possible paths are to refinance, keep the ARM if the economics still work, sell, or complete a 1031 exchange. None of those future options should be treated as guaranteed.</p>
+  <div class="fin-note" style="margin-top:12px;color:var(--orange)">YEARS 1–7: 4.25% FIXED &nbsp; → &nbsp; YEAR 8+: RATE CAN RESET EVERY 6 MONTHS</div>
+ </div>
+</section>
+
+<section><div class="section-label">The submarket</div>
+ <div class="kpi-grid"><div class="kpi"><div class="kpi-label">Kings Mountain population</div><div class="kpi-value">~12.1K</div><div class="kpi-note">2025 Census estimate</div></div><div class="kpi"><div class="kpi-label">Casino jobs</div><div class="kpi-value">~2,200</div><div class="kpi-note">projected at full resort</div></div><div class="kpi"><div class="kpi-label">Mine construction jobs</div><div class="kpi-value">1,000+</div><div class="kpi-note">if project proceeds</div></div><div class="kpi"><div class="kpi-label">Mine permanent jobs</div><div class="kpi-value">300+</div><div class="kpi-note">projected skilled roles</div></div></div>
+ <div class="prose"><p>Kings Mountain is part of the Charlotte metro and sits roughly 35 miles west of uptown — about a 35–40 minute drive via I-85 in normal traffic. I think of it as a Charlotte-area suburb/exurb with its own small-town identity. That matters because tenants can still reach the larger Charlotte job market, while the local employment base is expanding on its own. What interests me most is the scale of the new employment projects relative to the existing city, not simply that the projects exist.</p><p>The casino is already operating in phases while the permanent $1.25 billion resort is being completed. Albemarle’s lithium mine is a different category: it is a proposed project that continues to advance, but it still depends on permitting, technical work and a final development decision.</p><p class="muted">My bet is not that appreciation is certain. It is that owning housing before these employment questions are fully answered gives this property more upside than a typical new-build rental with the same current cash flow.</p></div>
+</section>
+
+<section><div class="section-label">Brinkley Ridge</div>
+ <p class="prose">Brinkley Ridge adds something important for a family rental: this is not just a house on a street. D.R. Horton lists a community pool, playground and cabana, with direct access to I-85 and Kings Mountain amenities nearby.</p>
+ <div class="amenity-grid"><div class="amenity"><div class="n">Pool</div><p>Neighborhood swimming pool — a meaningful family amenity during the Carolina summer.</p></div><div class="amenity"><div class="n">Playground</div><p>Dedicated children’s play area inside the community.</p></div><div class="amenity"><div class="n">Cabana</div><p>Community gathering space beside the amenity area.</p></div></div>
+</section>
+
+<section id="layout"><div class="section-label">The lot &amp; layout</div>
+ <table class="spec-table"><tr><td>Community</td><td>Brinkley Ridge · D.R. Horton</td></tr><tr><td>Plan</td><td>Winston · selected dual-owner’s-suite configuration</td></tr><tr><td>Living area</td><td>2,565 sqft</td></tr><tr><td>Bedrooms</td><td>4</td></tr><tr><td>Bathrooms</td><td>3 full + 1 half*</td></tr><tr><td>Garage</td><td>2-car · 19'5" × 20'0"</td></tr><tr><td>Owner’s suite 1</td><td>Main floor · 13'8" × 18'1" · full bath + WIC</td></tr><tr><td>Owner’s suite 2</td><td>Upstairs · 15'2" × 13'1" · en-suite + walk-in closets</td></tr><tr><td>Loft</td><td>12'8" × 17'7"</td></tr><tr><td>Family room</td><td>14'10" × 19'4"</td></tr><tr><td>HOA</td><td>$770/year modeled</td></tr></table>
+ <p class="muted" style="margin-top:10px;font-size:12px">*Current public listings conflict between 2.5 and 3.5 baths. The floor plan supplied for this configuration supports 3.5; final builder documents should control before publication.</p>
+</section>
+
+<section><div class="section-label">See it for yourself</div>
+ <div class="media-grid">
+  <figure><img src="images/lot-still-1.jpg" alt="Rear lot still"><figcaption>Rear lot — still from your walkthrough.</figcaption></figure>
+  <figure><video controls preload="metadata" poster="images/lot-still-1.jpg"><source src="video/lot-walkthrough-1.mp4" type="video/mp4"></video><figcaption>Video — rear lot walkthrough.</figcaption></figure>
+  <figure><video controls preload="metadata" poster="images/lot-still-2.jpg"><source src="video/lot-walkthrough-2.mp4" type="video/mp4"></video><figcaption>Video — second view across the lot.</figcaption></figure>
+  <figure><img src="images/248-colton-exterior.jpg" alt="Front exterior"><figcaption>Front elevation — 248 Colton Court.</figcaption></figure>
+  <figure class="full-span floorplan"><img src="images/winston-floorplan-combined.jpg" alt="Winston floor plan"><figcaption>Winston floor plan — main-floor owner’s suite plus selected upstairs owner’s-suite option.</figcaption></figure>
+ </div>
+ <div class="link-row"><a href="https://www.drhorton.com/north-carolina/charlotte/kings-mountain/brinkley-ridge" target="_blank">Brinkley Ridge community ↗</a><a href="https://www.zillow.com/homedetails/248-Colton-Ct-Kings-Mountain-NC-28086/462106816_zpid/" target="_blank">Property listing ↗</a></div>
+</section>
+
+<section class="prose"><div class="section-label">Sourcing note</div><p class="muted">This is a proposed investment and has not closed. Purchase terms, financing, rent and returns are underwriting assumptions and can change. The 4.0% appreciation figure is a forecast, not an operating result or guarantee. The lithium mine remains a proposed project subject to approvals and final development decisions. Community amenity and Charlotte-distance information is from D.R. Horton and Cleveland County tourism sources. Financial figures are taken from the NC-02 / “brinkley coles winston” row in the supplied portfolio workbook.</p></section>
+<footer>Part of The Open Book — every deal, closed or proposed, shown the same way.</footer>
+</div></body></html>
