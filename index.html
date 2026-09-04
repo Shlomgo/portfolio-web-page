@@ -169,6 +169,130 @@
   /* ---------- Table ---------- */
   .table-wrap{width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch;margin-bottom:8px;}
   table{width:100%;border-collapse:collapse;min-width:1290px;table-layout:fixed;}
+
+  /* ---------- How real estate pays you ---------- */
+  .return-payoff-explainer{
+    width:100%;
+    min-width:1290px;
+    display:grid;
+    grid-template-columns:
+      minmax(24px,1fr) minmax(52px,1fr) minmax(128px,1fr) minmax(124px,1fr)
+      minmax(86px,1fr) minmax(90px,1fr) minmax(146px,1fr) minmax(114px,1fr)
+      minmax(114px,1fr) minmax(110px,1fr) minmax(140px,1fr) minmax(154px,1fr);
+    grid-template-rows:auto 78px;
+    row-gap:14px;
+    padding:0 0 17px;
+    margin:0 0 8px;
+    border-bottom:1px solid var(--line);
+  }
+  .payoff-copy{
+    grid-column:1 / 9;
+    grid-row:1;
+    align-self:start;
+    padding:0 5px;
+  }
+  .payoff-title{
+    font-family:'IBM Plex Sans',sans-serif;
+    font-size:15px;
+    line-height:1.25;
+    font-weight:600;
+    color:var(--paper);
+  }
+  .payoff-subtitle{
+    margin-top:2px;
+    font-family:'IBM Plex Sans',sans-serif;
+    font-size:12px;
+    line-height:1.3;
+    color:var(--paper-dim);
+  }
+  .payoff-card{
+    grid-row:2;
+    position:relative;
+    min-width:0;
+    min-height:78px;
+    margin:0 5px;
+    padding:8px 7px 9px;
+    border-radius:8px;
+    font-family:'IBM Plex Sans',sans-serif;
+    font-size:10.5px;
+    line-height:1.32;
+  }
+  .payoff-card.cash{
+    grid-column:9;
+    background:rgba(68,166,139,.12);
+    border:1px solid rgba(78,190,160,.38);
+  }
+  .payoff-card.principal{
+    grid-column:10;
+    background:rgba(68,166,139,.12);
+    border:1px solid rgba(78,190,160,.38);
+  }
+  .payoff-card.appreciation{
+    grid-column:11;
+    background:rgba(193,99,63,.09);
+    border:1px dashed rgba(210,126,69,.70);
+  }
+  .payoff-card.modeled{
+    grid-column:12;
+    background:rgba(182,144,90,.06);
+    border:1px solid rgba(182,144,90,.28);
+  }
+  .payoff-card-name{
+    display:block;
+    margin-bottom:2px;
+    font-size:10.5px;
+    line-height:1.25;
+    font-weight:500;
+  }
+  .payoff-card.cash .payoff-card-name,
+  .payoff-card.principal .payoff-card-name{color:#72cdb4;}
+  .payoff-card.appreciation .payoff-card-name{color:#dc8f50;font-style:italic;}
+  .payoff-card.modeled .payoff-card-name{color:var(--paper);}
+  .payoff-card-copy{color:#aeb6c0;}
+  .payoff-card.appreciation .payoff-card-copy{color:#c6a08a;}
+  .payoff-mini-bars{
+    display:inline-flex;
+    align-items:center;
+    gap:3px;
+    margin-right:4px;
+    vertical-align:1px;
+  }
+  .payoff-mini-bars i{display:block;width:6px;height:6px;border-radius:1px;}
+  .payoff-mini-bars .actual{background:#72cdb4;}
+  .payoff-mini-bars .forecast{background:#dc8f50;}
+  .payoff-op{
+    position:absolute;
+    right:-15px;
+    top:30px;
+    z-index:3;
+    width:20px;
+    height:20px;
+    border-radius:50%;
+    border:1px solid var(--line);
+    background:var(--ink);
+    color:#aeb6c0;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-family:'IBM Plex Mono',monospace;
+    font-size:12px;
+    line-height:1;
+  }
+  .payoff-arrow{
+    position:absolute;
+    left:50%;
+    bottom:-17px;
+    width:0;
+    height:0;
+    transform:translateX(-50%);
+    border-left:5px solid transparent;
+    border-right:5px solid transparent;
+    border-top:5px solid currentColor;
+  }
+  .payoff-card.cash .payoff-arrow,
+  .payoff-card.principal .payoff-arrow{color:#58bca3;}
+  .payoff-card.appreciation .payoff-arrow{color:#cf7940;}
+  .payoff-card.modeled .payoff-arrow{color:#8099ad;}
   .table-scroll-hint{
     display:none;
     font-family:'IBM Plex Mono',monospace;
@@ -1114,8 +1238,8 @@
     <div class="control-group">
       <span class="control-label">Sort by</span>
       <select id="sortSelect">
-        <option value="date_asc" selected>Closing date (oldest first)</option>
-        <option value="date_desc">Closing date (newest first)</option>
+        <option value="date_desc" selected>Closing date (newest first)</option>
+        <option value="date_asc">Closing date (oldest first)</option>
         <option value="coc_desc">Cash-on-cash return (high to low)</option>
         <option value="total_desc">Modeled return, this year (high to low)</option>
         <option value="state_asc">State (A–Z)</option>
@@ -1132,6 +1256,35 @@
     </div>
   </div>
   <div class="table-wrap">
+    <div class="return-payoff-explainer" aria-label="How this kind of real estate pays you">
+      <div class="payoff-copy">
+        <div class="payoff-title">How this kind of real estate pays you</div>
+        <div class="payoff-subtitle">3 real levers add up to the modeled return</div>
+      </div>
+      <div class="payoff-card cash">
+        <span class="payoff-card-name">Cash flow</span>
+        <span class="payoff-card-copy">Actual — money<br>in your account<br>monthly</span>
+        <span class="payoff-op" aria-hidden="true">+</span>
+        <span class="payoff-arrow" aria-hidden="true"></span>
+      </div>
+      <div class="payoff-card principal">
+        <span class="payoff-card-name">Principal</span>
+        <span class="payoff-card-copy">Actual — tenant<br>pays down your<br>loan debt</span>
+        <span class="payoff-op" aria-hidden="true">+</span>
+        <span class="payoff-arrow" aria-hidden="true"></span>
+      </div>
+      <div class="payoff-card appreciation">
+        <span class="payoff-card-name">Appreciation</span>
+        <span class="payoff-card-copy">Forecast — 3% ×<br>3.33× leverage</span>
+        <span class="payoff-op" aria-hidden="true">=</span>
+        <span class="payoff-arrow" aria-hidden="true"></span>
+      </div>
+      <div class="payoff-card modeled">
+        <span class="payoff-card-name"><span class="payoff-mini-bars" aria-hidden="true"><i class="actual"></i><i class="forecast"></i></span>Modeled return</span>
+        <span class="payoff-card-copy">The 3 to the left,<br>combined</span>
+        <span class="payoff-arrow" aria-hidden="true"></span>
+      </div>
+    </div>
     <table>
       <thead>
         <tr>
@@ -1728,7 +1881,7 @@ if(whyDetails){
 
 let activeStates = new Set();
 let activeStatuses = new Set(["closed","under_contract","proposed"]);
-let sortMode = "date_asc";
+let sortMode = "date_desc";
 
 function buildChips(){
   const states = [...new Set(DATA.map(d=>d.state))];
