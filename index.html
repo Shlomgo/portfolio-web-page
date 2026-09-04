@@ -1867,6 +1867,53 @@ tbody td.equation-operator-cell{
 }
 .payoff-equation-operator .equation-op.equal::after{font-size:17px;}
 
+/* Full-property-page CTA shown only when the sheet supplies a property page slug. */
+.receipt-property-page-cta-wrap{
+  grid-column:1 / -1;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  min-width:0;
+}
+@media (min-width:1151px){
+  .receipt-property-page-cta-wrap{grid-column:3 / 5;}
+}
+.receipt-property-page-cta,
+.mp-property-page-cta{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  box-sizing:border-box;
+  border:1px solid #E1B85F;
+  border-radius:0;
+  background:rgba(225,184,95,.025);
+  color:#E1B85F;
+  font-family:'IBM Plex Mono',monospace;
+  font-size:11.5px;
+  font-weight:500;
+  line-height:1.2;
+  text-align:center;
+  text-decoration:none;
+  transition:background .12s ease,color .12s ease,border-color .12s ease;
+}
+.receipt-property-page-cta{
+  width:80%;
+  min-height:36px;
+  padding:8px 14px;
+}
+.receipt-property-page-cta:hover,
+.mp-property-page-cta:hover{
+  color:#F0CF82;
+  border-color:#F0CF82;
+  background:rgba(225,184,95,.07);
+}
+.mp-property-page-cta-wrap{margin-top:12px;}
+.mp-property-page-cta{
+  width:100%;
+  min-height:38px;
+  padding:9px 12px;
+}
+
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
 <link rel="icon" href="assets/artemis-favicon.svg" type="image/svg+xml">
@@ -2418,6 +2465,14 @@ function propertyPageLinkHTML(d, mobile=false){
   return `<a class="${cls}" href="${href}" onclick="event.stopPropagation()">View property →</a>`;
 }
 
+function propertyPageDetailLinkHTML(d, mobile=false){
+  const href = propertyPageHref(d);
+  if(!href) return "";
+  const wrapCls = mobile ? "mp-property-page-cta-wrap" : "receipt-property-page-cta-wrap";
+  const cls = mobile ? "mp-property-page-cta" : "receipt-property-page-cta";
+  return `<div class="${wrapCls}"><a class="${cls}" href="${href}" onclick="event.stopPropagation()">View full property page →</a></div>`;
+}
+
 // Shared heading text for a property's expanded underwriting/details panel,
 // used on both desktop and mobile so the wording always matches.
 function detailHeadingText(d){
@@ -2668,6 +2723,7 @@ function detailReceiptLinesHTML(d){
       <div class="mp-detail-line"><span class="mp-dl-label">Property tax</span><span class="mp-dl-val">${fmt$(det.taxY)}/yr</span></div>
       <div class="mp-detail-line"><span class="mp-dl-label">Insurance</span><span class="mp-dl-val">${fmt$(det.insY)}/yr</span></div>
       <div class="mp-detail-line"><span class="mp-dl-label">HOA</span><span class="mp-dl-val">${fmt$(det.hoaY)}/yr</span></div>
+      ${propertyPageDetailLinkHTML(d,true)}
     </div>
 
     <div class="mp-detail-section">
@@ -2872,6 +2928,7 @@ function render(){
                 <div class="receipt-line"><span class="rl-label">Property tax</span><span class="rl-fill"></span><span class="rl-val">${fmt$(det.taxY)}/yr</span></div>
                 <div class="receipt-line"><span class="rl-label">Insurance</span><span class="rl-fill"></span><span class="rl-val">${fmt$(det.insY)}/yr</span></div>
                 <div class="receipt-line"><span class="rl-label">HOA</span><span class="rl-fill"></span><span class="rl-val">${fmt$(det.hoaY)}/yr</span></div>
+                ${propertyPageDetailLinkHTML(d,false)}
               </div>
             </section>
 
