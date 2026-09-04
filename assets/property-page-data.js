@@ -14,11 +14,13 @@
     return cleaned === '' ? NaN : Number(cleaned);
   }
   function money(n, suffix=''){
-    return Number.isFinite(n) ? `$${Math.round(n).toLocaleString('en-US')}${suffix}` : '—';
+    return Number.isFinite(n)
+      ? `$${n.toLocaleString('en-US', {minimumFractionDigits:1, maximumFractionDigits:1})}${suffix}`
+      : '—';
   }
   function pct(n, suffix='%'){
     if(!Number.isFinite(n)) return '—';
-    return `${n.toFixed(2).replace(/\.?0+$/, '')}${suffix}`;
+    return `${n.toFixed(1)}${suffix}`;
   }
   function text(v){
     const s = String(v ?? '').trim();
