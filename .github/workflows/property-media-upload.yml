@@ -22,7 +22,7 @@ jobs:
         shell: bash
         run: |
           cat .property-upload/media.part.* | base64 --decode > /tmp/property-media.tar.gz
-          echo '9af828f638517b9af899ff08d77fa0e553fa4510662a127be70ed5341de1fec1  /tmp/property-media.tar.gz' | sha256sum -c -
+          echo '6a0d7404363e383645fe05a027d13c1cc69d2d75935f475cd55613f84b9cb509  /tmp/property-media.tar.gz' | sha256sum -c -
           tar -xzf /tmp/property-media.tar.gz -C .
 
       - name: Validate media
