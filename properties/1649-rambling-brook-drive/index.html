@@ -10,7 +10,7 @@
 </head>
 <body data-property-slug="1649-rambling-brook-drive">
 <div class="wrap">
-  <div class="topbar"><a class="back" href="../../">&larr; back to The Open Book</a><span class="status-pill">PROPOSED — not yet on market</span></div>
+  <div class="topbar"><a class="back" href="../../" onclick="return openBookBack(event)">&larr; back to The Open Book</a><span class="status-pill">PROPOSED — not yet on market</span></div>
 
   <div class="hero-grid">
     <div>
@@ -82,5 +82,23 @@
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
 <script src="../../assets/property-page-data.js"></script>
+<script id="open-book-back-navigation">
+function openBookBack(event){
+  try{
+    const destination = new URL('../../', window.location.href);
+    const referrer = document.referrer ? new URL(document.referrer) : null;
+    const cameFromOpenBook = referrer &&
+      referrer.origin === destination.origin &&
+      referrer.pathname.replace(/\\/+$/, '/') === destination.pathname.replace(/\\/+$/, '/');
+
+    if(cameFromOpenBook && window.history.length > 1){
+      event.preventDefault();
+      window.history.back();
+      return false;
+    }
+  } catch(_err){}
+  return true;
+}
+</script>
 </body>
 </html>

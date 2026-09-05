@@ -21,7 +21,7 @@ section{margin-bottom:44px}.section-label{font-family:'IBM Plex Mono',monospace;
 </style>
 </head>
 <body><div class="wrap">
-<div class="topbar"><a class="back" href="../../">← back to The Open Book</a><span class="status-pill">PROPOSED — underwriting in progress</span></div>
+<div class="topbar"><a class="back" href="../../" onclick="return openBookBack(event)">← back to The Open Book</a><span class="status-pill">PROPOSED — underwriting in progress</span></div>
 
 <div class="hero-grid">
  <div>
@@ -176,4 +176,22 @@ section{margin-bottom:44px}.section-label{font-family:'IBM Plex Mono',monospace;
 
 <section class="prose"><div class="section-label">Sourcing note</div><p class="muted">This is a proposed investment and has not closed. Purchase terms, financing, rent and returns are underwriting assumptions and can change. The 4.0% appreciation figure is a forecast, not an operating result or guarantee. The lithium mine remains a proposed project subject to approvals and final development decisions. Community amenity and Charlotte-distance information is from D.R. Horton and Cleveland County tourism sources. Financial figures are taken from the NC-02 / “brinkley coles winston” row in the supplied portfolio workbook.</p></section>
 <footer>Part of The Open Book — every deal, closed or proposed, shown the same way.</footer>
-</div></body></html>
+</div><script id="open-book-back-navigation">
+function openBookBack(event){
+  try{
+    const destination = new URL('../../', window.location.href);
+    const referrer = document.referrer ? new URL(document.referrer) : null;
+    const cameFromOpenBook = referrer &&
+      referrer.origin === destination.origin &&
+      referrer.pathname.replace(/\\/+$/, '/') === destination.pathname.replace(/\\/+$/, '/');
+
+    if(cameFromOpenBook && window.history.length > 1){
+      event.preventDefault();
+      window.history.back();
+      return false;
+    }
+  } catch(_err){}
+  return true;
+}
+</script>
+</body></html>
