@@ -1,0 +1,48 @@
+name: Install property discovery flow
+
+on:
+  push:
+    paths:
+      - '.github/workflows/install-property-flow.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  install-property-flow:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Load property flow on the portfolio page
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import re
+
+          p = Path('index.html')
+          s = p.read_text()
+          s = re.sub(r'\n?<script[^>]+id="property-flow-script"[^>]*></script>', '', s)
+          tag = '<script id="property-flow-script" src="property-flow.js?v=20260904-1"></script>'
+          if '</body>' not in s:
+              raise SystemExit('Could not find </body> in index.html')
+          s = s.replace('</body>', tag + '\n</body>', 1)
+          p.write_text(s)
+          PY
+
+      - name: Verify property flow reference
+        run: |
+          test -f property-flow.js
+          grep -q 'property-flow.js?v=20260904-1' index.html
+
+      - name: Commit property flow integration
+        run: |
+          git config user.name 'Open Book updater'
+          git config user.email 'actions@users.noreply.github.com'
+          git add index.html
+          if git diff --cached --quiet; then
+            echo 'No index changes needed.'
+            exit 0
+          fi
+          git commit -m 'Install property discovery flow'
+          git push
