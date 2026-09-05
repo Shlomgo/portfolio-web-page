@@ -2,9 +2,9 @@
 <title>Open Book</title>
 <defs>
   <linearGradient id="gold" x1="0" y1="0" x2="0.25" y2="1">
-    <stop offset="0" stop-color="#FFE08A"/>
-    <stop offset="0.45" stop-color="#F0BC5C"/>
-    <stop offset="1" stop-color="#C88F3F"/>
+    <stop offset="0" stop-color="#C8BDA5"/>
+    <stop offset="0.48" stop-color="#B5A585"/>
+    <stop offset="1" stop-color="#9A8C72"/>
   </linearGradient>
 </defs>
 <g fill="url(#gold)"><path d="M 12 299 L 12 305 L 17 307 L 252 309 L 262 306 L 269 302 L 382 214 L 386 213 L 500 303 L 512 308 L 1636 308 L 1637 309 L 1625 327 L 1628 328 L 1696 304 L 1626 279 L 1625 280 L 1636 297 L 1635 298 L 522 298 L 513 294 L 385 193 L 252 296 L 139 296 L 142 264 L 150 231 L 166 188 L 179 163 L 196 137 L 220 108 L 249 81 L 280 59 L 318 40 L 358 27 L 390 21 L 424 18 L 457 19 L 485 23 L 519 33 L 535 40 L 548 48 L 530 36 L 505 25 L 473 16 L 445 12 L 387 13 L 364 16 L 338 22 L 340 22 L 340 24 L 333 23 L 281 40 L 253 53 L 230 66 L 200 87 L 180 104 L 161 123 L 136 154 L 116 186 L 94 232 L 83 264 L 76 296 Z"/>
