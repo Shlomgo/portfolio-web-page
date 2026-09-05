@@ -1,0 +1,51 @@
+name: Fix render regression
+
+on:
+  push:
+    paths:
+      - '.github/workflows/fix-render-regression.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  fix-page:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Remove stale math helper calls
+        shell: bash
+        run: |
+          python <<'PY'
+          from pathlib import Path
+
+          path = Path('index.html')
+          s = path.read_text()
+          replacements = {
+              '    ${mathToolsHTML(d,true)}\n': '',
+              '    wireMathToggle(uwDetail);\n': '',
+              '          ${mathToolsHTML(d,false)}\n': '',
+              '    wireMathToggle(detailTr);\n': '',
+          }
+          for old, new in replacements.items():
+              count = s.count(old)
+              if count != 1:
+                  raise SystemExit(f'Expected exactly one occurrence of {old!r}, found {count}')
+              s = s.replace(old, new, 1)
+
+          if 'mathToolsHTML(' in s or 'wireMathToggle(' in s:
+              raise SystemExit('Stale math helper reference remains after patch')
+
+          path.write_text(s)
+          PY
+
+          rm .github/workflows/fix-render-regression.yml
+
+          git config user.name "Open Book updater"
+          git config user.email "actions@users.noreply.github.com"
+          git add index.html .github/workflows/fix-render-regression.yml
+          git commit -m "Fix table rendering after explainer cleanup"
+          git push origin HEAD:main
