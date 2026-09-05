@@ -1,0 +1,200 @@
+name: Harden property table loading and navigation
+
+on:
+  push:
+    paths:
+      - '.github/workflows/harden-property-table-loading.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  repair:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Repair table loader, return navigation, and modeled arrow
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import re
+
+          p = Path('index.html')
+          s = p.read_text()
+
+          # Property links from the table explicitly identify that they came from Open Book.
+          s = s.replace(
+              'return `properties/${encodeURIComponent(d.pageSlug)}/`;',
+              'return `properties/${encodeURIComponent(d.pageSlug)}/?from=openbook`;'
+          )
+
+          # The modeled-return guide is a combination, not a fourth data category.
+          # Use the neutral text color instead of the saturated cyan hybrid.
+          s = s.replace('#43d8c9', '#B2AEAA')
+
+          robust_loader = r'''function parseSheetCsv(text){
+            const rows = [];
+            let row = [];
+            let cell = '';
+            let quoted = false;
+
+            for(let i = 0; i < text.length; i++){
+              const ch = text[i];
+              if(quoted){
+                if(ch === '"'){
+                  if(text[i + 1] === '"'){
+                    cell += '"';
+                    i += 1;
+                  } else {
+                    quoted = false;
+                  }
+                } else {
+                  cell += ch;
+                }
+              } else if(ch === '"'){
+                quoted = true;
+              } else if(ch === ','){
+                row.push(cell);
+                cell = '';
+              } else if(ch === '\n'){
+                row.push(cell);
+                rows.push(row);
+                row = [];
+                cell = '';
+              } else if(ch !== '\r'){
+                cell += ch;
+              }
+            }
+
+            if(cell !== '' || row.length){
+              row.push(cell);
+              rows.push(row);
+            }
+
+            if(!rows.length) return [];
+            const headers = rows.shift().map(h => String(h || '').trim());
+            return rows
+              .filter(values => values.some(value => String(value || '').trim() !== ''))
+              .map(values => {
+                const record = {};
+                headers.forEach((header, i) => { record[header] = values[i] ?? ''; });
+                return record;
+              });
+          }
+
+          async function fetchSheetCsv(attempt){
+            const controller = new AbortController();
+            const timer = setTimeout(() => controller.abort(), 10000);
+            try{
+              const separator = SHEET_CSV_URL.includes('?') ? '&' : '?';
+              const url = attempt ? `${SHEET_CSV_URL}${separator}cb=${Date.now()}` : SHEET_CSV_URL;
+              const response = await fetch(url, {
+                method:'GET',
+                mode:'cors',
+                cache:'no-store',
+                credentials:'omit',
+                signal:controller.signal
+              });
+              if(!response.ok) throw new Error(`Sheet request returned ${response.status}`);
+              const text = await response.text();
+              if(!text || text.length < 20) throw new Error('Sheet response was empty.');
+              return text;
+            } finally {
+              clearTimeout(timer);
+            }
+          }
+
+          async function loadData(){
+            try{
+              let csvText;
+              try{
+                csvText = await fetchSheetCsv(0);
+              } catch(firstError){
+                console.warn('First property-data request failed; retrying once.', firstError);
+                await new Promise(resolve => setTimeout(resolve, 500));
+                csvText = await fetchSheetCsv(1);
+              }
+
+              const rawRows = parseSheetCsv(csvText);
+              DATA = rawRows.map(rowToRecord).filter(d=>d.status !== "hide" && d.state && !isNaN(d.price) && d.price > 0);
+              if(!DATA.length) throw new Error('The sheet loaded but contained no usable property rows.');
+
+              assignPropertyIds(DATA);
+              console.log(`Loaded ${DATA.length} properties from your sheet.`);
+              activeStates = new Set(DATA.map(d=>d.state));
+              LEV_SCALE = LEV_MAX_PX / Math.max(...DATA.map(d=>d.price));
+              buildFilterControls();
+              render();
+            } catch(err){
+              console.error('Could not load the Google Sheet:', err);
+              showDataLoadError();
+              if(stickyHeaderState.initialized){
+                stickyHeaderState.shell.classList.remove('is-active');
+              }
+            }
+          }'''
+
+          pattern = r'function loadData\(\)\{.*?\n\}\n\ninitSortableHeaders\(\);'
+          replacement = robust_loader + '\n\ninitSortableHeaders();'
+          s2, count = re.subn(pattern, replacement, s, count=1, flags=re.S)
+          if count != 1:
+              raise SystemExit(f'Expected to replace one loadData block; replaced {count}.')
+          p.write_text(s2)
+
+          helper = r'''<script id="open-book-back-navigation">
+          function openBookBack(event){
+            try{
+              const fromOpenBook = new URLSearchParams(window.location.search).get('from') === 'openbook';
+              if(fromOpenBook && window.history.length > 1){
+                event.preventDefault();
+                window.history.back();
+                return false;
+              }
+            } catch(_err){}
+            return true;
+          }
+          </script>'''
+
+          changed_pages = []
+          for page in Path('properties').glob('*/index.html'):
+              html = page.read_text()
+              original = html
+              html = re.sub(r'\n?<script id="open-book-back-navigation">.*?</script>', '', html, flags=re.S)
+              html = re.sub(
+                  r'<a\s+class="back"\s+href="\.\./\.\./"(?:\s+onclick="[^"]*")?>',
+                  '<a class="back" href="../../" onclick="return openBookBack(event)">',
+                  html,
+                  count=1
+              )
+              if '</body>' in html:
+                  html = html.replace('</body>', helper + '\n</body>', 1)
+              if html != original:
+                  page.write_text(html)
+                  changed_pages.append(str(page))
+
+          print('Updated property pages:', ', '.join(changed_pages))
+          PY
+
+      - name: Verify repairs
+        run: |
+          grep -q 'async function fetchSheetCsv' index.html
+          grep -q 'function parseSheetCsv' index.html
+          grep -q '?from=openbook' index.html
+          if grep -q '#43d8c9' index.html; then
+            echo 'Old cyan modeled-arrow color is still present.'
+            exit 1
+          fi
+          grep -R -q "URLSearchParams(window.location.search).get('from') === 'openbook'" properties/*/index.html
+
+      - name: Commit repairs
+        run: |
+          git config user.name 'Open Book updater'
+          git config user.email 'actions@users.noreply.github.com'
+          git add index.html properties/*/index.html
+          if git diff --cached --quiet; then
+            echo 'No repairs needed.'
+            exit 0
+          fi
+          git commit -m 'Harden property table loading and return navigation'
+          git push
