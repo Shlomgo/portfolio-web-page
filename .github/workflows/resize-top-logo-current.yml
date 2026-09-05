@@ -54,11 +54,7 @@ jobs:
           s = re.sub(r'\n<link[^>]+id="instrument-sans-font"[^>]*>', '', s)
           s = re.sub(r'\n<link[^>]+id="refined-theme-css"[^>]*>', '', s)
 
-          links = '''
-<link id="instrument-sans-font" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
-<link id="refined-theme-css" rel="stylesheet" href="refined-theme.css?v=20260904-1">
-'''.strip()
-
+          links = '<link id="instrument-sans-font" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">\n<link id="refined-theme-css" rel="stylesheet" href="refined-theme.css?v=20260904-1">'
           if '</head>' not in s:
               raise SystemExit('Could not find </head> in index.html')
           s = s.replace('</head>', links + '\n</head>', 1)
