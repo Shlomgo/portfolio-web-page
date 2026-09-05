@@ -20,74 +20,27 @@ jobs:
         run: |
           python - <<'PY'
           from pathlib import Path
+          import re
 
           css = Path('refined-theme.css')
           c = css.read_text()
 
-          # Remove the older proposed-row inset rail that was stacking under the new rail.
           c = c.replace('tbody tr.data-row.status-proposed-row td:first-child{box-shadow:inset 2px 0 0 var(--brand-accent)!important;}\n', '')
 
-          old = '''tbody tr.data-row > td:first-child::before{
-  content:'';
-  position:absolute;
-  z-index:1;
-  left:0;
-  top:1px;
-  bottom:1px;
-  width:7px;
-  border-radius:6px 0 0 6px;
-  background:var(--row-status-color);
-  box-shadow:
-    inset 1px 0 0 rgba(255,255,255,.14),
-    inset -1px 0 0 rgba(0,0,0,.34),
-    1px 0 0 rgba(255,255,255,.03);
-  pointer-events:none;
-}
-tbody tr.data-row > td:first-child::after{
-  content:'';
-  position:absolute;
-  z-index:2;
-  left:4px;
-  top:5px;
-  bottom:5px;
-  width:1px;
-  border-radius:1px;
-  background:rgba(20,22,25,.58);
-  box-shadow:1px 0 0 rgba(255,255,255,.10);
-  pointer-events:none;
-}
-'''
-          new = '''tbody tr.data-row > td:first-child::before{
-  content:'';
-  position:absolute;
-  z-index:1;
-  left:0;
-  top:1px;
-  bottom:1px;
-  width:7px;
-  border-radius:6px 0 0 6px;
-  background:var(--row-status-color);
-  box-shadow:
-    inset 1px 0 0 rgba(255,255,255,.16),
-    inset -1px 0 0 rgba(0,0,0,.38),
-    1px 0 0 rgba(255,255,255,.025);
-  pointer-events:none;
-}
-tbody tr.data-row > td:first-child::after{
-  content:none!important;
-}
-'''
-          if old not in c:
-              raise SystemExit('Expected current status rail block not found')
-          c = c.replace(old, new, 1)
+          pattern = r"tbody tr\.data-row > td:first-child::after\{.*?\}\n"
+          replacement = "tbody tr.data-row > td:first-child::after{\n  content:none!important;\n}\n"
+          c, count = re.subn(pattern, replacement, c, count=1, flags=re.S)
+          if count != 1:
+              raise SystemExit('Expected status rail after-layer not found')
+
+          c = c.replace('inset 1px 0 0 rgba(255,255,255,.14),\n    inset -1px 0 0 rgba(0,0,0,.34),\n    1px 0 0 rgba(255,255,255,.03);', 'inset 1px 0 0 rgba(255,255,255,.16),\n    inset -1px 0 0 rgba(0,0,0,.38),\n    1px 0 0 rgba(255,255,255,.025);', 1)
           css.write_text(c)
 
           index = Path('index.html')
           s = index.read_text()
           if 'refined-theme.css?v=20260904-3' not in s:
               raise SystemExit('Expected stylesheet cache key not found')
-          s = s.replace('refined-theme.css?v=20260904-3', 'refined-theme.css?v=20260904-4', 1)
-          index.write_text(s)
+          index.write_text(s.replace('refined-theme.css?v=20260904-3', 'refined-theme.css?v=20260904-4', 1))
           PY
 
       - name: Commit single rail fix
