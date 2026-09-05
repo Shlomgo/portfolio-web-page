@@ -1,0 +1,59 @@
+name: Resize top logo current
+
+on:
+  push:
+    paths:
+      - '.github/workflows/resize-top-logo-current.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  resize:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Double only the masthead logo from its current effective size
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p = Path('index.html')
+          s = p.read_text()
+          old = '''.artemis-mark,
+.artemis-faq-mark,
+.artemis-footer-mark{width:164px;}
+@media (max-width:900px){
+  .artemis-mark,
+  .artemis-faq-mark,
+  .artemis-footer-mark{width:144px;}
+}
+@media (max-width:640px){
+  .artemis-mark,
+  .artemis-faq-mark,
+  .artemis-footer-mark{width:124px;}
+}'''
+          new = '''.artemis-mark{width:328px;}
+.artemis-faq-mark,
+.artemis-footer-mark{width:164px;}
+@media (max-width:900px){
+  .artemis-mark{width:288px;}
+  .artemis-faq-mark,
+  .artemis-footer-mark{width:144px;}
+}
+@media (max-width:640px){
+  .artemis-mark{width:248px;}
+  .artemis-faq-mark,
+  .artemis-footer-mark{width:124px;}
+}'''
+          if old not in s:
+              raise SystemExit('Expected effective logo override not found')
+          s = s.replace(old, new, 1)
+          p.write_text(s)
+          PY
+      - name: Commit corrected masthead resize
+        run: |
+          git config user.name 'Open Book updater'
+          git config user.email 'actions@users.noreply.github.com'
+          git add index.html
+          git commit -m 'Double top logo from current effective size'
+          git push
