@@ -135,11 +135,13 @@ jobs:
             }
           }'''
 
-          pattern = r'function loadData\(\)\{.*?\n\}\n\ninitSortableHeaders\(\);'
+          pattern = r'function (?:parseSheetCsv\(text\)\{.*?\n\}\n\nasync function fetchSheetCsv\(attempt\)\{.*?\n\}\n\nasync function )?loadData\(\)\{.*?\n\}\n\ninitSortableHeaders\(\);'
           replacement = robust_loader + '\n\ninitSortableHeaders();'
-          s2, count = re.subn(pattern, replacement, s, count=1, flags=re.S)
+          # Use a function replacement so backslashes inside JavaScript string literals
+          # are not interpreted by Python's regex replacement engine.
+          s2, count = re.subn(pattern, lambda _m: replacement, s, count=1, flags=re.S)
           if count != 1:
-              raise SystemExit(f'Expected to replace one loadData block; replaced {count}.')
+              raise SystemExit(f'Expected to replace one loader block; replaced {count}.')
           p.write_text(s2)
 
           helper = r'''<script id="open-book-back-navigation">
@@ -176,7 +178,7 @@ jobs:
           print('Updated property pages:', ', '.join(changed_pages))
           PY
 
-      - name: Verify repairs
+      - name: Verify repairs and JavaScript syntax
         run: |
           grep -q 'async function fetchSheetCsv' index.html
           grep -q 'function parseSheetCsv' index.html
@@ -186,6 +188,17 @@ jobs:
             exit 1
           fi
           grep -R -q "URLSearchParams(window.location.search).get('from') === 'openbook'" properties/*/index.html
+          python - <<'PY'
+          from pathlib import Path
+          import re
+          html = Path('index.html').read_text()
+          scripts = re.findall(r'<script(?:\s[^>]*)?>(.*?)</script>', html, flags=re.S)
+          main = next((script for script in scripts if 'LOAD DATA FROM GOOGLE SHEETS' in script), None)
+          if main is None:
+              raise SystemExit('Could not locate main inline JavaScript for syntax check.')
+          Path('/tmp/open-book-main.js').write_text(main)
+          PY
+          node --check /tmp/open-book-main.js
 
       - name: Commit repairs
         run: |
@@ -196,5 +209,5 @@ jobs:
             echo 'No repairs needed.'
             exit 0
           fi
-          git commit -m 'Harden property table loading and return navigation'
+          git commit -m 'Fix property table loader syntax and navigation'
           git push
