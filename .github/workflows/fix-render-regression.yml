@@ -13,53 +13,60 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Run page in headless Chrome
+      - name: Verify table and info popup behavior
         shell: bash
         run: |
-          set -u
+          python3 - <<'PY'
+          from pathlib import Path
+          p = Path('index.html')
+          s = p.read_text()
+          probe = r'''<script>
+          setTimeout(() => {
+            const dot = document.querySelector('.column-header-row .info-dot');
+            if (dot) {
+              dot.click();
+              const tip = dot.querySelector('.tip');
+              document.body.dataset.headerInfoOpen = String(dot.classList.contains('open'));
+              if (tip) {
+                const cs = getComputedStyle(tip);
+                const r = tip.getBoundingClientRect();
+                document.body.dataset.headerTipVisibility = cs.visibility;
+                document.body.dataset.headerTipOpacity = cs.opacity;
+                document.body.dataset.headerTipRect = [Math.round(r.left),Math.round(r.top),Math.round(r.right),Math.round(r.bottom)].join(',');
+              }
+            }
+            const comparison = document.querySelector('.comparison-info');
+            if (comparison) {
+              comparison.click();
+              const tip = comparison.querySelector('.tip');
+              document.body.dataset.comparisonInfoOpen = String(comparison.classList.contains('open'));
+              if (tip) {
+                const cs = getComputedStyle(tip);
+                document.body.dataset.comparisonTipVisibility = cs.visibility;
+                document.body.dataset.comparisonTipOpacity = cs.opacity;
+              }
+            }
+          }, 7000);
+          </script>'''
+          s = s.replace('</body>', probe + '\n</body>')
+          p.write_text(s)
+          PY
+
           python3 -m http.server 8000 >/tmp/server.log 2>&1 &
           SERVER_PID=$!
           sleep 2
-
-          CHROME=""
-          for candidate in google-chrome google-chrome-stable chromium chromium-browser; do
-            if command -v "$candidate" >/dev/null 2>&1; then CHROME="$candidate"; break; fi
-          done
-          if [ -z "$CHROME" ]; then
-            echo "No Chrome/Chromium binary found"
-            exit 1
-          fi
-          echo "Using browser: $CHROME"
-
-          set +e
-          "$CHROME" \
-            --headless=new \
-            --no-sandbox \
-            --disable-gpu \
-            --disable-dev-shm-usage \
-            --virtual-time-budget=12000 \
-            --enable-logging=stderr \
-            --v=0 \
-            --dump-dom http://127.0.0.1:8000/index.html \
-            >/tmp/dom.html 2>/tmp/chrome.log
-          CHROME_EXIT=$?
-          set -e
-
+          CHROME=$(command -v google-chrome || command -v google-chrome-stable || command -v chromium || command -v chromium-browser)
+          "$CHROME" --headless=new --no-sandbox --disable-gpu --disable-dev-shm-usage --virtual-time-budget=15000 --dump-dom http://127.0.0.1:8000/index.html >/tmp/dom.html 2>/tmp/chrome.log || true
           kill "$SERVER_PID" 2>/dev/null || true
-          echo "Chrome exit: $CHROME_EXIT"
-          echo "--- console / browser errors ---"
-          grep -Ei "Uncaught|ReferenceError|TypeError|SyntaxError|SEVERE|Papa|Could not load|error" /tmp/chrome.log || true
-          echo "--- rendered page signals ---"
+
           python3 - <<'PY'
           from pathlib import Path
+          import re
           dom = Path('/tmp/dom.html').read_text(errors='ignore')
           print('data rows:', dom.count('class="data-row'))
-          print('mobile cards:', dom.count('class="mp-card'))
-          for needle in ['Showing ', 'Could not load data from the Google Sheet', 'Recommended + Available']:
-              print(needle, '=>', needle in dom)
-          idx = dom.find('countNote')
-          if idx >= 0:
-              print('countNote context:', dom[max(0,idx-250):idx+500])
+          body = re.search(r'<body([^>]*)>', dom)
+          attrs = body.group(1) if body else ''
+          print('body diagnostic attrs:', attrs)
+          for key in ['data-header-info-open="true"','data-header-tip-visibility="visible"','data-header-tip-opacity="1"','data-comparison-info-open="true"','data-comparison-tip-visibility="visible"','data-comparison-tip-opacity="1"']:
+              print(key, '=>', key in dom)
           PY
-          echo "--- server log ---"
-          cat /tmp/server.log || true
