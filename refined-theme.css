@@ -182,7 +182,7 @@ tbody tr.data-row.status-proposed-row td:first-child{box-shadow:inset 2px 0 0 va
 }
 .th-modeled-sub{color:var(--text-secondary)!important;}
 
-/* Operators remain explanatory, not decorative. */
+/* Restore the approved equation semantics: green + signs and a true green/blue hybrid =. */
 .equation-op.plus{
   color:var(--actual-primary)!important;
   border-color:var(--actual-border)!important;
@@ -190,18 +190,32 @@ tbody tr.data-row.status-proposed-row td:first-child{box-shadow:inset 2px 0 0 va
   box-shadow:none!important;
 }
 .equation-op.equal{
-  color:var(--text-secondary)!important;
-  font-size:14px!important;
-  border:1px solid var(--border-strong)!important;
-  background:var(--bg)!important;
+  color:transparent!important;
+  font-size:0!important;
+  border:1px solid transparent!important;
+  background:
+    linear-gradient(var(--bg),var(--bg)) padding-box,
+    linear-gradient(90deg,var(--actual-primary),var(--forecast-primary)) border-box!important;
   box-shadow:none!important;
 }
 .equation-op.equal::after{
-  color:var(--text-secondary)!important;
-  -webkit-text-fill-color:var(--text-secondary)!important;
-  background:none!important;
+  content:'=';
+  font-family:'IBM Plex Mono',monospace;
+  font-size:14px;
+  font-weight:600;
+  line-height:1;
+  background:linear-gradient(90deg,var(--actual-primary),var(--forecast-primary))!important;
+  -webkit-background-clip:text!important;
+  background-clip:text!important;
+  -webkit-text-fill-color:transparent!important;
+  color:transparent!important;
 }
 .payoff-equation-operator .equation-op.equal::after{font-size:17px!important;}
+
+/* Keep the modeled-return forecast segment at the original bright forecast blue. */
+.tr-predicted{
+  background:repeating-linear-gradient(135deg,#38BDF8,#38BDF8 2px,rgba(56,189,248,.35) 2px,rgba(56,189,248,.35) 4px)!important;
+}
 
 /* Crisp geometry, not rounded SaaS styling. */
 .filter-trigger,

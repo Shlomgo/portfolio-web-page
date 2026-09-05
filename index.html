@@ -2496,7 +2496,6 @@ thead th.sortable:focus-visible{
 }
 
 </style>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
 <link rel="icon" href="assets/artemis-favicon.svg" type="image/svg+xml">
 <link rel="icon" href="assets/favicon.ico" sizes="any">
 <link rel="icon" type="image/png" sizes="48x48" href="assets/artemis-favicon-48.png">
@@ -4078,22 +4077,36 @@ function parseSheetCsv(text){
     });
 }
 
-async function fetchSheetCsv(attempt){
+const PROPERTY_DATA_SNAPSHOT_URL = "property-data.csv";
+const PROPERTY_DATA_CACHE_KEY = "openBookPropertyDataCsvV2";
+
+function applyPropertyDataCsv(csvText, source){
+  const rawRows = parseSheetCsv(csvText);
+  const nextData = rawRows.map(rowToRecord).filter(d=>d.status !== "hide" && d.state && !isNaN(d.price) && d.price > 0);
+  if(!nextData.length) throw new Error(`No usable property rows in ${source}.`);
+
+  DATA = nextData;
+  assignPropertyIds(DATA);
+  console.log(`Loaded ${DATA.length} properties from ${source}.`);
+  activeStates = new Set(DATA.map(d=>d.state));
+  LEV_SCALE = LEV_MAX_PX / Math.max(...DATA.map(d=>d.price));
+  buildFilterControls();
+  render();
+}
+
+async function fetchPropertySnapshot(){
   const controller = new AbortController();
-  const timer = setTimeout(() => controller.abort(), 10000);
+  const timer = setTimeout(() => controller.abort(), 8000);
   try{
-    const separator = SHEET_CSV_URL.includes('?') ? '&' : '?';
-    const url = attempt ? `${SHEET_CSV_URL}${separator}cb=${Date.now()}` : SHEET_CSV_URL;
-    const response = await fetch(url, {
+    const response = await fetch(`${PROPERTY_DATA_SNAPSHOT_URL}?v=${Date.now()}`, {
       method:'GET',
-      mode:'cors',
       cache:'no-store',
-      credentials:'omit',
+      credentials:'same-origin',
       signal:controller.signal
     });
-    if(!response.ok) throw new Error(`Sheet request returned ${response.status}`);
+    if(!response.ok) throw new Error(`Snapshot request returned ${response.status}`);
     const text = await response.text();
-    if(!text || text.length < 20) throw new Error('Sheet response was empty.');
+    if(!text || text.length < 20) throw new Error('Property snapshot was empty.');
     return text;
   } finally {
     clearTimeout(timer);
@@ -4101,32 +4114,31 @@ async function fetchSheetCsv(attempt){
 }
 
 async function loadData(){
+  let snapshotError = null;
   try{
-    let csvText;
-    try{
-      csvText = await fetchSheetCsv(0);
-    } catch(firstError){
-      console.warn('First property-data request failed; retrying once.', firstError);
-      await new Promise(resolve => setTimeout(resolve, 500));
-      csvText = await fetchSheetCsv(1);
-    }
-
-    const rawRows = parseSheetCsv(csvText);
-    DATA = rawRows.map(rowToRecord).filter(d=>d.status !== "hide" && d.state && !isNaN(d.price) && d.price > 0);
-    if(!DATA.length) throw new Error('The sheet loaded but contained no usable property rows.');
-
-    assignPropertyIds(DATA);
-    console.log(`Loaded ${DATA.length} properties from your sheet.`);
-    activeStates = new Set(DATA.map(d=>d.state));
-    LEV_SCALE = LEV_MAX_PX / Math.max(...DATA.map(d=>d.price));
-    buildFilterControls();
-    render();
+    const csvText = await fetchPropertySnapshot();
+    applyPropertyDataCsv(csvText, 'same-origin snapshot');
+    try{ localStorage.setItem(PROPERTY_DATA_CACHE_KEY, csvText); }catch(_err){}
+    return;
   } catch(err){
-    console.error('Could not load the Google Sheet:', err);
-    showDataLoadError();
-    if(stickyHeaderState.initialized){
-      stickyHeaderState.shell.classList.remove('is-active');
+    snapshotError = err;
+    console.warn('Same-origin property snapshot failed; trying browser cache.', err);
+  }
+
+  try{
+    const cached = localStorage.getItem(PROPERTY_DATA_CACHE_KEY);
+    if(cached){
+      applyPropertyDataCsv(cached, 'browser cache');
+      return;
     }
+  } catch(cacheError){
+    console.warn('Property-data browser cache was unavailable.', cacheError);
+  }
+
+  console.error('Could not load property data:', snapshotError);
+  showDataLoadError();
+  if(stickyHeaderState.initialized){
+    stickyHeaderState.shell.classList.remove('is-active');
   }
 }
 
