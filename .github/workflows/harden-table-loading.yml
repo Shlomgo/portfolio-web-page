@@ -1,0 +1,222 @@
+name: Harden table loading and info popups
+
+on:
+  push:
+    paths:
+      - '.github/workflows/harden-table-loading.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  patch-page:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Patch and browser-test page
+        shell: bash
+        run: |
+          python3 <<'PY'
+          from pathlib import Path
+          import re
+
+          p = Path('index.html')
+          s = p.read_text()
+
+          old = '<tbody id="tableBody"></tbody>'
+          new = '<tbody id="tableBody"><tr class="table-message-row"><td colspan="15"><div class="table-load-message">Loading properties…</div></td></tr></tbody>'
+          if s.count(old) != 1:
+              raise SystemExit(f'Expected one empty table body, found {s.count(old)}')
+          s = s.replace(old, new, 1)
+
+          old = '<div id="mobilePropertyList" class="mobile-property-list"></div>'
+          new = '<div id="mobilePropertyList" class="mobile-property-list"><div class="mobile-load-message">Loading properties…</div></div>'
+          if s.count(old) != 1:
+              raise SystemExit(f'Expected one mobile property list, found {s.count(old)}')
+          s = s.replace(old, new, 1)
+
+          css = r'''
+
+/* ===== Table loading resilience + unclipped click popups ===== */
+.table-message-row td{
+  height:72px;
+  padding:18px 8px;
+  border-bottom:1px solid var(--status-border);
+}
+.table-load-message,
+.mobile-load-message{
+  color:var(--text-secondary);
+  font-family:'IBM Plex Mono',monospace;
+  font-size:11.5px;
+  letter-spacing:.01em;
+}
+.mobile-load-message{
+  padding:20px 2px;
+  border-top:1px solid var(--status-border);
+  border-bottom:1px solid var(--status-border);
+}
+.table-load-message.is-error,
+.mobile-load-message.is-error{color:#d6b77a;}
+.info-dot.clicked-open .tip,
+.fx-dot.clicked-open .tip{
+  z-index:9999;
+}
+'''
+          if '/* ===== Table loading resilience + unclipped click popups ===== */' not in s:
+              s = s.replace('</style>', css + '\n</style>', 1)
+
+          listener_pattern = re.compile(r'''document\.addEventListener\("click", \(e\)=>\{\n  if\(e\.target\.closest\("\\\.tip"\)\)\{ e\.stopPropagation\(\); return; \}\n  const dot = e\.target\.closest\("\\\.info-dot, \\.fx-dot"\);\n  document\.querySelectorAll\("\\\.info-dot\\\.open, \\.fx-dot\\\.open"\)\.forEach\(el=>\{ if\(el!==dot\) el\.classList\.remove\("open"\); \}\);\n  if\(dot\)\{\n    e\.stopPropagation\(\);\n    dot\.classList\.toggle\("open"\);\n  \}\n\}\);''')
+
+          # Use literal replacement because the current listener is intentionally compact.
+          old_listener = '''document.addEventListener("click", (e)=>{
+  if(e.target.closest(".tip")){ e.stopPropagation(); return; }
+  const dot = e.target.closest(".info-dot, .fx-dot");
+  document.querySelectorAll(".info-dot.open, .fx-dot.open").forEach(el=>{ if(el!==dot) el.classList.remove("open"); });
+  if(dot){
+    e.stopPropagation();
+    dot.classList.toggle("open");
+  }
+});'''
+          new_listener = '''function resetClickedTip(dot){
+  if(!dot) return;
+  dot.classList.remove("clicked-open");
+  const tip = dot.querySelector(".tip");
+  if(!tip) return;
+  ["position","left","top","right","bottom","transform","zIndex"].forEach(prop=> tip.style[prop] = "");
+}
+
+function positionClickedTip(dot){
+  const tip = dot && dot.querySelector(".tip");
+  if(!tip) return;
+  dot.classList.add("clicked-open");
+  tip.style.position = "fixed";
+  tip.style.left = "16px";
+  tip.style.top = "16px";
+  tip.style.right = "auto";
+  tip.style.bottom = "auto";
+  tip.style.transform = "none";
+  tip.style.zIndex = "9999";
+
+  requestAnimationFrame(()=>{
+    if(!dot.classList.contains("open")) return;
+    const anchor = dot.getBoundingClientRect();
+    const box = tip.getBoundingClientRect();
+    const gap = 8;
+    const edge = 12;
+    let left = anchor.left + anchor.width/2 - box.width/2;
+    left = Math.max(edge, Math.min(left, window.innerWidth - box.width - edge));
+    let top = anchor.bottom + gap;
+    if(top + box.height > window.innerHeight - edge){
+      top = anchor.top - box.height - gap;
+    }
+    top = Math.max(edge, Math.min(top, window.innerHeight - box.height - edge));
+    tip.style.left = `${Math.round(left)}px`;
+    tip.style.top = `${Math.round(top)}px`;
+  });
+}
+
+document.addEventListener("click", (e)=>{
+  if(e.target.closest(".tip")){ e.stopPropagation(); return; }
+  const dot = e.target.closest(".info-dot, .fx-dot");
+  document.querySelectorAll(".info-dot.open, .fx-dot.open").forEach(el=>{
+    if(el!==dot){ el.classList.remove("open"); resetClickedTip(el); }
+  });
+  if(dot){
+    e.stopPropagation();
+    const opening = !dot.classList.contains("open");
+    dot.classList.toggle("open", opening);
+    if(opening) positionClickedTip(dot);
+    else resetClickedTip(dot);
+  }
+});
+
+window.addEventListener("resize", ()=>{
+  document.querySelectorAll(".info-dot.open.clicked-open, .fx-dot.open.clicked-open").forEach(positionClickedTip);
+});'''
+          if s.count(old_listener) != 1:
+              raise SystemExit(f'Expected one tooltip click listener, found {s.count(old_listener)}')
+          s = s.replace(old_listener, new_listener, 1)
+
+          load_marker = '// ===== LOAD DATA FROM GOOGLE SHEETS, THEN BUILD THE PAGE =====\nfunction loadData(){'
+          helper = '''// ===== LOAD DATA FROM GOOGLE SHEETS, THEN BUILD THE PAGE =====
+function showDataLoadError(){
+  const body = document.getElementById("tableBody");
+  if(body){
+    body.innerHTML = '<tr class="table-message-row"><td colspan="15"><div class="table-load-message is-error">Could not load property data. Please refresh the page.</div></td></tr>';
+  }
+  const mobile = document.getElementById("mobilePropertyList");
+  if(mobile){
+    mobile.innerHTML = '<div class="mobile-load-message is-error">Could not load property data. Please refresh the page.</div>';
+  }
+  const count = document.getElementById("countNote");
+  if(count) count.textContent = "Property data unavailable";
+}
+
+function loadData(){'''
+          if s.count(load_marker) != 1:
+              raise SystemExit(f'Expected one loadData marker, found {s.count(load_marker)}')
+          s = s.replace(load_marker, helper, 1)
+
+          old_start = '''function loadData(){
+  const wrap = document.querySelector(".table-wrap");
+  Papa.parse(SHEET_CSV_URL, {'''
+          new_start = '''function loadData(){
+  const wrap = document.querySelector(".table-wrap");
+  if(!window.Papa || typeof window.Papa.parse !== "function"){
+    console.error("Papa Parse did not load.");
+    showDataLoadError();
+    return;
+  }
+  Papa.parse(SHEET_CSV_URL, {'''
+          if s.count(old_start) != 1:
+              raise SystemExit(f'Expected one loadData start, found {s.count(old_start)}')
+          s = s.replace(old_start, new_start, 1)
+
+          old_error = '''      if(wrap){
+        wrap.innerHTML = '<p style="color:#38bdf8;font-family:monospace;">Could not load data from the Google Sheet. Check that SHEET_CSV_URL is set correctly and the sheet is published to the web.</p>';
+      }
+      if(stickyHeaderState.initialized){'''
+          new_error = '''      showDataLoadError();
+      if(stickyHeaderState.initialized){'''
+          if s.count(old_error) != 1:
+              raise SystemExit(f'Expected one sheet error handler, found {s.count(old_error)}')
+          s = s.replace(old_error, new_error, 1)
+
+          p.write_text(s)
+          PY
+
+          node --check <(python3 - <<'PY'
+          from pathlib import Path
+          import re
+          s = Path('index.html').read_text()
+          scripts = re.findall(r'<script(?:\s[^>]*)?>(.*?)</script>', s, flags=re.S)
+          print([x for x in scripts if x.strip()][-1])
+          PY
+          )
+
+          python3 -m http.server 8000 >/tmp/server.log 2>&1 &
+          SERVER_PID=$!
+          sleep 2
+          CHROME=$(command -v google-chrome || command -v google-chrome-stable || command -v chromium || command -v chromium-browser)
+          "$CHROME" --headless=new --no-sandbox --disable-gpu --disable-dev-shm-usage --virtual-time-budget=14000 --dump-dom http://127.0.0.1:8000/index.html >/tmp/dom.html 2>/tmp/chrome.log || true
+          kill "$SERVER_PID" 2>/dev/null || true
+          python3 - <<'PY'
+          from pathlib import Path
+          dom = Path('/tmp/dom.html').read_text(errors='ignore')
+          rows = dom.count('class="data-row')
+          if rows < 1:
+              raise SystemExit('Browser test rendered no data rows')
+          if 'Showing 25 of 25 properties' not in dom:
+              print('Warning: row count rendered but expected count-note text not found')
+          print('Browser test data rows:', rows)
+          PY
+
+          rm .github/workflows/harden-table-loading.yml
+          git config user.name "Open Book updater"
+          git config user.email "actions@users.noreply.github.com"
+          git add index.html .github/workflows/harden-table-loading.yml
+          git commit -m "Harden property loading and info popups"
+          git push origin HEAD:main
