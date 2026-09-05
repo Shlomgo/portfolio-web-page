@@ -1,0 +1,62 @@
+name: Sync Open Book property data
+
+on:
+  schedule:
+    - cron: '*/5 * * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: open-book-property-data-sync
+  cancel-in-progress: true
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Fetch and validate Google Sheet snapshot
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import csv, io, re, urllib.request
+
+          html = Path('index.html').read_text()
+          match = re.search(r'const SHEET_CSV_URL = "([^"]+)";', html)
+          if not match:
+              raise SystemExit('Could not find SHEET_CSV_URL in index.html')
+
+          request = urllib.request.Request(match.group(1), headers={'User-Agent':'Mozilla/5.0 OpenBookDataSync/1.0'})
+          with urllib.request.urlopen(request, timeout=30) as response:
+              data = response.read()
+
+          text = data.decode('utf-8-sig')
+          reader = csv.DictReader(io.StringIO(text))
+          required = {'Purchase Price', 'State', 'Status'}
+          fields = set(reader.fieldnames or [])
+          if not required.issubset(fields):
+              raise SystemExit(f'Unexpected CSV headers. Missing: {sorted(required - fields)}')
+          rows = list(reader)
+          if not rows:
+              raise SystemExit('Google Sheet returned no data rows')
+
+          Path('property-data.csv.tmp').write_bytes(data)
+          print(f'Validated {len(rows)} source rows')
+          PY
+
+      - name: Update same-origin snapshot if changed
+        run: |
+          mv property-data.csv.tmp property-data.csv
+          git config user.name 'Open Book data sync'
+          git config user.email 'actions@users.noreply.github.com'
+          git add property-data.csv
+          if git diff --cached --quiet; then
+            echo 'Property data snapshot is already current.'
+            exit 0
+          fi
+          git commit -m 'Refresh property data snapshot'
+          git pull --rebase origin main
+          git push origin HEAD:main
