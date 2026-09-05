@@ -212,9 +212,19 @@ tbody tr.data-row.status-proposed-row td:first-child{box-shadow:inset 2px 0 0 va
 }
 .payoff-equation-operator .equation-op.equal::after{font-size:17px!important;}
 
-/* Keep the modeled-return forecast segment at the original bright forecast blue. */
+/* Forecast share in the modeled-return bar: muted, solid blue rather than stripes. */
 .tr-predicted{
-  background:repeating-linear-gradient(135deg,#38BDF8,#38BDF8 2px,rgba(56,189,248,.35) 2px,rgba(56,189,248,.35) 4px)!important;
+  background:var(--forecast-secondary)!important;
+  border:0!important;
+}
+
+/* Keep the full 1316px desktop table visible whenever the viewport can hold it. */
+.table-wrap > table{margin-right:0!important;}
+@media (min-width:1316px){
+  .page{
+    padding-left:clamp(0px,calc((100vw - 1316px)/2),32px)!important;
+    padding-right:clamp(0px,calc((100vw - 1316px)/2),32px)!important;
+  }
 }
 
 /* Crisp geometry, not rounded SaaS styling. */
