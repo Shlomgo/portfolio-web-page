@@ -4052,13 +4052,12 @@ function parseSheetCsv(text){
     } else if(ch === ','){
       row.push(cell);
       cell = '';
-    } else if(ch === '
-'){
+    } else if(ch === '\n'){
       row.push(cell);
       rows.push(row);
       row = [];
       cell = '';
-    } else if(ch !== ''){
+    } else if(ch !== '\r'){
       cell += ch;
     }
   }
