@@ -2503,7 +2503,7 @@ thead th.sortable:focus-visible{
 <link rel="icon" type="image/png" sizes="16x16" href="assets/artemis-favicon-16.png">
 <link rel="apple-touch-icon" sizes="180x180" href="assets/apple-touch-icon.png">
 <link id="instrument-sans-font" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
-<link id="refined-theme-css" rel="stylesheet" href="refined-theme.css?v=20260904-2">
+<link id="refined-theme-css" rel="stylesheet" href="refined-theme.css?v=20260904-3">
 </head>
 <body>
 <div class="page">
@@ -3000,10 +3000,11 @@ function rowToRecord(row){
 }
 
 const STATUS_LABEL = {closed:"Closed", under_contract:"Under Contract", proposed:"Recommended + Available"};
-const fmtNumber1 = n => Number.isFinite(n) ? n.toLocaleString("en-US",{minimumFractionDigits:1,maximumFractionDigits:1}) : "—";
-const fmt$ = n => Number.isFinite(n) ? "$" + fmtNumber1(n) : "—";
+const fmtNumber0 = n => Number.isFinite(n) ? n.toLocaleString("en-US",{minimumFractionDigits:0,maximumFractionDigits:0}) : "—";
+const fmt$ = n => Number.isFinite(n) ? "$" + fmtNumber0(n) : "—";
 const fmtPct = n => Number.isFinite(n) ? n.toFixed(1) + "%" : "—";
 const fmt1 = n => Number.isFinite(n) ? n.toFixed(1) : "—";
+const fmt0 = n => Number.isFinite(n) ? n.toFixed(0) : "—";
 const fmtLev = n => Number.isFinite(n) ? n.toFixed(1) : "—";
 
 // Turns a full state name into its two-letter abbreviation, e.g. "Arkansas" -> "AR".
@@ -3107,7 +3108,7 @@ const TOTAL_MONTHS_PER_TURN = 31;
 
 function fmtMathMoney(n){
   if(!Number.isFinite(n)) return "—";
-  const formatted = Math.abs(n).toLocaleString("en-US",{minimumFractionDigits:1,maximumFractionDigits:1});
+  const formatted = Math.abs(n).toLocaleString("en-US",{minimumFractionDigits:0,maximumFractionDigits:0});
   return n < 0 ? `−$${formatted}` : `$${formatted}`;
 }
 
@@ -3132,7 +3133,7 @@ function propertyMathHTML(d){
   const calculatedCoc = d.cashflow * 12 / d.invested * 100;
   const calculatedPrincipalPct = d.principal * 12 / d.invested * 100;
 
-  const capexMath = Number(det.capex) === 0 ? '$0.0' : fmtMathMoney(det.capex);
+  const capexMath = Number(det.capex) === 0 ? '$0' : fmtMathMoney(det.capex);
   const totalInvestedExample = `${fmtMathMoney(d.down)} + ${fmtMathMoney(det.closing)} + ${capexMath} = <strong>${fmtMathMoney(d.invested)}</strong>`;
   const rentExample = `${fmtMathMoney(det.rentBase)} × 30 ÷ 31 ≈ <strong>${fmtMathMoney(d.rent)}/mo</strong>`;
   const cashFlowExample = `${fmtMathMoney(d.rent)} − ${fmtMathMoney(det.mortPI)} P&amp;I − ${fmtMathMoney(monthlyTax)} tax − ${fmtMathMoney(monthlyIns)} insurance − ${fmtMathMoney(monthlyHoa)} HOA − ${fmtMathMoney(management)} management ≈ <strong>${fmtMathMoney(d.cashflow)}/mo</strong>`;
@@ -3203,8 +3204,8 @@ function leverageDetailHTML(d){
         <div class="receipt-title">${d.label} · ${d.state} — how the appreciation number breaks down</div>
         <button type="button" class="close-box-btn lev-close-btn" aria-label="Close appreciation breakdown">Close ✕</button>
       </div>
-      <p class="lev-copy">This property ${verb} for <b>${fmt$(d.price)}</b>. The investor put down <b>${fmt$(d.down)}</b> — <b>${fmt1(downPct)}%</b> of the price — and had <b>${fmt$(d.invested)}</b> of total cash invested after closing costs and capex.</p>
-      <div class="lev-driver">${fmt1(downPct)}% down is about <b>${fmtLev(purchaseLeverage)}×</b> purchase leverage. After ${costsText}, the more useful number is <b>${fmtLev(effectiveLeverage)}× effective leverage</b> (${fmt$(d.price)} purchase price ÷ ${fmt$(d.invested)} total invested).</div>
+      <p class="lev-copy">This property ${verb} for <b>${fmt$(d.price)}</b>. The investor put down <b>${fmt$(d.down)}</b> — <b>${fmt0(downPct)}%</b> of the price — and had <b>${fmt$(d.invested)}</b> of total cash invested after closing costs and capex.</p>
+      <div class="lev-driver">${fmt0(downPct)}% down is about <b>${fmt0(purchaseLeverage)}×</b> purchase leverage. After ${costsText}, the more useful number is <b>${fmtLev(effectiveLeverage)}× effective leverage</b> (${fmt$(d.price)} purchase price ÷ ${fmt$(d.invested)} total invested).</div>
       <p class="lev-copy">At a ${fmt1(d.apprPct)}% appreciation assumption, the house gains about <b>${fmt$(gainDollar)}</b> this year on the full ${fmt$(d.price)} property value. Measured against the investor's total cash in the deal, that is a <b>${fmt1(returnOnCash)}%</b> modeled appreciation contribution.</p>
       <div class="lev-wrap">
         <div class="lev-row">
@@ -3646,8 +3647,8 @@ function mobileLeverageHTML(d){
       <div class="lev-detail-head solo">
         <button type="button" class="close-box-btn lev-close-btn" aria-label="Close appreciation breakdown">Close ✕</button>
       </div>
-      <p class="lev-copy">This property ${verb} for <b>${fmt$(d.price)}</b>. The investor put down <b>${fmt$(d.down)}</b> — <b>${fmt1(downPct)}%</b> of the price — with <b>${fmt$(d.invested)}</b> total cash invested.</p>
-      <div class="lev-driver">${fmt1(downPct)}% down ≈ <b>${fmtLev(purchaseLeverage)}×</b> purchase leverage. After ${costsText}: <b>${fmtLev(effectiveLeverage)}× effective leverage</b>.</div>
+      <p class="lev-copy">This property ${verb} for <b>${fmt$(d.price)}</b>. The investor put down <b>${fmt$(d.down)}</b> — <b>${fmt0(downPct)}%</b> of the price — with <b>${fmt$(d.invested)}</b> total cash invested.</p>
+      <div class="lev-driver">${fmt0(downPct)}% down ≈ <b>${fmt0(purchaseLeverage)}×</b> purchase leverage. After ${costsText}: <b>${fmtLev(effectiveLeverage)}× effective leverage</b>.</div>
       <p class="lev-copy"><b>Effective leverage = purchase price ÷ total cash invested.</b> At ${fmt1(d.apprPct)}% assumed appreciation, the ${fmt$(gainDollar)} increase in property value equals a <b>${fmt1(returnOnCash)}%</b> modeled return on total cash invested.</p>
       <div class="lev-wrap">
         <div class="lev-row">
@@ -3778,7 +3779,7 @@ function render(){
           <span class="tr-num">${fmtPct(d.totalReturn)}</span>
           <span class="tr-modeled-label">Modeled</span>
           <span class="tr-split" title="${fmt1(actualPct)}% ${operatingLabel(d)} operating return + ${fmt1(predictedPct)}% forecast appreciation"><span class="tr-a-num">${fmt1(actualPct)}%</span> <span class="tr-plus">+</span> <span class="tr-f-num">${fmt1(predictedPct)}%</span></span>
-          <div class="tr-bar" title="${fmt1(actualShare)}% ${operatingLabel(d)}, ${fmt1(predictedShare)}% forecast">
+          <div class="tr-bar" title="${fmt0(actualShare)}% ${operatingLabel(d)}, ${fmt0(predictedShare)}% forecast">
             <span class="tr-actual" style="width:${actualShare}%"></span>
             <span class="tr-predicted" style="width:${predictedShare}%"></span>
           </div>
