@@ -1,0 +1,227 @@
+:root{
+  --bg:#141619;
+  --text-primary:#EEEAE4;
+  --text-secondary:#B2AEAA;
+  --actual-primary:#72B789;
+  --actual-secondary:#5E9872;
+  --actual-fill:#18251E;
+  --actual-border:#355646;
+  --forecast-primary:#72A5C2;
+  --forecast-secondary:#608AA2;
+  --forecast-fill:#182127;
+  --forecast-border:#385266;
+  --status-fill:#1B1D20;
+  --status-text:#B2AEAA;
+  --status-border:#3A3D42;
+  --brand-accent:#B5A585;
+  --brand-accent-light:#C8BDA5;
+  --border-strong:#4A4E53;
+  --radius:4px;
+}
+
+html,body{background:var(--bg)!important;}
+body{
+  color:var(--text-primary)!important;
+  font-family:'Instrument Sans',sans-serif!important;
+  -webkit-font-smoothing:antialiased;
+  text-rendering:optimizeLegibility;
+}
+h1{
+  font-family:'Fraunces',serif!important;
+  color:var(--text-primary)!important;
+  font-weight:500!important;
+  letter-spacing:-.015em;
+}
+
+/* Use the editorial sans for interface language. Mono stays reserved for data. */
+.masthead-disclosure > summary,
+.legend-row,
+.payoff-inline-legend,
+.control-label,
+.chip,
+.count-note,
+.filter-toolbar,
+.filter-trigger,
+.filter-panel,
+.filter-panel button,
+.filter-panel label,
+.filter-panel input,
+.filter-panel select,
+.status-badge,
+.property-page-link,
+.mp-property-page-link,
+.receipt-property-page-cta,
+.mp-property-page-cta,
+details.methodology-more summary,
+details.why summary,
+.close-box-btn,
+.math-toggle,
+.mp-action,
+details.faq-item summary{
+  font-family:'Instrument Sans',sans-serif!important;
+  letter-spacing:0!important;
+}
+.payoff-copy,
+.payoff-card,
+.ledger-note,
+.math-note,
+.math-name,
+.math-meaning,
+.why-body,
+.curve-method-note,
+.lev-label,
+.lev-punch,
+.lev-copy,
+.faq-body{
+  font-family:'Instrument Sans',sans-serif!important;
+}
+.receipt,.mp-detail{font-family:'Instrument Sans',sans-serif!important;}
+.receipt-line .rl-val,
+.mp-detail-line .mp-dl-val,
+.num,
+.property-id,
+.id-cell,
+td[data-numeric="true"],
+.return-pair,
+.predicted-cell .pv,
+.predicted-cell .ps,
+.tr-num,
+.tr-split,
+.mp-metric-val,
+.mp-metric-sub,
+.mp-modeled-val,
+.mp-modeled-split{
+  font-family:'IBM Plex Mono',monospace!important;
+}
+
+.lede,
+.ledger-note,
+.legend-row,
+.payoff-inline-legend,
+.count-note,
+.payoff-card-copy,
+.faq-body,
+.why-body,
+.lev-copy,
+.math-meaning,
+.num-muted{color:var(--text-secondary)!important;}
+.state-cell{color:var(--text-primary)!important;}
+tbody td{border-bottom-color:rgba(58,61,66,.72)!important;}
+thead th{border-bottom-color:var(--status-border)!important;}
+
+/* Brand warmth is a small champagne detail, never a tint across the page. */
+.property-page-link,
+.mp-property-page-link,
+.receipt-property-page-cta,
+.mp-property-page-cta{color:var(--brand-accent)!important;}
+.property-page-link:hover,
+.mp-property-page-link:hover,
+.receipt-property-page-cta:hover,
+.mp-property-page-cta:hover{color:var(--brand-accent-light)!important;}
+.receipt-property-page-cta,
+.mp-property-page-cta{
+  border-color:var(--brand-accent)!important;
+  background:transparent!important;
+  box-shadow:none!important;
+}
+.receipt-property-page-cta:hover,
+.mp-property-page-cta:hover{
+  border-color:var(--brand-accent-light)!important;
+  background:rgba(181,165,133,.035)!important;
+}
+
+/* Recommended + Available: champagne outline, no amber wash across the row. */
+.status-proposed{
+  background:#1D1D1A!important;
+  color:#C3B69A!important;
+  border-color:#6B624F!important;
+  font-weight:600!important;
+}
+.chip.chip-recommended{color:var(--brand-accent)!important;border-color:#6B624F!important;}
+.chip.chip-recommended.active{
+  color:var(--brand-accent-light)!important;
+  background:rgba(181,165,133,.045)!important;
+  border-color:#81745B!important;
+}
+tbody tr.data-row.status-proposed-row{background:transparent!important;}
+tbody tr.data-row.status-proposed-row:hover{background:rgba(178,174,170,.04)!important;}
+tbody tr.data-row.status-proposed-row td:first-child{box-shadow:inset 2px 0 0 var(--brand-accent)!important;}
+
+/* Quieter semantic colors. */
+.payoff-card.cash,
+.payoff-card.principal{
+  background:var(--actual-fill)!important;
+  border-color:var(--actual-border)!important;
+  box-shadow:none!important;
+}
+.payoff-card.appreciation{
+  background:var(--forecast-fill)!important;
+  border-color:var(--forecast-border)!important;
+  box-shadow:none!important;
+}
+.predicted-cell{
+  background:var(--forecast-fill)!important;
+  border-color:var(--forecast-border)!important;
+  box-shadow:none!important;
+}
+.predicted-cell:hover,.predicted-cell.open{background:#1B282F!important;}
+
+/* Modeled return is neutral; green/blue remain only in the small breakdown bar. */
+.payoff-card.modeled,
+.tr-wrap{
+  background:var(--status-fill)!important;
+  border:1px solid var(--border-strong)!important;
+  box-shadow:none!important;
+}
+.payoff-card.modeled .payoff-card-name,
+.tr-num{color:var(--text-primary)!important;}
+.payoff-card.modeled .payoff-card-copy{color:var(--text-secondary)!important;}
+.payoff-card.modeled .payoff-arrow{
+  color:var(--text-secondary)!important;
+  background:var(--text-secondary)!important;
+}
+.th-modeled-sub{color:var(--text-secondary)!important;}
+
+/* Operators remain explanatory, not decorative. */
+.equation-op.plus{
+  color:var(--actual-primary)!important;
+  border-color:var(--actual-border)!important;
+  background:var(--bg)!important;
+  box-shadow:none!important;
+}
+.equation-op.equal{
+  color:var(--text-secondary)!important;
+  font-size:14px!important;
+  border:1px solid var(--border-strong)!important;
+  background:var(--bg)!important;
+  box-shadow:none!important;
+}
+.equation-op.equal::after{
+  color:var(--text-secondary)!important;
+  -webkit-text-fill-color:var(--text-secondary)!important;
+  background:none!important;
+}
+.payoff-equation-operator .equation-op.equal::after{font-size:17px!important;}
+
+/* Crisp geometry, not rounded SaaS styling. */
+.filter-trigger,
+.filter-panel,
+.payoff-card,
+.tr-wrap,
+.predicted-cell{border-radius:4px!important;}
+.filter-trigger{
+  background:#181A1D!important;
+  border-color:#3D4145!important;
+  color:var(--text-primary)!important;
+}
+.filter-trigger:hover{border-color:#51565B!important;}
+
+.payoff-card,
+.tr-wrap,
+.predicted-cell,
+.status-badge,
+.filter-trigger,
+.filter-panel{
+  filter:none!important;
+  text-shadow:none!important;
+}
