@@ -1,0 +1,76 @@
+/* Shared Open Book theme for every individual property page.
+   Keep this aligned with refined-theme.css on the portfolio page. */
+:root{
+  --bg:#141619;
+  --text-primary:#EEEAE4;
+  --text-secondary:#B2AEAA;
+  --actual-primary:#72B789;
+  --actual-secondary:#5E9872;
+  --actual-fill:#18251E;
+  --actual-border:#355646;
+  --forecast-primary:#72A5C2;
+  --forecast-secondary:#608AA2;
+  --forecast-fill:#182127;
+  --forecast-border:#385266;
+  --status-fill:#1B1D20;
+  --status-text:#B2AEAA;
+  --status-border:#3A3D42;
+  --brand-accent:#B5A585;
+  --brand-accent-light:#C8BDA5;
+
+  /* Legacy aliases used by the existing property-page markup. */
+  --surface:#1B1D20;
+  --surface2:#181A1D;
+  --surface-2:#181A1D;
+  --border:#3A3D42;
+  --text:#EEEAE4;
+  --muted:#B2AEAA;
+  --green:#72B789;
+  --green-dim:#355646;
+  --orange:#72A5C2;
+  --orange-dim:#385266;
+}
+
+html,body{background:var(--bg)!important;color:var(--text-primary)!important;}
+body{color:var(--text-primary)!important;}
+.muted,.hero-sub,.hero-eyebrow,.section-label,.fin-note,.kpi-note,.amenity p,figcaption,footer{color:var(--text-secondary)!important;}
+.topbar,.section-label,footer,.spec-table td,.fin-item{border-color:var(--status-border)!important;}
+.hero-photo,.media-grid figure,figure,.photo-btn,.tag,.kpi-grid,.amenity,.school-card{border-color:var(--status-border)!important;background:var(--status-fill)!important;}
+.hero-photo figcaption,.media-grid figcaption,figcaption{color:var(--text-secondary)!important;border-color:var(--status-border)!important;background:transparent!important;}
+
+/* Champagne is the brand/availability accent, not a page-wide tint. */
+.back:hover,.photo-btn:hover,.link-row a,.video-direct{color:var(--brand-accent)!important;}
+.photo-btn:hover,.link-row a,.video-direct{border-color:var(--brand-accent)!important;}
+.amenity .n{color:var(--brand-accent)!important;}
+
+/* Property status follows the same hierarchy as the portfolio table. */
+.status-pill{background:var(--status-fill)!important;color:var(--status-text)!important;border-color:var(--status-border)!important;font-weight:600;}
+.status-pill.status-proposed{background:#1D1D1A!important;color:#C3B69A!important;border-color:#6B624F!important;}
+.status-pill.status-under-contract,
+.status-pill.status-closed{background:var(--actual-fill)!important;color:var(--actual-primary)!important;border-color:var(--actual-border)!important;}
+
+/* Acquisition and financing structure remain neutral. */
+.fin-group{border-color:var(--status-border)!important;background:transparent!important;}
+.fin-group.modeled,.fin-group.returns{border-color:var(--status-border)!important;background:transparent!important;border-style:solid!important;}
+.fin-group-title,.fin-group.modeled .fin-group-title,.fin-group.returns .fin-group-title{background:var(--status-fill)!important;color:var(--text-secondary)!important;border-color:var(--status-border)!important;}
+.fin-item.total{background:#181A1D!important;}
+.fin-value.actual{color:var(--actual-primary)!important;}
+.fin-value.forecast{color:var(--forecast-primary)!important;}
+.fin-group.returns .fin-item.total .fin-value{color:var(--text-primary)!important;}
+.split-bar{background:var(--status-fill)!important;}
+.seg-actual,.split-bar .seg-actual{background:var(--actual-primary)!important;}
+.seg-forecast,.split-bar .seg-forecast{background:var(--forecast-secondary)!important;}
+
+/* Callouts stay quiet; semantic data colors are reserved for data. */
+.callout{border:1px solid var(--status-border)!important;background:var(--status-fill)!important;}
+.callout-title{color:var(--text-primary)!important;font-style:normal!important;}
+.good-callout{border-color:var(--actual-border)!important;background:var(--actual-fill)!important;}
+.good-callout strong{color:var(--actual-primary)!important;}
+.pending-flag{color:var(--brand-accent)!important;background:#1D1D1A!important;border-color:#6B624F!important;}
+.info-btn{border-color:var(--text-secondary)!important;color:var(--text-secondary)!important;}
+.info-btn:hover{border-color:var(--text-primary)!important;color:var(--text-primary)!important;}
+
+/* Dynamic enhancements on existing pages inherit the same palette. */
+.video-play:hover{border-color:var(--brand-accent)!important;color:var(--brand-accent)!important;}
+.school-rating{background:var(--actual-fill)!important;border:1px solid var(--actual-border)!important;color:var(--actual-primary)!important;}
+.school-metric{border-color:var(--status-border)!important;}

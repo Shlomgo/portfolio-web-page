@@ -13,9 +13,11 @@
     const cleaned = String(v).replace(/[%,$\sx]/gi, '');
     return cleaned === '' ? NaN : Number(cleaned);
   }
+  // Display policy shared with the portfolio page:
+  // money = whole dollars; rates/returns = one decimal.
   function money(n, suffix=''){
     return Number.isFinite(n)
-      ? `$${n.toLocaleString('en-US', {minimumFractionDigits:1, maximumFractionDigits:1})}${suffix}`
+      ? `$${n.toLocaleString('en-US', {minimumFractionDigits:0, maximumFractionDigits:0})}${suffix}`
       : '—';
   }
   function pct(n, suffix='%'){
@@ -40,6 +42,14 @@
   }
 
   function populate(row){
+    const status = String(row['Status'] || '').trim().toLowerCase().replace(/[_\s]+/g, '-');
+    document.querySelectorAll('.status-pill').forEach(el => {
+      el.classList.remove('status-proposed','status-under-contract','status-closed');
+      if(status === 'proposed') el.classList.add('status-proposed');
+      else if(status === 'under-contract') el.classList.add('status-under-contract');
+      else if(status === 'closed') el.classList.add('status-closed');
+    });
+
     const purchasePrice = num(row['Purchase Price']);
     const downPayment = num(row['Down Payment']);
     const closingCosts = num(row['Total Closing Costs']);
