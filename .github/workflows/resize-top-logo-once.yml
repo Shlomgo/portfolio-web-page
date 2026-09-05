@@ -1,0 +1,39 @@
+name: Resize top logo once
+
+on:
+  push:
+    paths:
+      - '.github/workflows/resize-top-logo-once.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  resize:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Double masthead logo size
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p = Path('index.html')
+          s = p.read_text()
+          replacements = {
+              '  .artemis-mark{\n    display:block;\n    width:82px;': '  .artemis-mark{\n    display:block;\n    width:164px;',
+              '    .artemis-mark{width:72px;}': '    .artemis-mark{width:144px;}',
+              '    .artemis-mark{width:62px;margin-bottom:12px;}': '    .artemis-mark{width:124px;margin-bottom:12px;}',
+          }
+          for old, new in replacements.items():
+              if old not in s:
+                  raise SystemExit(f'Expected CSS not found: {old!r}')
+              s = s.replace(old, new, 1)
+          p.write_text(s)
+          PY
+      - name: Commit resize
+        run: |
+          git config user.name 'Open Book updater'
+          git config user.email 'actions@users.noreply.github.com'
+          git add index.html
+          git commit -m 'Double masthead logo size'
+          git push
