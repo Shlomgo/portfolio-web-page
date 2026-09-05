@@ -1,0 +1,152 @@
+name: Apply property page consistency
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/apply-property-page-consistency.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Apply shared property page theme and formatting rules
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+
+          theme = r'''/* Shared Open Book theme for every individual property page.
+             Keep this aligned with refined-theme.css on the portfolio page. */
+          :root{
+            --bg:#141619;
+            --text-primary:#EEEAE4;
+            --text-secondary:#B2AEAA;
+            --actual-primary:#72B789;
+            --actual-secondary:#5E9872;
+            --actual-fill:#18251E;
+            --actual-border:#355646;
+            --forecast-primary:#72A5C2;
+            --forecast-secondary:#608AA2;
+            --forecast-fill:#182127;
+            --forecast-border:#385266;
+            --status-fill:#1B1D20;
+            --status-text:#B2AEAA;
+            --status-border:#3A3D42;
+            --brand-accent:#B5A585;
+            --brand-accent-light:#C8BDA5;
+
+            /* Legacy aliases used by the existing property-page markup. */
+            --surface:#1B1D20;
+            --surface2:#181A1D;
+            --surface-2:#181A1D;
+            --border:#3A3D42;
+            --text:#EEEAE4;
+            --muted:#B2AEAA;
+            --green:#72B789;
+            --green-dim:#355646;
+            --orange:#72A5C2;
+            --orange-dim:#385266;
+          }
+
+          html,body{background:var(--bg)!important;color:var(--text-primary)!important;}
+          body{color:var(--text-primary)!important;}
+          .muted,.hero-sub,.hero-eyebrow,.section-label,.fin-note,.kpi-note,.amenity p,figcaption,footer{color:var(--text-secondary)!important;}
+          .topbar,.section-label,footer,.spec-table td,.fin-item{border-color:var(--status-border)!important;}
+          .hero-photo,.media-grid figure,figure,.photo-btn,.tag,.kpi-grid,.amenity,.school-card{border-color:var(--status-border)!important;background:var(--status-fill)!important;}
+          .hero-photo figcaption,.media-grid figcaption,figcaption{color:var(--text-secondary)!important;border-color:var(--status-border)!important;background:transparent!important;}
+
+          /* Champagne is the brand/availability accent, not a page-wide tint. */
+          .back:hover,.photo-btn:hover,.link-row a,.video-direct{color:var(--brand-accent)!important;}
+          .photo-btn:hover,.link-row a,.video-direct{border-color:var(--brand-accent)!important;}
+          .amenity .n{color:var(--brand-accent)!important;}
+
+          /* Property status follows the same hierarchy as the portfolio table. */
+          .status-pill{background:var(--status-fill)!important;color:var(--status-text)!important;border-color:var(--status-border)!important;font-weight:600;}
+          .status-pill.status-proposed{background:#1D1D1A!important;color:#C3B69A!important;border-color:#6B624F!important;}
+          .status-pill.status-under-contract,
+          .status-pill.status-closed{background:var(--actual-fill)!important;color:var(--actual-primary)!important;border-color:var(--actual-border)!important;}
+
+          /* Acquisition and financing structure remain neutral. */
+          .fin-group{border-color:var(--status-border)!important;background:transparent!important;}
+          .fin-group.modeled,.fin-group.returns{border-color:var(--status-border)!important;background:transparent!important;border-style:solid!important;}
+          .fin-group-title,.fin-group.modeled .fin-group-title,.fin-group.returns .fin-group-title{background:var(--status-fill)!important;color:var(--text-secondary)!important;border-color:var(--status-border)!important;}
+          .fin-item.total{background:#181A1D!important;}
+          .fin-value.actual{color:var(--actual-primary)!important;}
+          .fin-value.forecast{color:var(--forecast-primary)!important;}
+          .fin-group.returns .fin-item.total .fin-value{color:var(--text-primary)!important;}
+          .split-bar{background:var(--status-fill)!important;}
+          .seg-actual,.split-bar .seg-actual{background:var(--actual-primary)!important;}
+          .seg-forecast,.split-bar .seg-forecast{background:var(--forecast-secondary)!important;}
+
+          /* Callouts stay quiet; semantic data colors are reserved for data. */
+          .callout{border:1px solid var(--status-border)!important;background:var(--status-fill)!important;}
+          .callout-title{color:var(--text-primary)!important;font-style:normal!important;}
+          .good-callout{border-color:var(--actual-border)!important;background:var(--actual-fill)!important;}
+          .good-callout strong{color:var(--actual-primary)!important;}
+          .pending-flag{color:var(--brand-accent)!important;background:#1D1D1A!important;border-color:#6B624F!important;}
+          .info-btn{border-color:var(--text-secondary)!important;color:var(--text-secondary)!important;}
+          .info-btn:hover{border-color:var(--text-primary)!important;color:var(--text-primary)!important;}
+
+          /* Dynamic enhancements on existing pages inherit the same palette. */
+          .video-play:hover{border-color:var(--brand-accent)!important;color:var(--brand-accent)!important;}
+          .school-rating{background:var(--actual-fill)!important;border:1px solid var(--actual-border)!important;color:var(--actual-primary)!important;}
+          .school-metric{border-color:var(--status-border)!important;}
+          '''
+          Path('assets/property-page-theme.css').write_text(theme.strip() + '\n', encoding='utf-8')
+
+          # Shared dynamic formatter: dollars are whole dollars; rate/return percentages are one decimal.
+          data_js = Path('assets/property-page-data.js')
+          s = data_js.read_text(encoding='utf-8')
+          old = """  function money(n, suffix=''){\n    return Number.isFinite(n)\n      ? `$${n.toLocaleString('en-US', {minimumFractionDigits:1, maximumFractionDigits:1})}${suffix}`\n      : '—';\n  }"""
+          new = """  // Display policy shared with the portfolio page:\n  // money = whole dollars; rates/returns = one decimal.\n  function money(n, suffix=''){\n    return Number.isFinite(n)\n      ? `$${n.toLocaleString('en-US', {minimumFractionDigits:0, maximumFractionDigits:0})}${suffix}`\n      : '—';\n  }"""
+          if old not in s:
+            raise SystemExit('Expected money formatter was not found in property-page-data.js')
+          s = s.replace(old, new, 1)
+
+          # Apply semantic status classes from the sheet so future status changes recolor automatically.
+          marker = """  function populate(row){\n    const purchasePrice = num(row['Purchase Price']);"""
+          replacement = """  function populate(row){\n    const status = String(row['Status'] || '').trim().toLowerCase().replace(/[_\\s]+/g, '-');\n    document.querySelectorAll('.status-pill').forEach(el => {\n      el.classList.remove('status-proposed','status-under-contract','status-closed');\n      if(status === 'proposed') el.classList.add('status-proposed');\n      else if(status === 'under-contract') el.classList.add('status-under-contract');\n      else if(status === 'closed') el.classList.add('status-closed');\n    });\n\n    const purchasePrice = num(row['Purchase Price']);"""
+          if marker not in s:
+            raise SystemExit('Expected populate() marker was not found in property-page-data.js')
+          s = s.replace(marker, replacement, 1)
+          data_js.write_text(s, encoding='utf-8')
+
+          theme_link = '<link rel="stylesheet" href="../../assets/property-page-theme.css?v=20260904-1">'
+          for rel in ['properties/1649-rambling-brook-drive/index.html','properties/248-colton-court/index.html']:
+            p = Path(rel)
+            html = p.read_text(encoding='utf-8')
+            if 'property-page-theme.css' not in html:
+              html = html.replace('</head>', theme_link + '\n</head>', 1)
+            html = html.replace('class="status-pill">PROPOSED', 'class="status-pill status-proposed">PROPOSED', 1)
+            p.write_text(html, encoding='utf-8')
+
+          # Static Colton page: conform hard-coded financial percentages to the same display policy.
+          colton = Path('properties/248-colton-court/index.html')
+          html = colton.read_text(encoding='utf-8')
+          for oldv,newv in [('4.25%','4.3%'),('3.23%','3.2%'),('2.67%','2.7%'),('21.74%','21.7%')]:
+            html = html.replace(oldv,newv)
+          colton.write_text(html, encoding='utf-8')
+
+          # Document the rules so copied/future property pages remain consistent.
+          readme = Path('properties/README.md')
+          r = readme.read_text(encoding='utf-8')
+          addition = r'''\n\n## Shared visual and number rules\n\nEvery property page must load `../../assets/property-page-theme.css` after its page-specific styles. The shared theme mirrors the portfolio page: charcoal background, warm off-white primary text, one muted gray, green for operating/actual financial data, blue for forecast appreciation, and champagne only for brand/availability accents. Proposed status is champagne; Under Contract and Closed use green.\n\nFinancial display formatting follows the portfolio page:\n\n- Dollar amounts: nearest whole dollar, with no decimal places.\n- Rates, returns, appreciation, and other calculated percentages: one decimal place.\n- Down-payment percentages and simple purchase-leverage figures: whole numbers.\n- Effective leverage: one decimal place.\n- Non-financial measurements keep the precision needed by the source (for example floor-plan feet/inches or an intentionally abbreviated population figure).\n\nPages using `assets/property-page-data.js` inherit the dollar and percentage formatting automatically. Do not hard-code alternate financial precision in a property page.\n'''
+          if '## Shared visual and number rules' not in r:
+            r = r.rstrip() + addition
+          readme.write_text(r, encoding='utf-8')
+
+          Path('.github/workflows/apply-property-page-consistency.yml').unlink()
+          PY
+      - name: Commit changes
+        shell: bash
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -A
+          git commit -m 'Unify property page theme and numeric formatting'
+          git push
