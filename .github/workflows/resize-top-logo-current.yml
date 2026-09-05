@@ -1,4 +1,4 @@
-name: Resize top logo current
+name: Apply refined Open Book theme
 
 on:
   push:
@@ -9,26 +9,306 @@ permissions:
   contents: write
 
 jobs:
-  resize:
+  refine-theme:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Double only the masthead logo from its current effective size
+
+      - name: Refine palette and typography without changing layout
         run: |
           python - <<'PY'
           from pathlib import Path
+          import re
+
           p = Path('index.html')
           s = p.read_text()
-          old = ".artemis-mark,\n.artemis-faq-mark,\n.artemis-footer-mark{width:164px;}\n@media (max-width:900px){\n  .artemis-mark,\n  .artemis-faq-mark,\n  .artemis-footer-mark{width:144px;}\n}\n@media (max-width:640px){\n  .artemis-mark,\n  .artemis-faq-mark,\n  .artemis-footer-mark{width:124px;}\n}"
-          new = ".artemis-mark{width:328px;}\n.artemis-faq-mark,\n.artemis-footer-mark{width:164px;}\n@media (max-width:900px){\n  .artemis-mark{width:288px;}\n  .artemis-faq-mark,\n  .artemis-footer-mark{width:144px;}\n}\n@media (max-width:640px){\n  .artemis-mark{width:248px;}\n  .artemis-faq-mark,\n  .artemis-footer-mark{width:124px;}\n}"
-          if old not in s:
-              raise SystemExit('Expected effective logo override not found')
-          p.write_text(s.replace(old, new, 1))
+
+          # Mute the existing site colors in-place so older rules and hidden states
+          # inherit the same restrained system rather than leaking neon/amber tones.
+          replacements = {
+              '#14171c': '#141619',
+              '#f5f4f0': '#EEEAE4',
+              '#a8a6a0': '#B2AEAA',
+              '#ece4d3': '#EEEAE4',
+              '#4ade80': '#72B789',
+              '#7fbd94': '#5E9872',
+              '#16321f': '#18251E',
+              '#285437': '#355646',
+              '#38bdf8': '#72A5C2',
+              '#7bafc9': '#608AA2',
+              '#132430': '#182127',
+              '#245068': '#385266',
+              '#232720': '#1B1D20',
+              '#3a3d38': '#3A3D42',
+              '#E1B85F': '#B5A585',
+              '#F0CF82': '#C8BDA5',
+              '#78dff0': '#B2AEAA',
+              'rgba(74,222,128': 'rgba(114,183,137',
+              'rgba(56,189,248': 'rgba(114,165,194',
+              'rgba(225,184,95': 'rgba(181,165,133',
+              "font-family:'IBM Plex Sans',sans-serif;": "font-family:'Instrument Sans',sans-serif;",
+              "font-family:'IBM Plex Sans', sans-serif;": "font-family:'Instrument Sans', sans-serif;",
+          }
+          for old, new in replacements.items():
+              s = s.replace(old, new)
+
+          # Idempotent: remove an older copy of this refinement block before adding it.
+          s = re.sub(
+              r'\n<!-- open-book-refined-theme:start -->.*?<!-- open-book-refined-theme:end -->\n',
+              '\n',
+              s,
+              flags=re.S,
+          )
+
+          refinement = r'''
+<!-- open-book-refined-theme:start -->
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style id="open-book-refined-theme">
+  /* 2026-09-04 refined editorial-finance theme.
+     Layout and content stay untouched; this block only tightens color and type. */
+  :root{
+    --bg:#141619;
+    --text-primary:#EEEAE4;
+    --text-secondary:#B2AEAA;
+    --actual-primary:#72B789;
+    --actual-secondary:#5E9872;
+    --actual-fill:#18251E;
+    --actual-border:#355646;
+    --forecast-primary:#72A5C2;
+    --forecast-secondary:#608AA2;
+    --forecast-fill:#182127;
+    --forecast-border:#385266;
+    --status-fill:#1B1D20;
+    --status-text:#B2AEAA;
+    --status-border:#3A3D42;
+    --brand-accent:#B5A585;
+    --brand-accent-light:#C8BDA5;
+    --border-strong:#4A4E53;
+    --radius:4px;
+  }
+
+  html,body{background:var(--bg)!important;}
+  body{
+    color:var(--text-primary)!important;
+    font-family:'Instrument Sans',sans-serif!important;
+    -webkit-font-smoothing:antialiased;
+    text-rendering:optimizeLegibility;
+  }
+  h1{
+    font-family:'Fraunces',serif!important;
+    color:var(--text-primary)!important;
+    font-weight:500!important;
+    letter-spacing:-.015em;
+  }
+
+  /* Editorial sans for interface language; mono remains reserved for data. */
+  .masthead-disclosure > summary,
+  .legend-row,
+  .payoff-inline-legend,
+  .control-label,
+  .chip,
+  .count-note,
+  .filter-toolbar,
+  .filter-trigger,
+  .filter-panel,
+  .filter-panel button,
+  .filter-panel label,
+  .filter-panel input,
+  .filter-panel select,
+  .status-badge,
+  .property-page-link,
+  .mp-property-page-link,
+  .receipt-property-page-cta,
+  .mp-property-page-cta,
+  details.methodology-more summary,
+  details.why summary,
+  .close-box-btn,
+  .math-toggle,
+  .mp-action,
+  details.faq-item summary{
+    font-family:'Instrument Sans',sans-serif!important;
+    letter-spacing:0!important;
+  }
+  .payoff-copy,
+  .payoff-card,
+  .ledger-note,
+  .math-note,
+  .math-name,
+  .math-meaning,
+  .why-body,
+  .curve-method-note,
+  .lev-label,
+  .lev-punch,
+  .lev-copy,
+  .faq-body{
+    font-family:'Instrument Sans',sans-serif!important;
+  }
+  .receipt,.mp-detail{font-family:'Instrument Sans',sans-serif!important;}
+  .receipt-line .rl-val,
+  .mp-detail-line .mp-dl-val,
+  .num,
+  .property-id,
+  .id-cell,
+  td[data-numeric="true"],
+  .return-pair,
+  .predicted-cell .pv,
+  .predicted-cell .ps,
+  .tr-num,
+  .tr-split,
+  .mp-metric-val,
+  .mp-metric-sub,
+  .mp-modeled-val,
+  .mp-modeled-split{
+    font-family:'IBM Plex Mono',monospace!important;
+  }
+
+  /* Cleaner hierarchy and stronger small-text legibility. */
+  .lede,
+  .ledger-note,
+  .legend-row,
+  .payoff-inline-legend,
+  .count-note,
+  .payoff-card-copy,
+  .faq-body,
+  .why-body,
+  .lev-copy,
+  .math-meaning,
+  .num-muted{color:var(--text-secondary)!important;}
+  .state-cell{color:var(--text-primary)!important;}
+  tbody td{border-bottom-color:rgba(58,61,66,.72)!important;}
+  thead th{border-bottom-color:var(--status-border)!important;}
+
+  /* Brand warmth is a detail, never an atmospheric tint. */
+  .property-page-link,
+  .mp-property-page-link,
+  .receipt-property-page-cta,
+  .mp-property-page-cta{color:var(--brand-accent)!important;}
+  .property-page-link:hover,
+  .mp-property-page-link:hover,
+  .receipt-property-page-cta:hover,
+  .mp-property-page-cta:hover{color:var(--brand-accent-light)!important;}
+  .receipt-property-page-cta,
+  .mp-property-page-cta{
+    border-color:var(--brand-accent)!important;
+    background:transparent!important;
+    box-shadow:none!important;
+  }
+  .receipt-property-page-cta:hover,
+  .mp-property-page-cta:hover{
+    border-color:var(--brand-accent-light)!important;
+    background:rgba(181,165,133,.035)!important;
+  }
+
+  /* Recommended + Available: champagne outline, no amber wash across the row. */
+  .status-proposed{
+    background:#1D1D1A!important;
+    color:#C3B69A!important;
+    border-color:#6B624F!important;
+    font-weight:600!important;
+  }
+  .chip.chip-recommended{color:var(--brand-accent)!important;border-color:#6B624F!important;}
+  .chip.chip-recommended.active{
+    color:var(--brand-accent-light)!important;
+    background:rgba(181,165,133,.045)!important;
+    border-color:#81745B!important;
+  }
+  tbody tr.data-row.status-proposed-row{background:transparent!important;}
+  tbody tr.data-row.status-proposed-row:hover{background:rgba(178,174,170,.04)!important;}
+  tbody tr.data-row.status-proposed-row td:first-child{box-shadow:inset 2px 0 0 var(--brand-accent)!important;}
+
+  /* Semantic colors are quieter and used only where they convey meaning. */
+  .payoff-card.cash,
+  .payoff-card.principal{
+    background:var(--actual-fill)!important;
+    border-color:var(--actual-border)!important;
+    box-shadow:none!important;
+  }
+  .payoff-card.appreciation{
+    background:var(--forecast-fill)!important;
+    border-color:var(--forecast-border)!important;
+    box-shadow:none!important;
+  }
+  .predicted-cell{
+    background:var(--forecast-fill)!important;
+    border-color:var(--forecast-border)!important;
+    box-shadow:none!important;
+  }
+  .predicted-cell:hover,.predicted-cell.open{background:#1B282F!important;}
+
+  /* Modeled return is neutral. Green + blue only survive in its small breakdown bar. */
+  .payoff-card.modeled,
+  .tr-wrap{
+    background:var(--status-fill)!important;
+    border:1px solid var(--border-strong)!important;
+    box-shadow:none!important;
+  }
+  .payoff-card.modeled .payoff-card-name,
+  .tr-num{color:var(--text-primary)!important;}
+  .payoff-card.modeled .payoff-card-copy{color:var(--text-secondary)!important;}
+  .payoff-card.modeled .payoff-arrow{
+    color:var(--text-secondary)!important;
+    background:var(--text-secondary)!important;
+  }
+  .th-modeled-sub{color:var(--text-secondary)!important;}
+
+  /* Operators remain explanatory, not decorative. */
+  .equation-op.plus{
+    color:var(--actual-primary)!important;
+    border-color:var(--actual-border)!important;
+    background:var(--bg)!important;
+    box-shadow:none!important;
+  }
+  .equation-op.equal{
+    color:var(--text-secondary)!important;
+    font-size:14px!important;
+    border:1px solid var(--border-strong)!important;
+    background:var(--bg)!important;
+    box-shadow:none!important;
+  }
+  .equation-op.equal::after{
+    color:var(--text-secondary)!important;
+    -webkit-text-fill-color:var(--text-secondary)!important;
+    background:none!important;
+  }
+  .payoff-equation-operator .equation-op.equal::after{font-size:17px!important;}
+
+  /* Small geometry polish: crisp, not SaaS-rounded. */
+  .filter-trigger,
+  .filter-panel,
+  .payoff-card,
+  .tr-wrap,
+  .predicted-cell{border-radius:4px!important;}
+  .filter-trigger{background:#181A1D!important;border-color:#3D4145!important;color:var(--text-primary)!important;}
+  .filter-trigger:hover{border-color:#51565B!important;}
+
+  /* No colored haze or glow. */
+  .payoff-card,
+  .tr-wrap,
+  .predicted-cell,
+  .status-badge,
+  .filter-trigger,
+  .filter-panel{filter:none!important;text-shadow:none!important;}
+</style>
+<!-- open-book-refined-theme:end -->
+'''
+
+          if '</head>' not in s:
+              raise SystemExit('Could not find </head> in index.html')
+          s = s.replace('</head>', refinement + '\n</head>', 1)
+          p.write_text(s)
           PY
-      - name: Commit corrected masthead resize
+
+      - name: Verify expected theme markers
+        run: |
+          grep -q "open-book-refined-theme" index.html
+          grep -q "Instrument+Sans" index.html
+          grep -q "--brand-accent:#B5A585" index.html
+
+      - name: Commit refined site theme
         run: |
           git config user.name 'Open Book updater'
           git config user.email 'actions@users.noreply.github.com'
           git add index.html
-          git commit -m 'Double top logo from current effective size'
+          git commit -m 'Refine site palette and typography'
           git push
