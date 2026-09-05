@@ -14,11 +14,11 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Refine palette and typography without changing layout
+      - name: Update index palette, typography, and theme link
         run: |
           python - <<'PY'
           from pathlib import Path
-          import base64, re
+          import re
 
           p = Path('index.html')
           s = p.read_text()
@@ -51,5 +51,33 @@ jobs:
               s = s.replace(old, new)
 
           s = re.sub(r'\n<!-- open-book-refined-theme:start -->.*?<!-- open-book-refined-theme:end -->\n', '\n', s, flags=re.S)
+          s = re.sub(r'\n<link[^>]+id="instrument-sans-font"[^>]*>', '', s)
+          s = re.sub(r'\n<link[^>]+id="refined-theme-css"[^>]*>', '', s)
 
-          payload = base64.b64decode('PCEtLSBvcGVuLWJvb2stcmVmaW5lZC10aGVtZTpzdGFydCAtLT4KPGxpbmsgcmVsPSJwcmVjb25uZWN0IiBocmVmPSJodHRwczovL2ZvbnRzLmdzdGF0aWMuY29tIiBjcm9zc29yaWdpbj4KPGxpbmsgaHJlZj0iaHR0cHM6Ly9mb250cy5nb29nbGVhcGlzLmNvbS9jc3MyP2ZhbWlseT1JbnN0cnVtZW50K1NhbnM6d2dodEA0MDA7NTAwOzYwMCZkaXNwbGF5PXN3YXAiIHJlbD0ic3R5bGVzaGVldCI+CjxzdHlsZSBpZD0ib3Blbi1ib29rLXJlZmluZWQtdGhlbWUiPgogIC8qIFJlZmluZWQgZWRpdG9yaWFsLWZpbmFuY2UgdGhlbWUuIExheW91dCBhbmQgY29udGVudCBzdGF5IHVudG91Y2hlZC4gKi8KICA6cm9vdHsKICAgIC0tYmc6IzE0MTYxOTsKICAgIC0tdGV4dC1wcmltYXJ5OiNFRUVBRTQ7CiAgICAtLXRleHQtc2Vjb25kYXJ5OiNCMkFFQUE7CiAgICAtLWFjdHVhbC1wcmltYXJ5OiM3MkI3ODk7CiAgICAtLWFjdHVhbC1zZWNvbmRhcnk6IzVFOTg3MjsKICAgIC0tYWN0dWFsLWZpbGw6IzE4MjUxRTsKICAgIC0tYWN0dWFsLWJvcmRlcjojMzU1NjQ2OwogICAgLS1mb3JlY2FzdC1wcmltYXJ5OiM3MkE1QzI7CiAgICAtLWZvcmVjYXN0LXNlY29uZGFyeTojNjA4QUEyOwogICAgLS1mb3JlY2FzdC1maWxsOiMxODIxMjc7CiAgICAtLWZvcmVjYXN0LWJvcmRlcjojMzg1MjY2OwogICAgLS1zdGF0dXMtZmlsbDojMUIxRDIwOwogICAgLS1zdGF0dXMtdGV4dDojQjJBRUFBOwogICAgLS1zdGF0dXMtYm9yZGVyOiMzQTNENDI7CiAgICAtLWJyYW5kLWFjY2VudDojQjVBNTg1OwogICAgLS1icmFuZC1hY2NlbnQtbGlnaHQ6I0M4QkRBNTsKICAgIC0tYm9yZGVyLXN0cm9uZzojNEE0RTUzOwogICAgLS1yYWRpdXM6NHB4OwogIH0KCiAgaHRtbCxib2R5e2JhY2tncm91bmQ6dmFyKC0tYmcpIWltcG9ydGFudDt9CiAgYm9keXsKICAgIGNvbG9yOnZhcigtLXRleHQtcHJpbWFyeSkhaW1wb3J0YW50OwogICAgZm9udC1mYW1pbHk6J0luc3RydW1lbnQgU2Fucycsc2Fucy1zZXJpZiFpbXBvcnRhbnQ7CiAgICAtd2Via2l0LWZvbnQtc21vb3RoaW5nOmFudGlhbGlhc2VkOwogICAgdGV4dC1yZW5kZXJpbmc6b3B0aW1pemVMZWdpYmlsaXR5OwogIH0KICBoMXsKICAgIGZvbnQtZmFtaWx5OidGcmF1bmNlcycsc2VyaWYhaW1wb3J0YW50OwogICAgY29sb3I6dmFyKC0tdGV4dC1wcmltYXJ5KSFpbXBvcnRhbnQ7CiAgICBmb250LXdlaWdodDo1MDAhaW1wb3J0YW50OwogICAgbGV0dGVyLXNwYWNpbmc6LS4wMTVlbTsKICB9CgogIC8qIEVkaXRvcmlhbCBzYW5zIGZvciBpbnRlcmZhY2UgbGFuZ3VhZ2U7IG1vbm8gcmVtYWlucyByZXNlcnZlZCBmb3IgZGF0YS4gKi8KICAubWFzdGhlYWQtZGlzY2xvc3VyZSA+IHN1bW1hcnksCiAgLmxlZ2VuZC1yb3csCiAgLnBheW9mZi1pbmxpbmUtbGVnZW5kLAogIC5jb250cm9sLWxhYmVsLAogIC5jaGlwLAogIC5jb3VudC1ub3RlLAogIC5maWx0ZXItdG9vbGJhciwKICAuZmlsdGVyLXRyaWdnZXIsCiAgLmZpbHRlci1wYW5lbCwKICAuZmlsdGVyLXBhbmVsIGJ1dHRvbiwKICAuZmlsdGVyLXBhbmVsIGxhYmVsLAogIC5maWx0ZXItcGFuZWwgaW5wdXQsCiAgLmZpbHRlci1wYW5lbCBzZWxlY3QsCiAgLnN0YXR1cy1iYWRnZSwKICAucHJvcGVydHktcGFnZS1saW5rLAogIC5tcC1wcm9wZXJ0eS1wYWdlLWxpbmssCiAgLnJlY2VpcHQtcHJvcGVydHktcGFnZS1jdGEsCiAgLm1wLXByb3BlcnR5LXBhZ2UtY3RhLAogIGRldGFpbHMubWV0aG9kb2xvZ3ktbW9yZSBzdW1tYXJ5LAogIGRldGFpbHMud2h5IHN1bW1hcnksCiAgLmNsb3NlLWJveC1idG4sCiAgLm1hdGgtdG9nZ2xlLAogIC5tcC1hY3Rpb24sCiAgZGV0YWlscy5mYXEtaXRlbSBzdW1tYXJ5ewogICAgZm9udC1mYW1pbHk6J0luc3RydW1lbnQgU2Fucycsc2Fucy1zZXJpZiFpbXBvcnRhbnQ7CiAgICBsZXR0ZXItc3BhY2luZzowIWltcG9ydGFudDsKICB9CiAgLnBheW9mZi1jb3B5LAogIC5wYXlvZmYtY2FyZCwKICAubGVkZ2VyLW5vdGUsCiAgLm1hdGgtbm90ZSwKICAubWF0aC1uYW1lLAogIC5tYXRoLW1lYW5pbmcsCiAgLndoeS1ib2R5LAogIC5jdXJ2ZS1tZXRob2Qtbm90ZSwKICAubGV2LWxhYmVsLAogIC5sZXYtcHVuY2gsCiAgLmxldi1jb3B5LAogIC5mYXEtYm9keXsKICAgIGZvbnQtZmFtaWx5OidJbnN0cnVtZW50IFNhbnMnLHNhbnMtc2VyaWYhaW1wb3J0YW50OwogIH0KICAucmVjZWlwdCwubXAtZGV0YWlse2ZvbnQtZmFtaWx5OidJbnN0cnVtZW50IFNhbnMnLHNhbnMtc2VyaWYhaW1wb3J0YW50O30KICAucmVjZWlwdC1saW5lIC5ybC12YWwsCiAgLm1wLWRldGFpbC1saW5lIC5tcC1kbC12YWwsCiAgLm51bSwKICAucHJvcGVydHktaWQsCiAgLmlkLWNlbGwsCiAgdGRbZGF0YS1udW1lcmljPSJ0cnVlIl0sCiAgLnJldHVybi1wYWlyLAogIC5wcmVkaWN0ZWQtY2VsbCAucHYsCiAgLnByZWRpY3RlZC1jZWxsIC5wcywKICAudHItbnVtLAogIC50ci1zcGxpdCwKICAubXAtbWV0cmljLXZhbCwKICAubXAtbWV0cmljLXN1YiwKICAubXAtbW9kZWxlZC12YWwsCiAgLm1wLW1vZGVsZWQtc3BsaXR7CiAgICBmb250LWZhbWlseTonSUJNIFBsZXggTW9ubycsbW9ub3NwYWNlIWltcG9ydGFudDsKICB9CgogIC8qIENsZWFuZXIgaGllcmFyY2h5IGFuZCBzdHJvbmdlciBzbWFsbC10ZXh0IGxlZ2liaWxpdHkuICovCiAgLmxlZGUsCiAgLmxlZGdlci1ub3RlLAogIC5sZWdlbmQtcm93LAogIC5wYXlvZmYtaW5saW5lLWxlZ2VuZCwKICAuY291bnQtbm90ZSwKICAucGF5b2ZmLWNhcmQtY29weSwKICAuZmFxLWJvZHksCiAgLndoeS1ib2R5LAogIC5sZXYtY29weSwKICAubWF0aC1tZWFuaW5nLAogIC5udW0tbXV0ZWR7Y29sb3I6dmFyKC0tdGV4dC1zZWNvbmRhcnkpIWltcG9ydGFudDt9CiAgLnN0YXRlLWNlbGx7Y29sb3I6dmFyKC0tdGV4dC1wcmltYXJ5KSFpbXBvcnRhbnQ7fQogIHRib2R5IHRke2JvcmRlci1ib3R0b20tY29sb3I6cmdiYSg1OCw2MSw2NiwuNzIpIWltcG9ydGFudDt9CiAgdGhlYWQgdGh7Ym9yZGVyLWJvdHRvbS1jb2xvcjp2YXIoLS1zdGF0dXMtYm9yZGVyKSFpbXBvcnRhbnQ7fQoKICAvKiBCcmFuZCB3YXJtdGggaXMgYSBkZXRhaWwsIG5ldmVyIGFuIGF0bW9zcGhlcmljIHRpbnQuICovCiAgLnByb3BlcnR5LXBhZ2UtbGluaywKICAubXAtcHJvcGVydHktcGFnZS1saW5rLAogIC5yZWNlaXB0LXByb3BlcnR5LXBhZ2UtY3RhLAogIC5tcC1wcm9wZXJ0eS1wYWdlLWN0YTp7Y29sb3I6dmFyKC0tYnJhbmQtYWNjZW50KSFpbXBvcnRhbnQ7fQogIC5wcm9wZXJ0eS1wYWdlLWxpbms6aG92ZXIsCiAgLm1wLXByb3BlcnR5LXBhZ2UtbGluazpob3ZlciwKICAucmVjZWlwdC1wcm9wZXJ0eS1wYWdlLWN0YTpob3ZlciwKICAubXAtcHJvcGVydHktcGFnZS1jdGE6aG92ZXJ7Y29sb3I6dmFyKC0tYnJhbmQtYWNjZW50LWxpZ2h0KSFpbXBvcnRhbnQ7fQogIC5yZWNlaXB0LXByb3BlcnR5LXBhZ2UtY3RhLAogIC5tcC1wcm9wZXJ0eS1wYWdlLWN0YXsKICAgIGJvcmRlci1jb2xvcjp2YXIoLS1icmFuZC1hY2NlbnQpIWltcG9ydGFudDsKICAgIGJhY2tncm91bmQ6dHJhbnNwYXJlbnQhaW1wb3J0YW50OwogICAgYm94LXNoYWRvdzpub25lIWltcG9ydGFudDsKICB9CiAgLnJlY2VpcHQtcHJvcGVydHktcGFnZS1jdGE6aG92ZXIsCiAgLm1wLXByb3BlcnR5LXBhZ2UtY3RhOmhvdmVyewogICAgYm9yZGVyLWNvbG9yOnZhcigtLWJyYW5kLWFjY2VudC1saWdodCkhaW1wb3J0YW50OwogICAgYmFja2dyb3VuZDpyZ2JhKDE4MSwxNjUsMTMzLC4wMzUpIWltcG9ydGFudDsKICB9CgogIC8qIFJlY29tbWVuZGVkICsgQXZhaWxhYmxlOiBjaGFtcGFnbmUgb3V0bGluZSwgbm8gYW1iZXIgd2FzaCBhY3Jvc3MgdGhlIHJvdy4gKi8KICAuc3RhdHVzLXByb3Bvc2VkewogICAgYmFja2dyb3VuZDojMUQxRDFB!ERROR!
+          links = '''
+<link id="instrument-sans-font" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link id="refined-theme-css" rel="stylesheet" href="refined-theme.css?v=20260904-1">
+'''.strip()
+
+          if '</head>' not in s:
+              raise SystemExit('Could not find </head> in index.html')
+          s = s.replace('</head>', links + '\n</head>', 1)
+          p.write_text(s)
+          PY
+
+      - name: Verify theme references
+        run: |
+          grep -q "refined-theme.css" index.html
+          grep -q "Instrument+Sans" index.html
+
+      - name: Commit refined live-site styling
+        run: |
+          git config user.name 'Open Book updater'
+          git config user.email 'actions@users.noreply.github.com'
+          git add index.html
+          if git diff --cached --quiet; then
+            echo 'No index changes needed.'
+            exit 0
+          fi
+          git commit -m 'Refine site palette and typography'
+          git push
