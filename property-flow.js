@@ -35,7 +35,7 @@ tbody tr.data-row:focus-within{background-color:rgba(168,166,160,.045);}
   gap:24px;
   align-items:stretch;
   margin:2px 0 20px;
-  padding:18px 0 22px;
+  padding:18px 20px 22px;
   border-top:1px solid rgba(58,61,66,.72);
   border-bottom:1px solid rgba(58,61,66,.72);
   font-family:'Instrument Sans',sans-serif;
@@ -55,7 +55,7 @@ tbody tr.data-row:focus-within{background-color:rgba(168,166,160,.045);}
 .property-preview.loaded .property-preview-image-placeholder{display:none;}
 .property-preview.no-image .property-preview-image-link{display:none;}
 .property-preview.no-image{grid-template-columns:minmax(0,1fr) minmax(185px,220px);}
-.property-preview-copy{min-width:0;align-self:center;}
+.property-preview-copy{min-width:0;align-self:center;text-align:left;}
 .property-preview-kicker{
   margin:0 0 7px;color:#B5A585;font-family:'IBM Plex Mono',monospace;font-size:9.5px;font-weight:600;
   letter-spacing:.10em;text-transform:uppercase;
@@ -179,6 +179,10 @@ tbody tr.data-row:focus-within{background-color:rgba(168,166,160,.045);}
     return `${cut.slice(0, Math.max(lastSpace, maxLength - 45)).trim()}…`;
   }
 
+  function titleCaseLocation(value){
+    return String(value || '').trim().toLowerCase().replace(/\b([a-z])/g, match => match.toUpperCase());
+  }
+
   function createPreviewShell(d, mobile = false){
     const href = hrefFor(d);
     if(!href) return null;
@@ -194,7 +198,6 @@ tbody tr.data-row:focus-within{background-color:rgba(168,166,160,.045);}
         </div>
       </a>
       <div class="property-preview-copy">
-        <div class="property-preview-kicker">Why this one stands out</div>
         <a class="property-preview-title property-nav-link" href="${href}">${d.id}</a>
         <p class="property-preview-subtitle property-preview-loading">Loading the property-page summary…</p>
         <p class="property-preview-rationale"></p>
@@ -221,7 +224,11 @@ tbody tr.data-row:focus-within{background-color:rgba(168,166,160,.045);}
       const heroImage = doc.querySelector('.hero-photo img');
       const imageSrc = heroImage ? heroImage.getAttribute('src') : '';
       const imageUrl = imageSrc ? new URL(imageSrc, new URL(href, window.location.href)).href : '';
-      const title = (doc.querySelector('h1')?.textContent || d.id).trim();
+      const baseTitle = (doc.querySelector('h1')?.textContent || d.id).trim();
+      const eyebrow = (doc.querySelector('.hero-eyebrow')?.textContent || '').replace(/\s+/g, ' ').trim();
+      const locationRaw = eyebrow.split('·').map(part => part.trim()).filter(Boolean)[1] || '';
+      const location = titleCaseLocation(locationRaw);
+      const title = location ? `${baseTitle}, ${location}` : baseTitle;
       const subtitle = (doc.querySelector('.hero-sub')?.textContent || '').replace(/\s+/g, ' ').trim();
 
       const whySection = Array.from(doc.querySelectorAll('section')).find(section => {
@@ -537,7 +544,6 @@ tbody tr.data-row:focus-within{background-color:rgba(168,166,160,.045);}
     enhanceMobile();
     applyRestoreUi();
   }
-
   function queueEnhance(){
     if(enhancementQueued) return;
     enhancementQueued = true;
