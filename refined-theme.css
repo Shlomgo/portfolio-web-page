@@ -280,6 +280,7 @@ tbody tr.data-row > td:first-child{
   position:relative;
   overflow:visible;
   box-shadow:none!important;
+  border-left:0!important;
 }
 tbody tr.data-row > td:first-child::before{
   content:'';
@@ -288,15 +289,15 @@ tbody tr.data-row > td:first-child::before{
   left:0;
   top:1px;
   bottom:1px;
-  width:7px;
-  border-radius:6px 0 0 6px;
-  background:var(--row-status-color);
-  box-shadow:
-    inset 1px 0 0 rgba(255,255,255,.16),
-    inset -1px 0 0 rgba(0,0,0,.38),
-    1px 0 0 rgba(255,255,255,.025);
+  width:6px;
+  border:0!important;
+  border-radius:5px 0 0 5px;
+  background:var(--row-status-color)!important;
+  box-shadow:none!important;
+  outline:0!important;
   pointer-events:none;
 }
 tbody tr.data-row > td:first-child::after{
   content:none!important;
+  display:none!important;
 }
