@@ -19,36 +19,11 @@ jobs:
           from pathlib import Path
           p = Path('index.html')
           s = p.read_text()
-          old = '''.artemis-mark,
-.artemis-faq-mark,
-.artemis-footer-mark{width:164px;}
-@media (max-width:900px){
-  .artemis-mark,
-  .artemis-faq-mark,
-  .artemis-footer-mark{width:144px;}
-}
-@media (max-width:640px){
-  .artemis-mark,
-  .artemis-faq-mark,
-  .artemis-footer-mark{width:124px;}
-}'''
-          new = '''.artemis-mark{width:328px;}
-.artemis-faq-mark,
-.artemis-footer-mark{width:164px;}
-@media (max-width:900px){
-  .artemis-mark{width:288px;}
-  .artemis-faq-mark,
-  .artemis-footer-mark{width:144px;}
-}
-@media (max-width:640px){
-  .artemis-mark{width:248px;}
-  .artemis-faq-mark,
-  .artemis-footer-mark{width:124px;}
-}'''
+          old = ".artemis-mark,\n.artemis-faq-mark,\n.artemis-footer-mark{width:164px;}\n@media (max-width:900px){\n  .artemis-mark,\n  .artemis-faq-mark,\n  .artemis-footer-mark{width:144px;}\n}\n@media (max-width:640px){\n  .artemis-mark,\n  .artemis-faq-mark,\n  .artemis-footer-mark{width:124px;}\n}"
+          new = ".artemis-mark{width:328px;}\n.artemis-faq-mark,\n.artemis-footer-mark{width:164px;}\n@media (max-width:900px){\n  .artemis-mark{width:288px;}\n  .artemis-faq-mark,\n  .artemis-footer-mark{width:144px;}\n}\n@media (max-width:640px){\n  .artemis-mark{width:248px;}\n  .artemis-faq-mark,\n  .artemis-footer-mark{width:124px;}\n}"
           if old not in s:
               raise SystemExit('Expected effective logo override not found')
-          s = s.replace(old, new, 1)
-          p.write_text(s)
+          p.write_text(s.replace(old, new, 1))
           PY
       - name: Commit corrected masthead resize
         run: |
