@@ -2029,7 +2029,7 @@ thead .payoff-box-row > .payoff-equation-shell{
 }
 .cash-guide,.principal-guide{stroke:var(--actual-primary);}
 .appreciation-guide{stroke:var(--forecast-primary);}
-.modeled-guide{stroke:#43d8c9;}
+.modeled-guide{stroke:#B2AEAA;}
 
 
 /* ===== 2026-09-04 compact dropdown filtering + clickable column sorting ===== */
@@ -2648,7 +2648,7 @@ thead th.sortable:focus-visible{
           <path d="M0,0 L7,3.5 L0,7 Z" fill="var(--forecast-primary)"></path>
         </marker>
         <marker id="payoffArrowHybrid" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto" markerUnits="strokeWidth">
-          <path d="M0,0 L7,3.5 L0,7 Z" fill="#43d8c9"></path>
+          <path d="M0,0 L7,3.5 L0,7 Z" fill="#B2AEAA"></path>
         </marker>
       </defs>
       <line class="payoff-guide-line cash-guide" x1="730" y1="120" x2="816" y2="169" marker-end="url(#payoffArrowGreen)"></line>
@@ -3061,7 +3061,7 @@ function operatingLabel(d){
 
 function propertyPageHref(d){
   if(!d.pageSlug) return "";
-  return `properties/${encodeURIComponent(d.pageSlug)}/`;
+  return `properties/${encodeURIComponent(d.pageSlug)}/?from=openbook`;
 }
 
 function propertyPageLinkHTML(d, mobile=false){
@@ -4028,35 +4028,107 @@ function showDataLoadError(){
   if(count) count.textContent = "Property data unavailable";
 }
 
-function loadData(){
-  const wrap = document.querySelector(".table-wrap");
-  if(!window.Papa || typeof window.Papa.parse !== "function"){
-    console.error("Papa Parse did not load.");
-    showDataLoadError();
-    return;
-  }
-  Papa.parse(SHEET_CSV_URL, {
-    download: true,
-    header: true,
-    skipEmptyLines: true,
-    complete: function(results){
-      DATA = results.data.map(rowToRecord).filter(d=>d.status !== "hide" && d.state && !isNaN(d.price) && d.price > 0);
-      assignPropertyIds(DATA);
-      console.log(`Loaded ${DATA.length} properties from your sheet.`);
-      console.log("First row from your sheet, as parsed:", DATA[0]);
-      activeStates = new Set(DATA.map(d=>d.state));
-      LEV_SCALE = LEV_MAX_PX / Math.max(...DATA.map(d=>d.price));
-      buildFilterControls();
-      render();
-    },
-    error: function(err){
-      console.error("Could not load the Google Sheet:", err);
-      showDataLoadError();
-      if(stickyHeaderState.initialized){
-        stickyHeaderState.shell.classList.remove('is-active');
+function parseSheetCsv(text){
+  const rows = [];
+  let row = [];
+  let cell = '';
+  let quoted = false;
+
+  for(let i = 0; i < text.length; i++){
+    const ch = text[i];
+    if(quoted){
+      if(ch === '"'){
+        if(text[i + 1] === '"'){
+          cell += '"';
+          i += 1;
+        } else {
+          quoted = false;
+        }
+      } else {
+        cell += ch;
       }
+    } else if(ch === '"'){
+      quoted = true;
+    } else if(ch === ','){
+      row.push(cell);
+      cell = '';
+    } else if(ch === '
+'){
+      row.push(cell);
+      rows.push(row);
+      row = [];
+      cell = '';
+    } else if(ch !== ''){
+      cell += ch;
     }
-  });
+  }
+
+  if(cell !== '' || row.length){
+    row.push(cell);
+    rows.push(row);
+  }
+
+  if(!rows.length) return [];
+  const headers = rows.shift().map(h => String(h || '').trim());
+  return rows
+    .filter(values => values.some(value => String(value || '').trim() !== ''))
+    .map(values => {
+      const record = {};
+      headers.forEach((header, i) => { record[header] = values[i] ?? ''; });
+      return record;
+    });
+}
+
+async function fetchSheetCsv(attempt){
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), 10000);
+  try{
+    const separator = SHEET_CSV_URL.includes('?') ? '&' : '?';
+    const url = attempt ? `${SHEET_CSV_URL}${separator}cb=${Date.now()}` : SHEET_CSV_URL;
+    const response = await fetch(url, {
+      method:'GET',
+      mode:'cors',
+      cache:'no-store',
+      credentials:'omit',
+      signal:controller.signal
+    });
+    if(!response.ok) throw new Error(`Sheet request returned ${response.status}`);
+    const text = await response.text();
+    if(!text || text.length < 20) throw new Error('Sheet response was empty.');
+    return text;
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
+async function loadData(){
+  try{
+    let csvText;
+    try{
+      csvText = await fetchSheetCsv(0);
+    } catch(firstError){
+      console.warn('First property-data request failed; retrying once.', firstError);
+      await new Promise(resolve => setTimeout(resolve, 500));
+      csvText = await fetchSheetCsv(1);
+    }
+
+    const rawRows = parseSheetCsv(csvText);
+    DATA = rawRows.map(rowToRecord).filter(d=>d.status !== "hide" && d.state && !isNaN(d.price) && d.price > 0);
+    if(!DATA.length) throw new Error('The sheet loaded but contained no usable property rows.');
+
+    assignPropertyIds(DATA);
+    console.log(`Loaded ${DATA.length} properties from your sheet.`);
+    activeStates = new Set(DATA.map(d=>d.state));
+    LEV_SCALE = LEV_MAX_PX / Math.max(...DATA.map(d=>d.price));
+    buildFilterControls();
+    render();
+  } catch(err){
+    console.error('Could not load the Google Sheet:', err);
+    showDataLoadError();
+    if(stickyHeaderState.initialized){
+      stickyHeaderState.shell.classList.remove('is-active');
+    }
+  }
 }
 
 initSortableHeaders();

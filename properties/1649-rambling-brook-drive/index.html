@@ -85,13 +85,8 @@
 <script id="open-book-back-navigation">
 function openBookBack(event){
   try{
-    const destination = new URL('../../', window.location.href);
-    const referrer = document.referrer ? new URL(document.referrer) : null;
-    const cameFromOpenBook = referrer &&
-      referrer.origin === destination.origin &&
-      referrer.pathname.replace(/\\/+$/, '/') === destination.pathname.replace(/\\/+$/, '/');
-
-    if(cameFromOpenBook && window.history.length > 1){
+    const fromOpenBook = new URLSearchParams(window.location.search).get('from') === 'openbook';
+    if(fromOpenBook && window.history.length > 1){
       event.preventDefault();
       window.history.back();
       return false;
