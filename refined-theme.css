@@ -145,7 +145,6 @@ thead th{border-bottom-color:var(--status-border)!important;}
 }
 tbody tr.data-row.status-proposed-row{background:transparent!important;}
 tbody tr.data-row.status-proposed-row:hover{background:rgba(178,174,170,.04)!important;}
-tbody tr.data-row.status-proposed-row td:first-child{box-shadow:inset 2px 0 0 var(--brand-accent)!important;}
 
 /* Quieter semantic colors. */
 .payoff-card.cash,
@@ -293,21 +292,11 @@ tbody tr.data-row > td:first-child::before{
   border-radius:6px 0 0 6px;
   background:var(--row-status-color);
   box-shadow:
-    inset 1px 0 0 rgba(255,255,255,.14),
-    inset -1px 0 0 rgba(0,0,0,.34),
-    1px 0 0 rgba(255,255,255,.03);
+    inset 1px 0 0 rgba(255,255,255,.16),
+    inset -1px 0 0 rgba(0,0,0,.38),
+    1px 0 0 rgba(255,255,255,.025);
   pointer-events:none;
 }
 tbody tr.data-row > td:first-child::after{
-  content:'';
-  position:absolute;
-  z-index:2;
-  left:4px;
-  top:5px;
-  bottom:5px;
-  width:1px;
-  border-radius:1px;
-  background:rgba(20,22,25,.58);
-  box-shadow:1px 0 0 rgba(255,255,255,.10);
-  pointer-events:none;
+  content:none!important;
 }
