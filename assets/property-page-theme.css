@@ -45,7 +45,8 @@ body{color:var(--text-primary)!important;}
 
 /* Property status follows the same hierarchy as the portfolio table. */
 .status-pill{background:var(--status-fill)!important;color:var(--status-text)!important;border-color:var(--status-border)!important;font-weight:600;}
-.status-pill.status-proposed{background:#1D1D1A!important;color:#C3B69A!important;border-color:#6B624F!important;}
+.status-pill.status-proposed{background:#1D1D1A!important;color:#C3B69A!important;border-color:#6B624F!important;font-size:0!important;}
+.status-pill.status-proposed::after{content:"RECOMMENDED AND AVAILABLE";font-size:12px;}
 .status-pill.status-under-contract,
 .status-pill.status-closed{background:var(--actual-fill)!important;color:var(--actual-primary)!important;border-color:var(--actual-border)!important;}
 
@@ -74,3 +75,5 @@ body{color:var(--text-primary)!important;}
 .video-play:hover{border-color:var(--brand-accent)!important;color:var(--brand-accent)!important;}
 .school-rating{background:var(--actual-fill)!important;border:1px solid var(--actual-border)!important;color:var(--actual-primary)!important;}
 .school-metric{border-color:var(--status-border)!important;}
+
+@media(max-width:600px){.status-pill.status-proposed::after{font-size:10px;}}
