@@ -249,3 +249,58 @@ tbody tr.data-row.status-proposed-row td:first-child{box-shadow:inset 2px 0 0 va
   filter:none!important;
   text-shadow:none!important;
 }
+
+/* Status rail: every property row gets the grooved left frame shown in the approved mockup. */
+.status-closed,
+.status-under_contract{
+  background:var(--actual-fill)!important;
+  color:var(--actual-primary)!important;
+  border-color:var(--actual-border)!important;
+  font-weight:600!important;
+}
+
+tbody tr.data-row{
+  --row-status-color:var(--status-text);
+}
+tbody tr.data-row.status-proposed-row{
+  --row-status-color:var(--brand-accent);
+}
+tbody tr.data-row.status-under_contract-row,
+tbody tr.data-row.status-closed-row{
+  --row-status-color:var(--actual-primary);
+}
+
+tbody tr.data-row > td:first-child{
+  position:relative;
+  overflow:visible;
+  box-shadow:none!important;
+}
+tbody tr.data-row > td:first-child::before{
+  content:'';
+  position:absolute;
+  z-index:1;
+  left:0;
+  top:1px;
+  bottom:1px;
+  width:7px;
+  border-radius:6px 0 0 6px;
+  background:var(--row-status-color);
+  box-shadow:
+    inset 1px 0 0 rgba(255,255,255,.14),
+    inset -1px 0 0 rgba(0,0,0,.34),
+    1px 0 0 rgba(255,255,255,.03);
+  pointer-events:none;
+}
+tbody tr.data-row > td:first-child::after{
+  content:'';
+  position:absolute;
+  z-index:2;
+  left:4px;
+  top:5px;
+  bottom:5px;
+  width:1px;
+  border-radius:1px;
+  background:rgba(20,22,25,.58);
+  box-shadow:1px 0 0 rgba(255,255,255,.10);
+  pointer-events:none;
+}
