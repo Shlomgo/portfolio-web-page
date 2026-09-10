@@ -1,0 +1,105 @@
+name: Apply manual Open Book property IDs
+
+on:
+  push:
+    paths:
+      - '.github/workflows/apply-manual-property-ids.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Make spreadsheet Open Book ID the source of truth
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          p = Path('index.html')
+          s = p.read_text()
+
+          legacy_block = '''const LEGACY_PROPERTY_IDS = Object.freeze({
+            "ubrilded":"AL-01",
+            "cannes":"AL-02",
+            "travertine":"OK-01",
+            "crockett":"AR-01",
+            "tracys":"OK-02",
+            "s. foley":"AL-03",
+            "h. foley":"AL-04",
+            "renfro 408":"TX-01",
+            "renfro 407":"TX-02",
+            "j. kathleens":"OK-03",
+            "black poplar":"OK-04",
+            "gray horse":"AL-05",
+            "paige":"NC-01",
+            "s.gussy":"AR-02",
+            "our gussy":"AR-03",
+            "a. warwick":"AR-04",
+            "n. rambling":"AR-05",
+            "m. warwick":"AR-06",
+            "i warwick":"AR-08",
+            "our warwick":"AR-07",
+            "midland kinsley":"AR-09",
+            "brinkley coles winston":"NC-02",
+            "cypress cottage walk":"AR-11",
+            "overland julia":"AL-06",
+            "laurelbrook ryder":"AL-07",
+            "midland lowell":"AR-10"
+          });'''
+
+          marker = "// Maps YOUR sheet's exact column headers to the fields this page needs."
+          if 'const LEGACY_PROPERTY_IDS' not in s:
+              if marker not in s:
+                  raise SystemExit('Could not find row mapping marker')
+              s = s.replace(marker, legacy_block + '\n\n' + marker, 1)
+
+          old = '''    state: String(row["State"]||"").trim(),
+              status: normalizeStatus(row["Status"]),
+              pageSlug: String(row["Property Page Slug"]||"").trim(),'''
+          new = '''    state: String(row["State"]||"").trim(),
+              status: normalizeStatus(row["Status"]),
+              id: String(
+                row["Open Book ID"] ||
+                LEGACY_PROPERTY_IDS[String(row["Property ID"]||"").trim().toLowerCase()] ||
+                ""
+              ).trim(),
+              pageSlug: String(row["Property Page Slug"]||"").trim(),'''
+
+          if 'row["Open Book ID"]' not in s:
+              if old not in s:
+                  raise SystemExit('Could not find rowToRecord insertion point')
+              s = s.replace(old, new, 1)
+
+          # Stop generating IDs from state/date. A manually supplied spreadsheet ID
+          # now wins; the legacy map above only preserves IDs for rows that predate
+          # the new spreadsheet column.
+          s = s.replace('  assignPropertyIds(DATA);\n', '', 1)
+
+          p.write_text(s)
+          PY
+
+      - name: Verify manual ID wiring
+        run: |
+          grep -q 'row\["Open Book ID"\]' index.html
+          grep -q 'LEGACY_PROPERTY_IDS' index.html
+          if grep -q 'assignPropertyIds(DATA);' index.html; then
+            echo 'Automatic ID assignment is still active.'
+            exit 1
+          fi
+
+      - name: Commit Open Book ID source change
+        run: |
+          git config user.name 'Open Book updater'
+          git config user.email 'actions@users.noreply.github.com'
+          git add index.html
+          if git diff --cached --quiet; then
+            echo 'No index changes needed.'
+            exit 0
+          fi
+          git commit -m 'Read property IDs from spreadsheet'
+          git pull --rebase origin main
+          git push origin HEAD:main
