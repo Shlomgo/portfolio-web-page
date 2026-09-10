@@ -2934,6 +2934,35 @@ function parseDateLabel(raw){
   return {date:`${d.getFullYear()}-${mm}`, label:`${MONTHS[d.getMonth()]} ${d.getFullYear()}`};
 }
 
+const LEGACY_PROPERTY_IDS = Object.freeze({
+  "ubrilded":"AL-01",
+  "cannes":"AL-02",
+  "travertine":"OK-01",
+  "crockett":"AR-01",
+  "tracys":"OK-02",
+  "s. foley":"AL-03",
+  "h. foley":"AL-04",
+  "renfro 408":"TX-01",
+  "renfro 407":"TX-02",
+  "j. kathleens":"OK-03",
+  "black poplar":"OK-04",
+  "gray horse":"AL-05",
+  "paige":"NC-01",
+  "s.gussy":"AR-02",
+  "our gussy":"AR-03",
+  "a. warwick":"AR-04",
+  "n. rambling":"AR-05",
+  "m. warwick":"AR-06",
+  "i warwick":"AR-08",
+  "our warwick":"AR-07",
+  "midland kinsley":"AR-09",
+  "brinkley coles winston":"NC-02",
+  "cypress cottage walk":"AR-11",
+  "overland julia":"AL-06",
+  "laurelbrook ryder":"AL-07",
+  "midland lowell":"AR-10"
+});
+
 // Maps YOUR sheet's exact column headers to the fields this page needs.
 function rowToRecord(row){
   const {date, label} = parseDateLabel(row["Purchase Date"]);
@@ -2970,6 +2999,11 @@ function rowToRecord(row){
     date, label,
     state: String(row["State"]||"").trim(),
     status: normalizeStatus(row["Status"]),
+    id: String(
+      row["Open Book ID"] ||
+      LEGACY_PROPERTY_IDS[String(row["Property ID"]||"").trim().toLowerCase()] ||
+      ""
+    ).trim(),
     pageSlug: String(row["Property Page Slug"]||"").trim(),
     price,
     down,
@@ -4087,7 +4121,6 @@ function applyPropertyDataCsv(csvText, source){
   if(!nextData.length) throw new Error(`No usable property rows in ${source}.`);
 
   DATA = nextData;
-  assignPropertyIds(DATA);
   console.log(`Loaded ${DATA.length} properties from ${source}.`);
   activeStates = new Set(DATA.map(d=>d.state));
   LEV_SCALE = LEV_MAX_PX / Math.max(...DATA.map(d=>d.price));
