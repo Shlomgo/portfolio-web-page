@@ -117,60 +117,6 @@ body[data-property-slug="2253-sam-tillery-drive"] h1::after{content:"Community: 
 body:has(.hero-photo img[src*="248-colton-exterior"]) h1::before{content:"248 Colton Court, Kings Mountain, NC 28086";}
 body:has(.hero-photo img[src*="248-colton-exterior"]) h1::after{content:"Community: Brinkley Ridge";}
 
-/* 2253 Sam Tillery: explicitly keep the real hero image visible. */
-body[data-property-slug="2253-sam-tillery-drive"] .hero-photo>img{
-  display:block!important;
-  opacity:1!important;
-  visibility:visible!important;
-  width:100%!important;
-  height:440px!important;
-  object-fit:cover!important;
-  object-position:center center!important;
-}
-
-/* 2253 Sam Tillery: make the complete floor plan visible in both locations. */
-body[data-property-slug="2253-sam-tillery-drive"] .floorplan-popup img{
-  display:block!important;
-  width:min(520px,82vw)!important;
-  max-width:82vw!important;
-  height:auto!important;
-  max-height:80vh!important;
-  object-fit:contain!important;
-  background:#fff!important;
-}
-body[data-property-slug="2253-sam-tillery-drive"] .media-grid .full-span img{
-  display:block!important;
-  width:100%!important;
-  height:auto!important;
-  max-height:none!important;
-  object-fit:contain!important;
-  background:#fff!important;
-  padding:12px!important;
-}
-
-/* 2253 Sam Tillery: homesite map supplied for the property page. */
-body[data-property-slug="2253-sam-tillery-drive"] #layout::after{
-  content:"";
-  display:block;
-  width:min(100%,715px);
-  aspect-ratio:715/396;
-  margin:18px auto 0;
-  box-sizing:border-box;
-  border:1px solid var(--status-border);
-  border-radius:3px;
-  background-color:#fff;
-  background-image:url("../properties/2253-sam-tillery-drive/images/2253-sam-tillery-lot-map.jpg");
-  background-size:100% 100%;
-  background-position:center;
-  background-repeat:no-repeat;
-}
-
-@media(max-width:860px){
-  body[data-property-slug="2253-sam-tillery-drive"] .hero-photo>img{height:300px!important;}
-}
-@media(max-width:600px){
-  .status-pill.status-proposed::after{font-size:10px;}
-  body[data-property-slug="1649-rambling-brook-drive"] h1::before,
-  body[data-property-slug="2253-sam-tillery-drive"] h1::before,
-  body:has(.hero-photo img[src*="248-colton-exterior"]) h1::before{font-size:29px;}
-}
+/* 2253 Sam Tillery: use the supplied exterior reference image. */
+body[data-property-slug="2253-sam-tillery-drive"] img[src*="2253-sam-tillery-main.jpg"]{
+  content:url("data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAkGBwgHBgkIBwgKCgk
