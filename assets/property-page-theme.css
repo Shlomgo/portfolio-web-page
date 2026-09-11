@@ -76,16 +76,6 @@ body{color:var(--text-primary)!important;}
 .school-rating{background:var(--actual-fill)!important;border:1px solid var(--actual-border)!important;color:var(--actual-primary)!important;}
 .school-metric{border-color:var(--status-border)!important;}
 
-/* 2253 Sam Tillery: sharper property photo in the hero with the repository image as fallback. */
-body[data-property-slug="2253-sam-tillery-drive"] .hero-photo{
-  background-image:url("https://ssl.cdn-redfin.com/photo/184/bigphoto/725/26032725_0.jpg"),url("../properties/2253-sam-tillery-drive/images/2253-sam-tillery-main.jpg")!important;
-  background-size:cover!important;
-  background-position:center center!important;
-  background-repeat:no-repeat!important;
-}
-body[data-property-slug="2253-sam-tillery-drive"] .hero-photo>img{opacity:0!important;}
-body[data-property-slug="2253-sam-tillery-drive"] .hero-photo figcaption{background:var(--status-fill)!important;}
-
 /* 2253 Sam Tillery: homesite map supplied for the property page. */
 body[data-property-slug="2253-sam-tillery-drive"] #layout::after{
   content:"";
