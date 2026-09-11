@@ -76,6 +76,47 @@ body{color:var(--text-primary)!important;}
 .school-rating{background:var(--actual-fill)!important;border:1px solid var(--actual-border)!important;color:var(--actual-primary)!important;}
 .school-metric{border-color:var(--status-border)!important;}
 
+/* Every property hero uses a complete address followed immediately by its community. */
+body[data-property-slug="1649-rambling-brook-drive"] .hero-eyebrow,
+body[data-property-slug="2253-sam-tillery-drive"] .hero-eyebrow,
+body:has(.hero-photo img[src*="248-colton-exterior"]) .hero-eyebrow{display:none!important;}
+
+body[data-property-slug="1649-rambling-brook-drive"] h1,
+body[data-property-slug="2253-sam-tillery-drive"] h1,
+body:has(.hero-photo img[src*="248-colton-exterior"]) h1{
+  font-size:0!important;
+  line-height:1.2!important;
+  margin-bottom:14px!important;
+}
+
+body[data-property-slug="1649-rambling-brook-drive"] h1::before,
+body[data-property-slug="2253-sam-tillery-drive"] h1::before,
+body:has(.hero-photo img[src*="248-colton-exterior"]) h1::before{
+  display:block;
+  color:var(--text-primary);
+  font-family:Georgia,'Source Serif 4',serif;
+  font-size:34px;
+  font-weight:400;
+  line-height:1.2;
+}
+
+body[data-property-slug="1649-rambling-brook-drive"] h1::after,
+body[data-property-slug="2253-sam-tillery-drive"] h1::after,
+body:has(.hero-photo img[src*="248-colton-exterior"]) h1::after{
+  display:block;
+  margin-top:8px;
+  color:var(--text-secondary);
+  font:13px/1.4 'IBM Plex Mono','Courier New',monospace;
+  letter-spacing:.01em;
+}
+
+body[data-property-slug="1649-rambling-brook-drive"] h1::before{content:"1649 Rambling Brook Drive, Benton, AR 72015";}
+body[data-property-slug="1649-rambling-brook-drive"] h1::after{content:"Community: Cottage Walk";}
+body[data-property-slug="2253-sam-tillery-drive"] h1::before{content:"2253 Sam Tillery Drive, Alexander, AR 72002";}
+body[data-property-slug="2253-sam-tillery-drive"] h1::after{content:"Community: Midland Estates";}
+body:has(.hero-photo img[src*="248-colton-exterior"]) h1::before{content:"248 Colton Court, Kings Mountain, NC 28086";}
+body:has(.hero-photo img[src*="248-colton-exterior"]) h1::after{content:"Community: Brinkley Ridge";}
+
 /* 2253 Sam Tillery: explicitly keep the real hero image visible. */
 body[data-property-slug="2253-sam-tillery-drive"] .hero-photo>img{
   display:block!important;
@@ -127,4 +168,9 @@ body[data-property-slug="2253-sam-tillery-drive"] #layout::after{
 @media(max-width:860px){
   body[data-property-slug="2253-sam-tillery-drive"] .hero-photo>img{height:300px!important;}
 }
-@media(max-width:600px){.status-pill.status-proposed::after{font-size:10px;}}
+@media(max-width:600px){
+  .status-pill.status-proposed::after{font-size:10px;}
+  body[data-property-slug="1649-rambling-brook-drive"] h1::before,
+  body[data-property-slug="2253-sam-tillery-drive"] h1::before,
+  body:has(.hero-photo img[src*="248-colton-exterior"]) h1::before{font-size:29px;}
+}
