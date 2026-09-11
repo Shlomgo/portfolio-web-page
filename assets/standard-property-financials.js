@@ -79,7 +79,7 @@
     return clean ? `<div class="fin-note">${esc(clean)}</div>` : '';
   }
   function rowHtml(label, key, valueKey, noteKey='', extraClass=''){
-    return `<div class="fin-item ${extraClass}"><div class="fin-row"><span class="fin-label">${label} ${infoButton(key)}</span><span class="fin-value" data-fin="${valueKey}">—</span></div>${noteKey ? `<div data-note-wrap="${noteKey}"></div>` : ''}</div>`;
+    return `<div class="fin-item ${extraClass}"><div class="fin-row"><span class="fin-label">${label} ${infoButton(key)}</span><span class="fin-value" data-std-fin="${valueKey}">—</span></div>${noteKey ? `<div data-std-note-wrap="${noteKey}"></div>` : ''}</div>`;
   }
 
   function installStyles(){
@@ -118,7 +118,7 @@
         ${rowHtml('Down payment','downPayment','downPayment','downPayment','down-payment-formula')}
         ${rowHtml('Closing costs','closingCosts','closingCosts','closingCosts')}
         ${rowHtml('Capital Expenses','capex','capex','capex')}
-        <div class="fin-item total"><div class="fin-row"><span class="fin-label">Total invested</span><span class="fin-value" data-fin="totalInvested">—</span></div></div>
+        <div class="fin-item total"><div class="fin-row"><span class="fin-label">Total invested</span><span class="fin-value" data-std-fin="totalInvested">—</span></div></div>
       </div>
       <div class="fin-group modeled"><div class="fin-group-title">Financing scenario — modeled</div>
         ${rowHtml('Down payment','downPayment','downPayment','downPayment','down-payment-formula')}
@@ -144,17 +144,17 @@
         ${rowHtml('Principal paydown/year as % of total invested','principalPct','principalPct','principalPct')}
         ${rowHtml('Modeled appreciation','appreciation','appreciation','appreciation')}
         ${rowHtml('Leverage Multiplying Factor','leverage','leverage','leverage')}
-        <div class="fin-item total"><div class="fin-row"><span class="fin-label">Modeled total return ${infoButton('modeledReturn')}</span><span class="fin-value forecast" data-fin="modeledReturn">—</span></div><div class="split-bar"><div class="seg-actual" data-return-segment="operating" style="width:50%"></div><div class="seg-forecast" data-return-segment="forecast" style="width:50%"></div></div><div class="fin-note">green = underwritten operating return (cash flow + principal) · blue = forecast appreciation</div></div>
+        <div class="fin-item total"><div class="fin-row"><span class="fin-label">Modeled total return ${infoButton('modeledReturn')}</span><span class="fin-value forecast" data-std-fin="modeledReturn">—</span></div><div class="split-bar"><div class="seg-actual" data-std-return-segment="operating" style="width:50%"></div><div class="seg-forecast" data-std-return-segment="forecast" style="width:50%"></div></div><div class="fin-note">green = underwritten operating return (cash flow + principal) · blue = forecast appreciation</div></div>
       </div>
       <div class="pending-flag" id="standardFinancialStatus" style="display:none"></div>`;
     return section;
   }
 
   function setValue(key, value){
-    document.querySelectorAll(`.std-financials [data-fin="${key}"]`).forEach(el => { el.textContent = value; });
+    document.querySelectorAll(`.std-financials [data-std-fin="${key}"]`).forEach(el => { el.textContent = value; });
   }
   function setNote(key, value){
-    document.querySelectorAll(`.std-financials [data-note-wrap="${key}"]`).forEach(el => { el.innerHTML = noteHtml(value); });
+    document.querySelectorAll(`.std-financials [data-std-note-wrap="${key}"]`).forEach(el => { el.innerHTML = noteHtml(value); });
   }
 
   function propertySlug(){
@@ -245,8 +245,8 @@
     const total = Number.isFinite(operating) && Number.isFinite(leveragedAppreciation) ? operating + leveragedAppreciation : NaN;
     if(Number.isFinite(total) && total > 0){
       const operatingShare = Math.max(0, Math.min(100, operating / total * 100));
-      const op = document.querySelector('.std-financials [data-return-segment="operating"]');
-      const fc = document.querySelector('.std-financials [data-return-segment="forecast"]');
+      const op = document.querySelector('.std-financials [data-std-return-segment="operating"]');
+      const fc = document.querySelector('.std-financials [data-std-return-segment="forecast"]');
       if(op) op.style.width = `${operatingShare}%`;
       if(fc) fc.style.width = `${100 - operatingShare}%`;
     }
@@ -275,7 +275,7 @@
       const rows = csvParse(await response.text());
       const slug = propertySlug();
       let row = rows.find(r => txt(r['Property Page Slug']) === slug);
-      if(!row && slug === '2253-sam-tillery-drive') row = rows[26]; // spreadsheet row 28 fallback until slug is populated
+      if(!row && slug === '2253-sam-tillery-drive') row = rows[26];
       if(!row) throw new Error(`No spreadsheet row found for ${slug || 'this property'}`);
       populate(row);
       if(status) status.style.display = 'none';
