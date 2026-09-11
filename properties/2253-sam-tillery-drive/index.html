@@ -6,16 +6,16 @@
 <title>2253 Sam Tillery Drive — The Open Book</title>
 <style>
 :root{--bg:#0b0c10;--surface:#14161b;--surface2:#191c22;--border:#2a2d34;--text:#e9e6de;--muted:#9c988f;--green:#72cdb4;--green-dim:#467e6f;--orange:#dc8f50;--orange-dim:#8f5c34}
-*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:Georgia,'Source Serif 4',serif;line-height:1.6}.wrap{max-width:1180px;margin:auto;padding:0 32px 100px}.prose{max-width:720px}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:Georgia,'Source Serif 4',serif;line-height:1.6}.wrap{max-width:1180px;margin:auto;padding:0 32px 100px}.prose{max-width:760px}
 .topbar{display:flex;justify-content:space-between;align-items:center;padding:20px 0;border-bottom:1px solid var(--border);margin-bottom:36px}.back{color:var(--muted);text-decoration:none;font:14px 'IBM Plex Mono',monospace}.back:hover{color:var(--text)}.status-pill{font:12px 'IBM Plex Mono',monospace;color:var(--orange);border:1px solid var(--orange-dim);padding:4px 10px;border-radius:2px}
 .hero-grid{display:grid;grid-template-columns:1.1fr 1fr;gap:48px;align-items:start;margin-bottom:44px}.hero-photo{margin:0;border:1px solid var(--border);border-radius:3px;overflow:hidden;background:var(--surface)}.hero-photo img{display:block;width:100%;height:440px;object-fit:cover}.hero-photo figcaption{font:12px 'IBM Plex Mono',monospace;color:var(--orange);padding:10px 14px;border-top:1px dashed var(--orange-dim);background:rgba(220,143,80,.06)}.photo-actions{display:flex;gap:10px;margin-top:10px}.photo-btn{flex:1;text-align:center;padding:11px 10px;border:1px solid var(--border);border-radius:3px;background:var(--surface);color:var(--text);font:12px 'IBM Plex Mono',monospace;text-decoration:none;cursor:pointer}.photo-btn:hover{border-color:var(--green);color:var(--green)}.floorplan-trigger{position:relative}.floorplan-popup{display:none;position:absolute;bottom:calc(100% + 8px);left:50%;transform:translateX(-50%);z-index:20;background:var(--surface);border:1px solid var(--border);padding:10px;box-shadow:0 12px 32px rgba(0,0,0,.55)}.floorplan-trigger:hover .floorplan-popup{display:block}.floorplan-popup img{display:block;width:300px;max-width:74vw}
 .hero-eyebrow,.tag,.section-label,.fin-group-title,.fin-value,.fin-note,.pending-flag,.spec-table td:first-child,.link-row a,footer,.kpi-label,.kpi-value,.kpi-note,.school-name,.school-rating,.school-grades,.video-direct{font-family:'IBM Plex Mono','Courier New',monospace}.hero-eyebrow{color:var(--muted);font-size:13px;margin-bottom:8px}h1{font-size:34px;font-weight:400;line-height:1.2;margin:0 0 6px}.hero-sub{color:var(--muted);font-size:16px;margin:0 0 28px}.hero-tags{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:24px}.tag{font-size:12px;color:var(--muted);border:1px solid var(--border);padding:4px 10px;border-radius:2px}p{margin:0 0 14px}.muted{color:var(--muted)}section{margin-bottom:44px}.section-label{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:14px;border-bottom:1px solid var(--border);padding-bottom:8px}
 .fin-group{border:1px solid var(--border);border-radius:3px;margin-bottom:16px;overflow:hidden}.fin-group.modeled{border-style:dashed;border-color:var(--orange-dim);background:rgba(220,143,80,.04)}.fin-group.returns{border-color:var(--green-dim)}.fin-group-title{font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);padding:10px 16px;border-bottom:1px solid var(--border);background:var(--surface)}.modeled .fin-group-title{color:var(--orange);border-bottom-color:var(--orange-dim)}.returns .fin-group-title{color:var(--green);border-bottom-color:var(--green-dim)}.fin-item{padding:12px 16px;border-bottom:1px solid var(--border)}.fin-item:last-child{border-bottom:0}.fin-item.total{background:var(--surface2)}.fin-row{display:flex;justify-content:space-between;align-items:baseline;gap:16px}.fin-label{font-size:14px}.fin-value{font-size:15px;white-space:nowrap}.total .fin-value{font-size:19px}.fin-value.actual{color:var(--green)}.fin-value.forecast{color:var(--orange)}.fin-note{font-size:11.5px;color:var(--muted);margin-top:5px}.info-btn{display:inline-flex;align-items:center;justify-content:center;width:15px;height:15px;border-radius:50%;border:1px solid var(--muted);color:var(--muted);font:10px 'IBM Plex Mono',monospace;cursor:help}.split-bar{height:6px;border-radius:3px;overflow:hidden;display:flex;margin-top:8px;background:var(--surface2)}.seg-actual{background:var(--green)}.seg-forecast{background:var(--orange)}.pending-flag{font-size:12px;color:var(--orange);background:rgba(220,143,80,.08);border:1px dashed var(--orange-dim);padding:8px 12px;border-radius:3px}
 .good-callout{border:1px solid var(--green-dim);background:rgba(114,205,180,.06);border-radius:3px;padding:18px 20px;margin-top:18px}.good-callout strong{color:var(--green)}.include-row{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}.include{font:11px 'IBM Plex Mono',monospace;border:1px solid var(--green-dim);color:var(--green);padding:5px 8px;border-radius:2px}
-.kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);border:1px solid var(--border);border-radius:3px;overflow:hidden;margin:18px 0 22px}.kpi{padding:16px 14px;border-right:1px solid var(--border)}.kpi:last-child{border-right:none}.kpi-label{font-size:10px;color:var(--muted);text-transform:uppercase}.kpi-value{font-size:20px;margin-top:4px}.kpi-note{font-size:10px;color:var(--muted);margin-top:4px}
-.school-summary{max-width:760px;margin-bottom:16px}.school-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}.school-card{border:1px solid var(--border);background:var(--surface);border-radius:3px;padding:16px}.school-name{font-size:12px;color:var(--text);min-height:38px}.school-rating{font-size:22px;color:var(--green);margin:8px 0 2px}.school-grades{font-size:10px;color:var(--muted)}.school-source{font-size:11px;color:var(--muted);margin-top:12px}.school-source a{color:var(--green);text-decoration:none;border-bottom:1px solid var(--green-dim)}
+.kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);border:1px solid var(--border);border-radius:3px;overflow:hidden;margin:22px 0 4px}.kpi{padding:16px 14px;border-right:1px solid var(--border)}.kpi:last-child{border-right:none}.kpi-label{font-size:10px;color:var(--muted);text-transform:uppercase}.kpi-value{font-size:20px;margin-top:4px}.kpi-note{font-size:10px;color:var(--muted);margin-top:4px}
+.school-summary{max-width:820px;margin-bottom:16px}.school-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}.school-card{border:1px solid var(--border);background:var(--surface);border-radius:3px;padding:16px}.school-name{font-size:12px;color:var(--text);min-height:38px}.school-rating{font-size:22px;color:var(--green);margin:8px 0 2px}.school-grades{font-size:10px;color:var(--muted)}.school-source{font-size:11px;color:var(--muted);margin-top:12px}.school-source a{color:var(--green);text-decoration:none;border-bottom:1px solid var(--green-dim)}
 .spec-table{width:100%;border-collapse:collapse}.spec-table td{padding:8px 0;border-bottom:1px solid var(--border);font-size:14px}.spec-table td:first-child{color:var(--muted);width:40%;font-size:12px}
-.media-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}.media-grid figure{margin:0;border:1px solid var(--border);border-radius:3px;overflow:hidden;background:var(--surface)}.media-grid img{display:block;width:100%;height:220px;object-fit:cover}.media-grid video{width:100%;display:block;background:#000;max-height:520px}.media-grid figcaption{font:11px 'IBM Plex Mono',monospace;color:var(--muted);padding:8px 10px;border-top:1px solid var(--border)}.full-span{grid-column:1/-1}.full-span img{height:auto;max-height:680px;object-fit:contain;background:#f7f6f1}.video-direct{display:inline-block;margin-top:4px;font-size:10px;color:var(--green);text-decoration:none;border-bottom:1px solid var(--green-dim)}.link-row{display:flex;gap:16px;flex-wrap:wrap;margin-top:14px}.link-row a{color:var(--green);font-size:13px;text-decoration:none;border-bottom:1px solid var(--green-dim)}footer{border-top:1px solid var(--border);padding-top:20px;color:var(--muted);font-size:12px}
+.media-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}.media-grid figure{margin:0;border:1px solid var(--border);border-radius:3px;overflow:hidden;background:var(--surface)}.media-grid img{display:block;width:100%;height:240px;object-fit:cover}.media-grid video{width:100%;display:block;background:#000;max-height:520px}.media-grid figcaption{font:11px 'IBM Plex Mono',monospace;color:var(--muted);padding:8px 10px;border-top:1px solid var(--border)}.full-span{grid-column:1/-1}.full-span img{height:auto;max-height:680px;object-fit:contain;background:#f7f6f1}.video-direct{display:inline-block;margin-top:4px;font-size:10px;color:var(--green);text-decoration:none;border-bottom:1px solid var(--green-dim)}.link-row{display:flex;gap:16px;flex-wrap:wrap;margin-top:14px}.link-row a{color:var(--green);font-size:13px;text-decoration:none;border-bottom:1px solid var(--green-dim)}footer{border-top:1px solid var(--border);padding-top:20px;color:var(--muted);font-size:12px}
 @media(max-width:860px){.hero-grid{grid-template-columns:1fr}.hero-photo img{height:300px}.kpi-grid{grid-template-columns:repeat(2,1fr)}.school-grid{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:600px){.wrap{padding:0 18px 70px}.media-grid{grid-template-columns:1fr}.topbar{gap:12px;align-items:flex-start}.status-pill{font-size:10px}h1{font-size:29px}.kpi-grid,.school-grid{grid-template-columns:1fr}.kpi{border-right:0;border-bottom:1px solid var(--border)}.kpi:last-child{border-bottom:0}.school-name{min-height:0}}
 </style>
@@ -28,18 +28,18 @@
 
   <div class="hero-grid">
     <div>
-      <figure class="hero-photo"><img src="images/2253-sam-tillery-main.jpg" alt="Lowell II exterior reference photo"><figcaption>Lowell II exterior — reference photo provided for this property page.</figcaption></figure>
+      <figure class="hero-photo"><img src="images/2253-sam-tillery-main.jpg" alt="Lowell II exterior reference"><figcaption>Lowell II exterior — reference image provided for this property page.</figcaption></figure>
       <div class="photo-actions">
         <a class="photo-btn" href="https://www.google.com/maps/search/?api=1&query=2253+Sam+Tillery+Dr+Alexander+AR+72002" target="_blank" rel="noopener">Exact location ↗</a>
         <div class="photo-btn floorplan-trigger">Floor plan<div class="floorplan-popup"><img src="images/2253-sam-tillery-floorplan.png" alt="Lowell II floor plan"></div></div>
       </div>
     </div>
     <div>
-      <div class="hero-eyebrow">MIDLAND ESTATES · ALEXANDER, ARKANSAS · HOMESITE 12</div>
+      <div class="hero-eyebrow">MIDLAND ESTATES · ALEXANDER, ARKANSAS</div>
       <h1>2253 Sam Tillery Drive</h1>
       <p class="hero-sub">Good cash flow, easy I-30 access, and a bright, spacious three-bedroom layout in the Bryant school zone.</p>
       <div class="hero-tags"><span class="tag">Single-family · 3 bed · 2 bath · 1,633 sqft</span><span class="tag">New construction</span><span class="tag">Builder: Lennar</span><span class="tag">Lowell II · single story</span></div>
-      <p>This is one of those houses that makes more sense in person than it does from a bedroom count. It is a three-bedroom, two-bath single-story home, but the whole house feels bright and spacious: the living area is open, the kitchen and dining area connect naturally, and the owner’s suite sits apart from the two secondary bedrooms.</p>
+      <p>This is a relatively large three-bedroom, two-bath single-story home, and the whole house feels bright and spacious. The living area is open, the kitchen and dining area connect naturally, and the owner’s suite is separated from the two secondary bedrooms.</p>
       <p>What I like most is the combination of cash flow and location. Midland Estates is about four minutes from I-30 and roughly 20 minutes from downtown Little Rock in normal traffic, while still giving a tenant a suburban neighborhood, a real yard, and the Bryant school zone.</p>
     </div>
   </div>
@@ -80,153 +80,74 @@
   </section>
 
   <section class="prose"><div class="section-label">Why I like this one</div>
-    <p>The house itself feels unusually bright and spacious for an entry-level three-bedroom new build. The living room, kitchen and dining area read as one open central space instead of three small rooms, while the owner’s suite is separated from the secondary bedrooms. That combination should work well for a family renter and also makes the home feel more substantial than the bedroom count suggests.</p>
-    <p>The lot is another major reason I like this specific home. It is one of the larger lots in Midland Estates, with a very big front lawn and no house directly behind it, so the property feels unusually open for new construction in this price range.</p>
-    <div class="good-callout"><strong>Several rent-ready items are included by the builder.</strong><p style="margin-top:8px">The deal includes a refrigerator, washer, dryer and a fence. Those are items an investor would normally have to buy or install after closing, so having them included reduces the immediate setup work and makes the home more turnkey for the first tenant.</p><div class="include-row"><span class="include">REFRIGERATOR</span><span class="include">WASHER</span><span class="include">DRYER</span><span class="include">FENCE</span></div></div>
+    <p>The entire home feels bright and spacious. It has the openness people want in a newer rental without trying to squeeze too much into the floor plan, and the single-story layout is straightforward and easy to live in.</p>
+    <p>The lot is an even bigger differentiator. This is the largest lot in the neighborhood, with a very big front lawn and no home directly behind it. That gives the property noticeably more breathing room than the typical new-construction lot and should make it more appealing both to tenants and, eventually, to buyers.</p>
+    <p>I also like that the investment case does not need an aggressive appreciation story to make sense. The reason I would buy this one is the combination of good cash flow, a practical commuter location, the Bryant school zone, a strong family-rental layout, and a lot that stands out inside the community.</p>
+    <div class="good-callout"><strong>Several rent-ready items are included by the builder.</strong><p style="margin-top:8px">The builder will include a refrigerator, washer, dryer and a fence. Those are expenses an investor would otherwise normally face immediately after closing, so having them included reduces setup work and makes the home more turnkey for the first tenant.</p><div class="include-row"><span class="include">REFRIGERATOR</span><span class="include">WASHER</span><span class="include">DRYER</span><span class="include">FENCE</span></div></div>
   </section>
 
   <section><div class="section-label">The submarket</div>
+    <div class="prose">
+      <p>Alexander is a small community on the southwest side of the Little Rock metropolitan area. The appeal here is that a tenant can live in a newer suburban neighborhood with more house and yard for the money while remaining within an easy commute of the region’s main employment, medical, government and business center in Little Rock.</p>
+      <p>Midland Estates sits about four minutes from I-30, the main interstate connecting this side of the metro with Little Rock. From the neighborhood, downtown Little Rock is roughly a 20-minute drive in normal traffic. Bryant and Benton are the larger nearby suburban communities along the same I-30 corridor, so residents also have convenient access to the retail, restaurants, services and everyday shopping concentrated there.</p>
+      <p>The home is in the Bryant School District, which is an important part of the location story for family renters. The combination of the school zone, direct interstate access and a newer suburban setting is why this area competes well with other southwest Little Rock suburbs for households that do not need to live in the city itself.</p>
+    </div>
     <div class="kpi-grid">
       <div class="kpi"><div class="kpi-label">Downtown Little Rock</div><div class="kpi-value">~20 min</div><div class="kpi-note">normal traffic</div></div>
       <div class="kpi"><div class="kpi-label">I-30 access</div><div class="kpi-value">~4 min</div><div class="kpi-note">from Midland Estates</div></div>
       <div class="kpi"><div class="kpi-label">School district</div><div class="kpi-value">Bryant</div><div class="kpi-note">assigned public schools</div></div>
-      <div class="kpi"><div class="kpi-label">Home type</div><div class="kpi-value">1 story</div><div class="kpi-note">3 bed · 2 bath</div></div>
-    </div>
-    <div class="prose">
-      <p>Alexander is a small community on the southwest side of the Little Rock metropolitan area. This address is in Saline County, just beyond Bryant along the I-30 corridor. That location gives tenants a straightforward commute into Little Rock while keeping them close to the shopping, restaurants, services and family-oriented suburban growth around Bryant and Benton.</p>
-      <p>A lot of the same reasons people choose Benton and Bryant apply here: more house and yard for the money than they would typically get closer to downtown, a suburban setting, access to a school district with a strong local reputation, and a direct interstate connection to the larger Little Rock employment base. I-30 is the key piece of the location story; it is the main commuter spine linking Benton, Bryant, Alexander and Little Rock.</p>
-      <p>Midland Estates itself is new construction by Lennar, with a mix of three- and four-bedroom single-family homes. For this investment, I like that the location is easy to explain to a renter: it is suburban, school-oriented and still close enough to Little Rock for a normal daily commute.</p>
+      <div class="kpi"><div class="kpi-label">Lot</div><div class="kpi-value">Largest</div><div class="kpi-note">in the neighborhood</div></div>
     </div>
   </section>
 
-  <section><div class="section-label">Bryant schools</div>
+  <section><div class="section-label">Schools</div>
     <p class="school-summary">The <strong>Bryant School District</strong> is a top-performing, large-scale public school system recognized for its <strong>strong academic performance</strong>, particularly at the elementary level, and its highly competitive <strong>Class 7A athletic programs</strong>. It has modern facilities, and a vibrant extracurricular culture.</p>
     <div class="school-grid">
-      <div class="school-card"><div class="school-name">Parkway Elementary School</div><div class="school-rating">7/10</div><div class="school-grades">K–5 · GreatSchools</div></div>
-      <div class="school-card"><div class="school-name">Bethel Middle School</div><div class="school-rating">8/10</div><div class="school-grades">6–7 · GreatSchools</div></div>
-      <div class="school-card"><div class="school-name">Bryant Junior High School</div><div class="school-rating">7/10</div><div class="school-grades">8–9 · GreatSchools</div></div>
-      <div class="school-card"><div class="school-name">Bryant High School</div><div class="school-rating">5/10</div><div class="school-grades">10–12 · GreatSchools</div></div>
+      <div class="school-card"><div class="school-name">Parkway Elementary School</div><div class="school-rating">7/10</div><div class="school-grades">K–5 · assigned</div></div>
+      <div class="school-card"><div class="school-name">Bethel Middle School</div><div class="school-rating">8/10</div><div class="school-grades">6–7 · assigned</div></div>
+      <div class="school-card"><div class="school-name">Bryant Junior High School</div><div class="school-rating">7/10</div><div class="school-grades">8–9 · assigned</div></div>
+      <div class="school-card"><div class="school-name">Bryant High School</div><div class="school-rating">5/10</div><div class="school-grades">9–12 · assigned</div></div>
     </div>
-    <p class="school-source">Assigned-school information can change and should be verified with the district. Ratings shown are current GreatSchools ratings. <a href="https://www.greatschools.org/arkansas/bryant/" target="_blank" rel="noopener">GreatSchools ↗</a></p>
+    <div class="school-source">GreatSchools ratings shown from current property-listing school data. School assignments and ratings can change; verify assignments with Bryant School District before purchase.</div>
   </section>
 
-  <section id="layout"><div class="section-label">The lot & layout</div>
+  <section id="layout"><div class="section-label">The lot &amp; layout</div>
     <table class="spec-table">
-      <tr><td>Community</td><td>Midland Estates</td></tr>
-      <tr><td>Homesite</td><td>12</td></tr>
-      <tr><td>Builder</td><td>Lennar</td></tr>
-      <tr><td>Plan</td><td>Rc Lowell II</td></tr>
-      <tr><td>Living area</td><td>1,633 sqft · single story</td></tr>
-      <tr><td>Bedrooms / baths</td><td>3 / 2</td></tr>
-      <tr><td>Garage</td><td>2-car</td></tr>
-      <tr><td>Owner’s suite</td><td>Private bath · walk-in closet · separated from secondary bedrooms</td></tr>
-      <tr><td>Living area</td><td>Open kitchen, dining and living arrangement</td></tr>
-      <tr><td>Lot</td><td>Broad front lawn · open rear outlook · no house directly behind</td></tr>
-      <tr><td>Included by builder</td><td>Refrigerator · washer · dryer · fence</td></tr>
+      <tr><td>Community</td><td>Midland Estates</td></tr><tr><td>Builder</td><td>Lennar</td></tr><tr><td>Plan</td><td>Lowell II</td></tr><tr><td>Living area</td><td>1,633 sqft · single story</td></tr><tr><td>Bedrooms / baths</td><td>3 / 2</td></tr><tr><td>Garage</td><td>2-car</td></tr><tr><td>Lot</td><td>Largest lot in the neighborhood · very large front lawn · no home directly behind</td></tr><tr><td>Included by builder</td><td>Refrigerator · washer · dryer · fence</td></tr>
     </table>
   </section>
 
   <section><div class="section-label">See it for yourself</div>
     <div class="media-grid">
-      <figure class="full-span"><video controls playsinline preload="metadata" poster="images/interior-walkthrough-poster.jpg" aria-label="Interior and exterior walkthrough of 2253 Sam Tillery Drive"><source src="video/inside-outside-walkthrough.mp4" type="video/mp4">Your browser does not support embedded video.</video><figcaption>Video — full inside-and-outside walkthrough.<br><a class="video-direct" href="video/inside-outside-walkthrough.mp4">Open video directly ↗</a></figcaption></figure>
-      <figure><video controls playsinline preload="metadata" poster="images/front-yard-poster.jpg" aria-label="Front yard and exterior walkthrough"><source src="video/front-yard-walkthrough.mp4" type="video/mp4">Your browser does not support embedded video.</video><figcaption>Video — front lawn and exterior.<br><a class="video-direct" href="video/front-yard-walkthrough.mp4">Open video directly ↗</a></figcaption></figure>
-      <figure><video controls playsinline preload="metadata" poster="images/backyard-poster.jpg" aria-label="Backyard and rear lot walkthrough"><source src="video/backyard-walkthrough.mp4" type="video/mp4">Your browser does not support embedded video.</video><figcaption>Video — rear lot and the open view behind the home.<br><a class="video-direct" href="video/backyard-walkthrough.mp4">Open video directly ↗</a></figcaption></figure>
-      <figure class="full-span"><img src="images/2253-sam-tillery-floorplan.png" alt="Floor plan for the Rc Lowell II at 2253 Sam Tillery Drive"><figcaption>Rc Lowell II floor plan — single-story, three-bedroom layout.</figcaption></figure>
+      <figure><img src="images/2253-sam-tillery-main.jpg" alt="Lowell II exterior"><figcaption>Exterior reference image provided for this property page.</figcaption></figure>
+      <figure><video controls preload="metadata" poster="images/interior-walkthrough-poster.jpg"><source src="video/2253-sam-tillery-full-walkthrough.mp4" type="video/mp4"></video><figcaption>Full interior and exterior walkthrough. <a class="video-direct" href="video/2253-sam-tillery-full-walkthrough.mp4">Open video ↗</a></figcaption></figure>
+      <figure><video controls preload="metadata" poster="images/front-yard-poster.jpg"><source src="video/2253-sam-tillery-front-yard.mp4" type="video/mp4"></video><figcaption>Front yard and exterior view. <a class="video-direct" href="video/2253-sam-tillery-front-yard.mp4">Open video ↗</a></figcaption></figure>
+      <figure><video controls preload="metadata" poster="images/backyard-poster.jpg"><source src="video/2253-sam-tillery-lot-walkthrough.mp4" type="video/mp4"></video><figcaption>Lot and neighborhood walkthrough. <a class="video-direct" href="video/2253-sam-tillery-lot-walkthrough.mp4">Open video ↗</a></figcaption></figure>
+      <figure class="full-span"><img src="images/2253-sam-tillery-floorplan.png" alt="Lowell II floor plan"><figcaption>Lowell II floor plan — 1,633 sqft, three bedrooms, two baths, single story.</figcaption></figure>
     </div>
-    <div class="link-row"><a href="https://www.zillow.com/homedetails/2253-Sam-Tillery-Dr-Alexander-AR-72002/462259178_zpid/" target="_blank" rel="noopener">Property listing ↗</a><a href="https://www.lennar.com/new-homes/arkansas/little-rock/alexander/midland-estates/rc-lowell-ii/74612920012" target="_blank" rel="noopener">Lennar home page ↗</a><a href="https://www.lennar.com/new-homes/arkansas/little-rock/alexander/midland-estates" target="_blank" rel="noopener">Midland Estates ↗</a></div>
+    <div class="link-row"><a href="https://www.zillow.com/homedetails/2253-Sam-Tillery-Dr-Alexander-AR-72002/462259178_zpid/" target="_blank" rel="noopener">Property listing ↗</a><a href="https://www.lennar.com/new-homes/arkansas/little-rock/alexander/midland-estates" target="_blank" rel="noopener">Midland Estates ↗</a></div>
   </section>
 
   <section class="prose"><div class="section-label">Sourcing note</div><p class="muted">This is a recommended / available investment, not a closed operating property. The financial section pulls the current underwriting from spreadsheet row 28 when the page loads. Builder terms, availability, school assignments and third-party school ratings can change before closing. Appreciation is a modeled assumption, not a guarantee.</p></section>
   <footer>Part of The Open Book — every deal, closed or proposed, shown the same way.</footer>
 </div>
-
 <script>
 const SHEET_CSV_URL="https://docs.google.com/spreadsheets/d/e/2PACX-1vRj8OtOmCYZGVMYb1VSEgCmlVMcZC9b7Ie-Y_pPvcXzc1-D9ba_amLBxLFiDtXRfL0N7WCnVW-nZP45/pub?gid=0&single=true&output=csv";
-const SHEET_ROW_NUMBER=28;
-const PAGE_SLUG="2253-sam-tillery-drive";
-function openBookBack(e){
-  if(e) e.preventDefault();
-  try{
-    if(document.referrer && new URL(document.referrer).pathname.includes('/portfolio-web-page/')){ history.back(); return false; }
-  }catch(_){ }
-  window.location.href='../../';
-  return false;
-}
-function txt(v){return String(v??'').trim();}
-function num(v){
-  const raw=txt(v); if(!raw) return null;
-  let s=raw.replace(/[$,]/g,'').replace(/^x/i,'').replace(/x$/i,'').trim();
-  const isPct=s.includes('%'); s=s.replace(/%/g,'');
-  const n=parseFloat(s); if(!Number.isFinite(n)) return null;
-  return isPct ? n/100 : n;
-}
-function money(n){return n==null?'— pending —':new Intl.NumberFormat('en-US',{style:'currency',currency:'USD',maximumFractionDigits:0}).format(n);}
-function pct(n){if(n==null)return '— pending —'; const p=Math.abs(n)<=1.5?n*100:n; return p.toFixed(1)+'%';}
-function setFin(key,value){const el=document.querySelector(`[data-fin="${key}"]`);if(el)el.textContent=value;}
-function setNote(key,value){const el=document.querySelector(`[data-note="${key}"]`);if(el)el.textContent=value||'';}
-function pendingNote(value,note=''){return value==null?'note: pending':(txt(note)||'');}
-function annualToMonthly(v){const n=num(v);return n==null?null:n/12;}
-function loadFinancials(){
-  Papa.parse(SHEET_CSV_URL,{download:true,header:true,skipEmptyLines:false,complete:(res)=>{
-    const rows=res.data||[];
-    let r=rows.find(x=>txt(x['Property Page Slug'])===PAGE_SLUG);
-    if(!r) r=rows[SHEET_ROW_NUMBER-2];
-    const hasData=r && Object.values(r).some(v=>txt(v));
-    const status=document.getElementById('sheetDataStatus');
-    if(!hasData){status.textContent='Spreadsheet row 28 is not available yet. Financial fields are marked pending.';return;}
-    const purchase=num(r['Purchase Price']);
-    const closing=num(r['Total Closing Costs']);
-    const capex=num(r['Capex']);
-    const invested=num(r['Total Invested']);
-    const downPct=num(r['% down']);
-    const down=num(r['Down Payment']);
-    const loan=(purchase!=null&&down!=null)?purchase-down:null;
-    const rate=num(r['Intrest rate']);
-    const mortgageType=txt(r['mortgae type']);
-    const rent=num(r['Rent']);
-    const vacancyAdjusted=num(r['Avg Rent considering avg vacancy (month)']);
-    const vacancy=(rent!=null&&vacancyAdjusted!=null)?rent-vacancyAdjusted:null;
-    const management=vacancyAdjusted!=null?vacancyAdjusted*.10:null;
-    const mortgagePI=num(r['Mortgage P&I (month)']);
-    const taxes=annualToMonthly(r['Taxes/y']);
-    const insurance=annualToMonthly(r['Insurance/y']);
-    const hoa=annualToMonthly(r['HOA/y']);
-    const cashFlow=num(r['Cash remaining after management (month)']);
-    const cashOnCash=num(r['Cash on Cash after management']);
-    const principal=num(r['Principal returned (month)']);
-    const appreciation=num(r['appreciation expectations']);
-    const operatingReturn=num(r['Total returns (cash+principal)']);
-    const totalReturn=num(r['Total returns this year']);
-    setFin('purchasePrice',money(purchase)); setNote('purchasePrice',pendingNote(purchase,r['price notes']));
-    setFin('closingCosts',money(closing)); setNote('closingCosts',pendingNote(closing));
-    setFin('capex',money(capex)); setNote('capex',pendingNote(capex,r['capex notes']));
-    setFin('totalInvested',money(invested));
-    setFin('downPayment',down==null?'— pending —':`${money(down)}${downPct==null?'':' · '+pct(downPct)}`); setNote('downPayment',pendingNote(down,r['%down notes']));
-    setFin('loanAmount',money(loan)); setNote('loanAmount',pendingNote(loan));
-    setFin('interestRate',pct(rate)); setNote('interestRate',pendingNote(rate,r['intrest rates notes']));
-    setFin('mortgageType',mortgageType||'— pending —'); setNote('mortgageType',mortgageType?'':'note: pending');
-    setFin('rentExpected',money(rent)); setNote('rentExpected',rent==null?'note: pending':'Base rent assumption from the spreadsheet.');
-    setFin('vacancyLoss',money(vacancy)); setNote('vacancyLoss',vacancy==null?'note: pending':'Calculated from base rent and the vacancy-adjusted rent used in the portfolio model.');
-    setFin('management',money(management)); setNote('management',management==null?'note: pending':'10% of vacancy-adjusted collected rent.');
-    setFin('mortgagePI',money(mortgagePI)); setNote('mortgagePI',pendingNote(mortgagePI));
-    setFin('propertyTaxes',money(taxes)); setNote('propertyTaxes',taxes==null?'note: pending':'Annual spreadsheet amount, shown monthly.');
-    setFin('insurance',money(insurance)); setNote('insurance',insurance==null?'note: pending':'Annual spreadsheet amount, shown monthly.');
-    setFin('hoa',money(hoa)); setNote('hoa',hoa==null?'note: pending':'Annual spreadsheet amount, shown monthly.');
-    setFin('cashFlow',money(cashFlow)); setNote('cashFlow',pendingNote(cashFlow));
-    setFin('cashOnCash',pct(cashOnCash)); setNote('cashOnCash',pendingNote(cashOnCash));
-    setFin('principalPaydown',money(principal)); setNote('principalPaydown',pendingNote(principal));
-    setFin('appreciation',pct(appreciation)); setNote('appreciation',appreciation==null?'note: pending':'Modeled annual appreciation assumption — not guaranteed.');
-    setFin('modeledReturn',pct(totalReturn));
-    if(totalReturn!=null && operatingReturn!=null && totalReturn>0){
-      const op=Math.max(0,Math.min(100,(operatingReturn/totalReturn)*100));
-      document.querySelector('[data-return-segment="operating"]').style.width=op+'%';
-      document.querySelector('[data-return-segment="forecast"]').style.width=(100-op)+'%';
-    }
-    const missing=['Purchase Price','Total Invested','Rent','Mortgage P&I (month)','Cash remaining after management (month)','Cash on Cash after management','Principal returned (month)','appreciation expectations','Total returns this year'].filter(k=>!txt(r[k]));
-    status.textContent=missing.length?`Current spreadsheet row 28 loaded. ${missing.length} financial field${missing.length===1?' is':'s are'} still pending.`:'Current spreadsheet row 28 loaded.';
-  },error:()=>{document.getElementById('sheetDataStatus').textContent='Could not load the live spreadsheet. Financial fields remain pending.';}});
-}
+const SHEET_ROW_NUMBER=28; const PAGE_SLUG="2253-sam-tillery-drive";
+function openBookBack(e){if(e)e.preventDefault();try{if(document.referrer&&new URL(document.referrer).origin===location.origin){history.back();return false}}catch(_){} location.href='../../';return false}
+function txt(v){return String(v??'').trim()}
+function num(v){const raw=txt(v);if(!raw)return null;let s=raw.replace(/[$,]/g,'').replace(/^x/i,'').replace(/x$/i,'').trim();const isPct=s.includes('%');s=s.replace(/%/g,'');const n=parseFloat(s);if(!Number.isFinite(n))return null;return isPct?n/100:n}
+function money(n){return n==null?'— pending —':new Intl.NumberFormat('en-US',{style:'currency',currency:'USD',maximumFractionDigits:0}).format(n)}
+function pct(n){if(n==null)return '— pending —';const p=Math.abs(n)<=1.5?n*100:n;return p.toFixed(1)+'%'}
+function setFin(key,value){const el=document.querySelector(`[data-fin="${key}"]`);if(el)el.textContent=value}
+function setNote(key,value){const el=document.querySelector(`[data-note="${key}"]`);if(el)el.textContent=value||''}
+function pendingNote(value,note=''){return value==null?'note: pending':(txt(note)||'')}
+function annualToMonthly(v){const n=num(v);return n==null?null:n/12}
+function loadFinancials(){Papa.parse(SHEET_CSV_URL,{download:true,header:true,skipEmptyLines:false,complete:(res)=>{const rows=res.data||[];let r=rows.find(x=>txt(x['Property Page Slug'])===PAGE_SLUG);if(!r)r=rows[SHEET_ROW_NUMBER-2];const hasData=r&&Object.values(r).some(v=>txt(v));const status=document.getElementById('sheetDataStatus');if(!hasData){status.textContent='Spreadsheet row 28 is not available yet. Financial fields are marked pending.';return}
+const purchase=num(r['Purchase Price']),closing=num(r['Total Closing Costs']),capex=num(r['Capex']),invested=num(r['Total Invested']),downPct=num(r['% down']),down=num(r['Down Payment']),loan=(purchase!=null&&down!=null)?purchase-down:null,rate=num(r['Intrest rate']),mortgageType=txt(r['mortgae type']),rent=num(r['Rent']),vacancyAdjusted=num(r['Avg Rent considering avg vacancy (month)']),vacancy=(rent!=null&&vacancyAdjusted!=null)?rent-vacancyAdjusted:null,management=vacancyAdjusted!=null?vacancyAdjusted*.10:null,mortgagePI=num(r['Mortgage P&I (month)']),taxes=annualToMonthly(r['Taxes/y']),insurance=annualToMonthly(r['Insurance/y']),hoa=annualToMonthly(r['HOA/y']),cashFlow=num(r['Cash remaining after management (month)']),cashOnCash=num(r['Cash on Cash after management']),principal=num(r['Principal returned (month)']),appreciation=num(r['appreciation expectations']),operatingReturn=num(r['Total returns (cash+principal)']),totalReturn=num(r['Total returns this year']);
+setFin('purchasePrice',money(purchase));setNote('purchasePrice',pendingNote(purchase,r['price notes']));setFin('closingCosts',money(closing));setNote('closingCosts',pendingNote(closing));setFin('capex',money(capex));setNote('capex',pendingNote(capex,r['capex notes']));setFin('totalInvested',money(invested));setFin('downPayment',down==null?'— pending —':`${money(down)}${downPct==null?'':' · '+pct(downPct)}`);setNote('downPayment',pendingNote(down,r['%down notes']));setFin('loanAmount',money(loan));setNote('loanAmount',pendingNote(loan));setFin('interestRate',pct(rate));setNote('interestRate',pendingNote(rate,r['intrest rates notes']));setFin('mortgageType',mortgageType||'— pending —');setNote('mortgageType',mortgageType?'':'note: pending');setFin('rentExpected',money(rent));setNote('rentExpected',rent==null?'note: pending':'Base rent assumption from the spreadsheet.');setFin('vacancyLoss',money(vacancy));setNote('vacancyLoss',vacancy==null?'note: pending':'Calculated from base rent and the vacancy-adjusted rent used in the portfolio model.');setFin('management',money(management));setNote('management',management==null?'note: pending':'10% of vacancy-adjusted collected rent.');setFin('mortgagePI',money(mortgagePI));setNote('mortgagePI',pendingNote(mortgagePI));setFin('propertyTaxes',money(taxes));setNote('propertyTaxes',taxes==null?'note: pending':'Annual spreadsheet amount, shown monthly.');setFin('insurance',money(insurance));setNote('insurance',insurance==null?'note: pending':'Annual spreadsheet amount, shown monthly.');setFin('hoa',money(hoa));setNote('hoa',hoa==null?'note: pending':'Annual spreadsheet amount, shown monthly.');setFin('cashFlow',money(cashFlow));setNote('cashFlow',pendingNote(cashFlow));setFin('cashOnCash',pct(cashOnCash));setNote('cashOnCash',pendingNote(cashOnCash));setFin('principalPaydown',money(principal));setNote('principalPaydown',pendingNote(principal));setFin('appreciation',pct(appreciation));setNote('appreciation',appreciation==null?'note: pending':'Modeled annual appreciation assumption — not guaranteed.');setFin('modeledReturn',pct(totalReturn));
+if(totalReturn!=null&&operatingReturn!=null&&totalReturn>0){const op=Math.max(0,Math.min(100,(operatingReturn/totalReturn)*100));document.querySelector('[data-return-segment="operating"]').style.width=op+'%';document.querySelector('[data-return-segment="forecast"]').style.width=(100-op)+'%'}
+const missing=['Purchase Price','Total Invested','Rent','Mortgage P&I (month)','Cash remaining after management (month)','Cash on Cash after management','Principal returned (month)','appreciation expectations','Total returns this year'].filter(k=>!txt(r[k]));status.textContent=missing.length?`Current spreadsheet row 28 loaded. ${missing.length} financial field${missing.length===1?' is':'s are'} still pending.`:'Current spreadsheet row 28 loaded.'},error:()=>{document.getElementById('sheetDataStatus').textContent='Could not load the live spreadsheet. Financial fields remain pending.'}})}
 loadFinancials();
 </script>
-</body>
-</html>
+</body></html>
