@@ -1,0 +1,1 @@
+The page hero should use the original high-resolution 2253 Sam Tillery photo supplied in ChatGPT, not the earlier compressed screenshot export.
