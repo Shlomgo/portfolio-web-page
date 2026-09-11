@@ -150,4 +150,5 @@ if(totalReturn!=null&&operatingReturn!=null&&totalReturn>0){const op=Math.max(0,
 const missing=['Purchase Price','Total Invested','Rent','Mortgage P&I (month)','Cash remaining after management (month)','Cash on Cash after management','Principal returned (month)','appreciation expectations','Total returns this year'].filter(k=>!txt(r[k]));status.textContent=missing.length?`Current spreadsheet row 28 loaded. ${missing.length} financial field${missing.length===1?' is':'s are'} still pending.`:'Current spreadsheet row 28 loaded.'},error:()=>{document.getElementById('sheetDataStatus').textContent='Could not load the live spreadsheet. Financial fields remain pending.'}})}
 loadFinancials();
 </script>
+<script src="../../assets/standard-property-financials.js?v=20260910-2"></script>
 </body></html>
