@@ -76,6 +76,37 @@ body{color:var(--text-primary)!important;}
 .school-rating{background:var(--actual-fill)!important;border:1px solid var(--actual-border)!important;color:var(--actual-primary)!important;}
 .school-metric{border-color:var(--status-border)!important;}
 
+/* 2253 Sam Tillery: explicitly keep the real hero image visible. */
+body[data-property-slug="2253-sam-tillery-drive"] .hero-photo>img{
+  display:block!important;
+  opacity:1!important;
+  visibility:visible!important;
+  width:100%!important;
+  height:440px!important;
+  object-fit:cover!important;
+  object-position:center center!important;
+}
+
+/* 2253 Sam Tillery: make the complete floor plan visible in both locations. */
+body[data-property-slug="2253-sam-tillery-drive"] .floorplan-popup img{
+  display:block!important;
+  width:min(520px,82vw)!important;
+  max-width:82vw!important;
+  height:auto!important;
+  max-height:80vh!important;
+  object-fit:contain!important;
+  background:#fff!important;
+}
+body[data-property-slug="2253-sam-tillery-drive"] .media-grid .full-span img{
+  display:block!important;
+  width:100%!important;
+  height:auto!important;
+  max-height:none!important;
+  object-fit:contain!important;
+  background:#fff!important;
+  padding:12px!important;
+}
+
 /* 2253 Sam Tillery: homesite map supplied for the property page. */
 body[data-property-slug="2253-sam-tillery-drive"] #layout::after{
   content:"";
@@ -86,10 +117,14 @@ body[data-property-slug="2253-sam-tillery-drive"] #layout::after{
   box-sizing:border-box;
   border:1px solid var(--status-border);
   border-radius:3px;
+  background-color:#fff;
   background-image:url("../properties/2253-sam-tillery-drive/images/2253-sam-tillery-lot-map.jpg");
-  background-size:contain;
+  background-size:100% 100%;
   background-position:center;
   background-repeat:no-repeat;
 }
 
+@media(max-width:860px){
+  body[data-property-slug="2253-sam-tillery-drive"] .hero-photo>img{height:300px!important;}
+}
 @media(max-width:600px){.status-pill.status-proposed::after{font-size:10px;}}
