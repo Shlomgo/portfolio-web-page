@@ -2989,11 +2989,10 @@ function rowToRecord(row){
     ? apprPct * effectiveLeverage
     : NaN;
 
-  // Keep Modeled Return internally consistent with the components shown on the
-  // website: operating return + principal paydown + modeled appreciation.
-  const totalReturn = [coc, principalPct, apprContribution].every(Number.isFinite)
-    ? coc + principalPct + apprContribution
-    : NaN;
+  // The displayed Modeled Return is authoritative from the spreadsheet's
+  // "Total returns this year" column (AO). Component calculations remain here
+  // only for the visual operating/principal/appreciation breakdown.
+  const totalReturn = num(row["Total returns this year"]);
 
   return {
     date, label,
