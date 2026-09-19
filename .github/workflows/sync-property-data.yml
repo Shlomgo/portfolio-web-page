@@ -1,9 +1,13 @@
 name: Sync Open Book property data
 
 on:
-  schedule:
-    - cron: '*/5 * * * *'
+  # Primary path: the Google Sheet edit trigger dispatches this workflow
+  # four minutes after the last edit.
   workflow_dispatch:
+
+  # Low-frequency safety net in case the spreadsheet trigger ever fails.
+  schedule:
+    - cron: '17 7 * * *'
 
 permissions:
   contents: write
@@ -29,7 +33,18 @@ jobs:
           if not match:
               raise SystemExit('Could not find SHEET_CSV_URL in index.html')
 
-          request = urllib.request.Request(match.group(1), headers={'User-Agent':'Mozilla/5.0 OpenBookDataSync/1.0'})
+          import time
+
+          source_url = match.group(1)
+          source_url += ('&' if '?' in source_url else '?') + f'_sync={int(time.time())}'
+          request = urllib.request.Request(
+              source_url,
+              headers={
+                  'User-Agent':'Mozilla/5.0 OpenBookDataSync/1.0',
+                  'Cache-Control':'no-cache',
+                  'Pragma':'no-cache',
+              },
+          )
           with urllib.request.urlopen(request, timeout=30) as response:
               data = response.read()
 
