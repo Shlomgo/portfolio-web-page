@@ -191,7 +191,7 @@
     const appreciationPct = num(row['appreciation expectations']);
     const leverage = Number.isFinite(purchasePrice) && Number.isFinite(totalInvested) && totalInvested > 0 ? purchasePrice / totalInvested : NaN;
     const leveragedAppreciation = Number.isFinite(appreciationPct) && Number.isFinite(leverage) ? appreciationPct * leverage : NaN;
-    const modeledReturn = [cashOnCash, principalPct, leveragedAppreciation].every(Number.isFinite) ? cashOnCash + principalPct + leveragedAppreciation : NaN;
+    const modeledReturn = num(row['Total returns this year']);
 
     const downFormula = [downPct, purchasePrice, downPayment].every(Number.isFinite)
       ? `${pct(downPct)} × ${money(purchasePrice)} = ${money(downPayment)}`
