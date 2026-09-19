@@ -82,8 +82,7 @@
       ? purchasePrice / totalInvested : NaN;
     const appreciationContribution = Number.isFinite(appreciationPct) && Number.isFinite(leverage)
       ? appreciationPct * leverage : NaN;
-    const modeledReturn = [cashOnCash, principalPct, appreciationContribution].every(Number.isFinite)
-      ? cashOnCash + principalPct + appreciationContribution : NaN;
+    const modeledReturn = num(row['Total returns this year']);
 
     setValue('purchasePrice', money(purchasePrice));
     setValue('closingCosts', money(closingCosts));
