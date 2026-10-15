@@ -1,0 +1,4184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Open Book — Portfolio Track Record</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+  --bg:#141619;
+  --text-primary:#EEEAE4;
+  --text-secondary:#B2AEAA;
+  --actual-primary:#72B789;
+  --actual-secondary:#5E9872;
+  --actual-fill:#18251E;
+  --actual-border:#355646;
+  --forecast-primary:#72A5C2;
+  --forecast-secondary:#608AA2;
+  --forecast-fill:#182127;
+  --forecast-border:#385266;
+  --status-fill:#1B1D20;
+  --status-text:#B2AEAA;
+  --status-border:#3A3D42;
+  --radius:2px;
+}
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--bg);
+    color:var(--text-primary);
+    font-family:'Instrument Sans', sans-serif;
+    -webkit-font-smoothing:antialiased;
+    line-height:1.5;
+  }
+  html,body{max-width:100%;}
+  .page{max-width:1380px;margin:0 auto;padding:56px 32px 80px;}
+
+  /* ---------- Masthead ---------- */
+  h1{
+    font-family:'Fraunces',serif;
+    font-weight:500;
+    font-size:clamp(34px,5vw,54px);
+    line-height:1.05;
+    margin:0 0 18px;
+    color:#EEEAE4;
+  }
+  .lede{
+    font-size:17px;
+    max-width:660px;
+    color:#B2AEAA;
+    margin:0 0 40px;
+  }
+  .lede b{color:var(--text-primary);font-weight:600;}
+
+  .masthead-disclosure{
+    max-width:760px;
+    margin:0 0 14px;
+  }
+  .masthead-disclosure > summary{
+    cursor:pointer;
+    list-style:none;
+    display:flex;
+    align-items:center;
+    gap:9px;
+    width:max-content;
+    max-width:100%;
+    color:#B2AEAA;
+    font-family:'IBM Plex Mono',monospace;
+    font-size:11.5px;
+    letter-spacing:.02em;
+    padding:7px 0;
+    user-select:none;
+  }
+  .masthead-disclosure > summary::-webkit-details-marker{display:none;}
+  .masthead-disclosure > summary::before{
+    content:'+';
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    width:17px;
+    height:17px;
+    border:1px solid var(--status-border);
+    border-radius:50%;
+    color:var(--text-secondary);
+    font-size:12px;
+    line-height:1;
+    flex:0 0 auto;
+  }
+  .masthead-disclosure[open] > summary::before{content:'−';}
+  .masthead-disclosure[open] > summary{color:var(--text-primary);}
+  .masthead-disclosure .lede{
+    max-width:660px;
+    margin:6px 0 22px;
+  }
+  .methodology-disclosure > summary{
+    width:100%;
+    border:1px solid var(--status-border);
+    border-left:3px solid var(--text-secondary);
+    background:rgba(168,166,160,.05);
+    padding:9px 12px;
+  }
+  .methodology-disclosure[open] > summary{
+    border-bottom-color:transparent;
+    margin-bottom:0;
+  }
+  .methodology-disclosure .ledger-note{
+    margin:0;
+    border-top:0;
+  }
+
+  /* ---------- Ledger note (assumptions) ---------- */
+  .ledger-note{
+    border:1px solid var(--status-border);
+    border-left:3px solid var(--text-secondary);
+    padding:20px 24px;
+    margin-bottom:20px;
+    background:rgba(168,166,160,0.05);
+    font-size:14.5px;
+    line-height:1.6;
+    color:#B2AEAA;
+  }
+  .ledger-note strong{color:var(--text-primary);}
+  .ledger-note p{max-width:760px;margin:0 0 12px;}
+  .ledger-note p:last-child{margin-bottom:0;}
+  .ledger-note .label{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:11px;
+    letter-spacing:.1em;
+    text-transform:uppercase;
+    color:var(--text-secondary);
+    display:block;
+    margin-bottom:10px;
+  }
+  details.methodology-more{margin-top:12px;}
+  details.methodology-more summary{
+    cursor:pointer;
+    color:var(--text-secondary);
+    font-family:'IBM Plex Mono',monospace;
+    font-size:12px;
+    letter-spacing:.03em;
+    list-style:none;
+  }
+  details.methodology-more summary::-webkit-details-marker{display:none;}
+  details.methodology-more[open] summary{margin-bottom:12px;}
+  .methodology-more-body p{max-width:760px;margin:0 0 12px;}
+  .methodology-more-body p:last-child{margin-bottom:0;}
+
+  /* ---------- Legend (actual vs predicted) ---------- */
+  .legend-row{
+    display:flex;
+    flex-wrap:wrap;
+    gap:10px 28px;
+    align-items:center;
+    margin-bottom:28px;
+    font-family:'IBM Plex Mono',monospace;
+    font-size:12px;
+    color:#B2AEAA;
+  }
+  .legend-swatch{display:inline-flex;align-items:center;gap:8px;}
+  .legend-dot{width:11px;height:11px;border-radius:2px;flex-shrink:0;}
+  .legend-dot.actual{background:var(--actual-primary);}
+  .legend-dot.predicted{
+    background:repeating-linear-gradient(135deg, var(--forecast-primary), var(--forecast-primary) 2px, rgba(114,165,194,0.3) 2px, rgba(114,165,194,0.3) 4px);
+    border:1px solid var(--forecast-primary);
+  }
+  .click-hint{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:12px;
+    color:var(--text-secondary);
+    margin:-16px 0 24px;
+  }
+
+  /* ---------- Controls ---------- */
+  .controls{
+    display:flex;
+    flex-wrap:wrap;
+    gap:24px;
+    align-items:flex-end;
+    margin-bottom:22px;
+    padding-bottom:22px;
+    border-bottom:1px solid var(--status-border);
+  }
+  .control-group{display:flex;flex-direction:column;gap:8px;}
+  .control-label{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:10.5px;
+    letter-spacing:.1em;
+    text-transform:uppercase;
+    color:var(--text-secondary);
+  }
+  .chips{display:flex;flex-wrap:wrap;gap:6px;}
+  .chip{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:12px;
+    padding:6px 11px;
+    border:1px solid var(--status-border);
+    border-radius:100px;
+    background:transparent;
+    color:var(--text-secondary);
+    font-weight:400;
+    cursor:pointer;
+    transition:all .15s ease;
+  }
+  .chip:hover{border-color:rgba(168,166,160,.65);color:#B2AEAA;}
+  .chip.active{
+    background:rgba(168,166,160,.10);
+    border-color:rgba(168,166,160,.55);
+    color:#B2AEAA;
+    font-weight:500;
+  }
+  select#sortSelect{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:12.5px;
+    background:var(--bg);
+    color:var(--text-primary);
+    border:1px solid var(--status-border);
+    padding:8px 12px;
+    border-radius:2px;
+    min-width:230px;
+  }
+  .count-note{
+    margin-left:auto;
+    font-family:'IBM Plex Mono',monospace;
+    font-size:12px;
+    color:var(--text-secondary);
+    align-self:flex-end;
+    padding-bottom:9px;
+  }
+
+  /* ---------- Table ---------- */
+  .table-wrap{width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch;margin-bottom:8px;}
+  table{width:100%;border-collapse:collapse;min-width:1290px;table-layout:fixed;}
+
+  /* ---------- How real estate pays you ---------- */
+  thead .payoff-intro-row th,
+  thead .payoff-box-row th{
+    border-bottom:0;
+    text-transform:none;
+    letter-spacing:normal;
+    overflow:visible;
+  }
+  thead .payoff-intro-row th{
+    padding:0 5px 12px;
+  }
+  thead .payoff-box-row th{
+    position:relative;
+    padding:0 0 20px;
+    vertical-align:top;
+  }
+  .payoff-copy{
+    text-align:left;
+    font-family:'Instrument Sans',sans-serif;
+  }
+  .payoff-title{
+    font-size:15px;
+    line-height:1.25;
+    font-weight:600;
+    color:var(--text-primary);
+  }
+  .payoff-subtitle{
+    margin-top:2px;
+    font-size:12px;
+    line-height:1.3;
+    color:var(--text-secondary);
+  }
+  .payoff-card{
+    position:relative;
+    width:calc(100% - 10px);
+    min-height:78px;
+    margin:0 5px;
+    padding:8px 7px 9px;
+    border-radius:8px;
+    box-sizing:border-box;
+    text-align:left;
+    font-family:'Instrument Sans',sans-serif;
+    font-size:10.5px;
+    line-height:1.32;
+    font-weight:400;
+  }
+  .payoff-card.cash,
+  .payoff-card.principal{
+    background:rgba(114,183,137,.12);
+    border:1px solid rgba(114,183,137,.38);
+  }
+  .payoff-card.appreciation{
+    background:rgba(114,165,194,.09);
+    border:1px dashed rgba(114,165,194,.70);
+  }
+  .payoff-card.modeled{
+    background:rgba(168,166,160,.06);
+    border:1px solid rgba(168,166,160,.28);
+  }
+  .payoff-card-name{
+    display:block;
+    margin-bottom:2px;
+    font-size:10.5px;
+    line-height:1.25;
+    font-weight:500;
+  }
+  .payoff-card.cash .payoff-card-name,
+  .payoff-card.principal .payoff-card-name{color:#72B789;}
+  .payoff-card.appreciation .payoff-card-name{color:#72A5C2;font-style:italic;}
+  .payoff-card.modeled .payoff-card-name{color:var(--text-primary);}
+  .payoff-card-copy{color:#B2AEAA;}
+  .payoff-card.appreciation .payoff-card-copy{color:#608AA2;}
+  .payoff-mini-bars{
+    display:inline-flex;
+    align-items:center;
+    gap:3px;
+    margin-right:4px;
+    vertical-align:1px;
+  }
+  .payoff-mini-bars i{display:block;width:6px;height:6px;border-radius:1px;}
+  .payoff-mini-bars .actual{background:#72B789;}
+  .payoff-mini-bars .forecast{background:#72A5C2;}
+  .payoff-op{
+    position:absolute;
+    right:-15px;
+    top:30px;
+    z-index:3;
+    width:20px;
+    height:20px;
+    border-radius:50%;
+    border:1px solid var(--status-border);
+    background:var(--bg);
+    color:#B2AEAA;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-family:'IBM Plex Mono',monospace;
+    font-size:12px;
+    line-height:1;
+  }
+  .payoff-arrow{
+    position:absolute;
+    left:50%;
+    bottom:-17px;
+    width:0;
+    height:0;
+    transform:translateX(-50%);
+    border-left:5px solid transparent;
+    border-right:5px solid transparent;
+    border-top:5px solid currentColor;
+  }
+  .payoff-card.cash .payoff-arrow,
+  .payoff-card.principal .payoff-arrow{color:#72B789;}
+  .payoff-card.appreciation .payoff-arrow{color:#72A5C2;}
+  .payoff-card.modeled .payoff-arrow{color:#B2AEAA;}
+  .table-scroll-hint{
+    display:none;
+    font-family:'IBM Plex Mono',monospace;
+    font-size:11px;
+    color:var(--text-secondary);
+    margin:0 0 8px;
+  }
+  @media (max-width:1400px){
+    .table-scroll-hint{display:block;}
+  }
+  @media (max-width:760px){
+    .table-scroll-hint{display:none;}
+  }
+  /* Explicit, deliberate widths for every column (used with table-layout:fixed
+     below) so each one is sized to what its header and values actually need,
+     instead of being left to the browser's auto-layout guesswork. */
+  th.chevron-col,td.chevron-col{width:24px;}
+  th.id-col,td.id-col{width:52px;white-space:nowrap;}
+  th.state-col,td.state-col{width:128px;}
+  th.status-col,td.status-col{width:124px;}
+  th.price-col,td.price-col{width:86px;}
+  th.down-col,td.down-col{width:90px;}
+  th.invested-col,td.invested-col{width:146px;}
+  th.rent-col,td.rent-col{width:114px;}
+  th.cash-return-col,td.cash-return-col{width:114px;}
+  th.principal-return-col,td.principal-return-col{width:110px;}
+  th.appreciation-col,td.appreciation-col{width:140px;}
+  th.modeled-return-col,td.modeled-return-col{width:154px;}
+  .num,
+  .property-id,
+  td[data-numeric="true"]{white-space:nowrap;}
+  thead th{
+    text-align:left;
+    vertical-align:bottom;
+    font-family:'IBM Plex Mono',monospace;
+    font-size:10px;
+    letter-spacing:.04em;
+    text-transform:uppercase;
+    color:var(--text-secondary);
+    font-weight:500;
+    padding:0 8px 10px 5px;
+    border-bottom:1px solid var(--status-border);
+    white-space:normal;
+    overflow-wrap:break-word;
+  }
+  thead th.th-predicted{color:var(--forecast-primary);}
+  thead th .th-inner{display:flex;align-items:center;gap:5px;}
+  tbody td{
+    padding:10px 5px;
+    border-bottom:1px solid rgba(58,63,71,.6);
+    font-size:13px;
+    vertical-align:middle;
+  }
+  tbody tr.data-row{cursor:pointer;transition:background .12s ease;}
+  tbody tr.data-row:hover{background:rgba(168,166,160,0.06);}
+  .num{font-family:'IBM Plex Mono',monospace;white-space:nowrap;}
+  .num-muted{color:#B2AEAA;font-weight:400;}
+  .num-mid{color:var(--actual-primary);font-weight:600;}
+  .return-pair{
+    display:flex;
+    flex-direction:column;
+    align-items:flex-start;
+    gap:1px;
+    line-height:1.18;
+    font-family:'IBM Plex Mono',monospace;
+  }
+  .return-pair .rp-month{
+    color:var(--actual-primary);
+    font-size:13px;
+    font-weight:600;
+    white-space:nowrap;
+  }
+  .return-pair .rp-year{
+    color:rgba(114,183,137,.78);
+    font-size:9.5px;
+    font-weight:500;
+    white-space:nowrap;
+  }
+  .th-title-row{
+    display:flex;
+    align-items:center;
+    flex-wrap:nowrap;
+    gap:4px;
+    white-space:nowrap;
+  }
+  .th-unit-sub{
+    display:block;
+    margin-top:4px;
+    font-size:8.5px;
+    line-height:1.15;
+    letter-spacing:.04em;
+    color:var(--text-secondary);
+    font-weight:400;
+    white-space:nowrap;
+  }
+  .state-cell{font-weight:600;}
+  .id-cell{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--text-secondary);white-space:nowrap;}
+  .status-badge{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:10.5px;
+    padding:3px 8px;
+    border-radius:100px;
+    display:inline-block;
+    white-space:nowrap;
+  }
+  .status-closed{background:rgba(114,183,137,0.16);color:var(--actual-primary);border:1px solid rgba(114,183,137,0.4);}
+  .status-under_contract{background:rgba(168,166,160,0.16);color:var(--text-secondary);border:1px solid rgba(168,166,160,0.4);}
+  .status-proposed{background:rgba(255,255,255,0.06);color:var(--text-secondary);border:1px solid var(--status-border);}
+  .property-page-link,
+  .mp-property-page-link{
+    color:var(--text-secondary);
+    font-family:'IBM Plex Mono',monospace;
+    text-decoration:none;
+    white-space:nowrap;
+  }
+  .property-page-link{display:block;width:max-content;margin-top:5px;font-size:9.5px;line-height:1.25;}
+  .mp-property-page-link{display:inline-block;margin:5px 0 2px;font-size:11px;}
+  .property-page-link:hover,.mp-property-page-link:hover{text-decoration:underline;color:#B2AEAA;}
+  .chevron{
+    display:inline-block;
+    transition:transform .15s ease;
+    color:var(--text-secondary);
+    font-size:11px;
+    width:14px;
+  }
+  tr.data-row.open .chevron{transform:rotate(90deg);color:var(--text-secondary);}
+
+  /* info + formula tooltips */
+  .info-dot,
+  .fx-dot{
+    background:none;
+    font-family:'IBM Plex Mono',monospace;
+    line-height:1;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    cursor:help;
+    position:relative;
+    flex-shrink:0;
+    vertical-align:middle;
+  }
+  .info-dot{
+    width:13px;height:13px;border-radius:50%;
+    border:1px solid var(--text-secondary);
+    color:var(--text-secondary);
+    font-size:9px;
+  }
+  .fx-dot{
+    min-width:19px;height:13px;
+    padding:0 3px;
+    margin-left:3px;
+    border:1px solid rgba(168,166,160,.58);
+    border-radius:2px;
+    color:var(--text-secondary);
+    font-size:8.5px;
+    letter-spacing:-.02em;
+    text-transform:none;
+  }
+  th.th-predicted .info-dot{border-color:var(--forecast-primary);color:var(--forecast-primary);}
+  th.th-predicted .fx-dot{border-color:rgba(114,165,194,.7);color:var(--forecast-primary);}
+  .info-dot .tip,
+  .fx-dot .tip{
+    position:absolute;
+    bottom:calc(100% + 8px);
+    left:50%;
+    transform:translateX(-50%) translateY(4px);
+    width:250px;
+    background:var(--bg);
+    border:1px solid var(--text-secondary);
+    color:#B2AEAA;
+    font-family:'Instrument Sans',sans-serif;
+    font-size:12.5px;
+    line-height:1.45;
+    text-transform:none;
+    letter-spacing:normal;
+    padding:10px 12px;
+    border-radius:3px;
+    opacity:0;
+    visibility:hidden;
+    transition:opacity .15s ease, transform .15s ease;
+    z-index:80;
+    white-space:normal;
+    pointer-events:none;
+    box-shadow:0 8px 24px rgba(0,0,0,.4);
+    font-weight:400;
+  }
+  .fx-dot .tip{
+    width:285px;
+    border-color:rgba(168,166,160,.8);
+  }
+  th.th-predicted .info-dot .tip,
+  th.th-predicted .fx-dot .tip{border-color:var(--forecast-primary);}
+  .info-dot:hover .tip,.info-dot:focus .tip,.info-dot.open .tip,
+  .fx-dot:hover .tip,.fx-dot:focus .tip,.fx-dot.open .tip{
+    opacity:1;visibility:visible;transform:translateX(-50%) translateY(0);
+  }
+  .tip .tip-label{
+    display:block;
+    margin-bottom:4px;
+    font-family:'IBM Plex Mono',monospace;
+    font-size:9.5px;
+    letter-spacing:.08em;
+    text-transform:uppercase;
+    color:var(--text-secondary);
+  }
+  th.th-predicted .tip .tip-label{color:var(--forecast-primary);}
+
+
+  /* Column-header help bubbles open DOWNWARD. The table lives inside an
+     overflow-x:auto scroller, so bubbles positioned above the header are
+     clipped at the scroller's top edge. Opening them into the table keeps
+     them fully visible without changing the horizontal-scroll behavior. */
+  .table-wrap thead .info-dot .tip,
+  .table-wrap thead .fx-dot .tip{
+    top:calc(100% + 8px);
+    bottom:auto;
+    transform:translateX(-50%) translateY(-4px);
+  }
+  .table-wrap thead .info-dot:hover .tip,
+  .table-wrap thead .info-dot:focus .tip,
+  .table-wrap thead .info-dot.open .tip,
+  .table-wrap thead .fx-dot:hover .tip,
+  .table-wrap thead .fx-dot:focus .tip,
+  .table-wrap thead .fx-dot.open .tip{
+    transform:translateX(-50%) translateY(0);
+  }
+
+  /* Keep the bubbles inside the horizontal table viewport at the two edges. */
+  .table-wrap thead th:nth-child(-n+4) .info-dot .tip,
+  .table-wrap thead th:nth-child(-n+4) .fx-dot .tip{
+    left:0;
+    right:auto;
+    transform:translateX(0) translateY(-4px);
+  }
+  .table-wrap thead th:nth-child(-n+4) .info-dot:hover .tip,
+  .table-wrap thead th:nth-child(-n+4) .info-dot:focus .tip,
+  .table-wrap thead th:nth-child(-n+4) .info-dot.open .tip,
+  .table-wrap thead th:nth-child(-n+4) .fx-dot:hover .tip,
+  .table-wrap thead th:nth-child(-n+4) .fx-dot:focus .tip,
+  .table-wrap thead th:nth-child(-n+4) .fx-dot.open .tip{
+    transform:translateX(0) translateY(0);
+  }
+  .table-wrap thead th:nth-last-child(-n+2) .info-dot .tip,
+  .table-wrap thead th:nth-last-child(-n+2) .fx-dot .tip{
+    left:auto;
+    right:0;
+    transform:translateX(0) translateY(-4px);
+  }
+  .table-wrap thead th:nth-last-child(-n+2) .info-dot:hover .tip,
+  .table-wrap thead th:nth-last-child(-n+2) .info-dot:focus .tip,
+  .table-wrap thead th:nth-last-child(-n+2) .info-dot.open .tip,
+  .table-wrap thead th:nth-last-child(-n+2) .fx-dot:hover .tip,
+  .table-wrap thead th:nth-last-child(-n+2) .fx-dot:focus .tip,
+  .table-wrap thead th:nth-last-child(-n+2) .fx-dot.open .tip{
+    transform:translateX(0) translateY(0);
+  }
+
+  /* predicted appreciation cell */
+  .predicted-cell{
+    display:inline-flex;
+    flex-direction:column;
+    align-items:flex-start;
+    gap:1px;
+    padding:4px 16px 4px 6px;
+    border:1px dashed var(--forecast-primary);
+    border-radius:3px;
+    background:rgba(114,165,194,0.08);
+    line-height:1.3;
+    position:relative;
+    cursor:pointer;
+    transition:background .12s ease;
+  }
+  .predicted-cell:hover,.predicted-cell.open{background:rgba(114,165,194,0.18);}
+  .predicted-cell .pc-caret{
+    position:absolute;right:6px;bottom:5px;
+    font-size:9px;color:#608AA2;opacity:.75;
+    transition:transform .15s ease;
+  }
+  .predicted-cell.open .pc-caret{transform:rotate(90deg);}
+  .predicted-cell .pv{
+    font-family:'IBM Plex Mono',monospace;
+    font-weight:600;
+    font-style:italic;
+    color:var(--forecast-primary);
+    font-size:13px;
+    white-space:nowrap;
+  }
+  .predicted-cell .ps{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:10px;
+    color:#608AA2;
+    white-space:nowrap;
+  }
+
+  /* modeled return: number + actual/forecast breakdown + bar */
+  .tr-wrap{display:flex;flex-direction:column;gap:3px;align-items:flex-start;}
+  .tr-num{font-family:'IBM Plex Mono',monospace;font-weight:600;font-size:15.5px;color:var(--text-primary);white-space:nowrap;}
+  .tr-modeled-label{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:8.5px;
+    letter-spacing:.08em;
+    text-transform:uppercase;
+    color:var(--text-secondary);
+  }
+  .tr-split{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:9.5px;
+    white-space:nowrap;
+    margin-top:1px;
+  }
+  .tr-split .tr-a-num{color:var(--actual-primary);font-weight:600;}
+  .tr-split .tr-a-word{color:rgba(114,183,137,.65);}
+  .tr-split .tr-plus{color:var(--text-secondary);}
+  .tr-split .tr-f-num{color:var(--forecast-primary);font-weight:600;}
+  .tr-split .tr-f-word{color:rgba(114,165,194,.7);}
+  .tr-bar{width:68px;height:5px;border-radius:3px;overflow:hidden;display:flex;background:rgba(255,255,255,0.06);margin-top:2px;}
+  .tr-actual{height:100%;background:var(--actual-primary);}
+  .tr-predicted{
+    height:100%;
+    background:repeating-linear-gradient(135deg, var(--forecast-primary), var(--forecast-primary) 2px, rgba(114,165,194,0.35) 2px, rgba(114,165,194,0.35) 4px);
+  }
+  .th-modeled-sub{
+    display:block;
+    font-family:'IBM Plex Mono',monospace;
+    font-size:9px;
+    letter-spacing:.05em;
+    text-transform:uppercase;
+    color:var(--forecast-primary);
+    font-weight:400;
+    margin-top:2px;
+  }
+
+  /* ---------- Frozen desktop table header ---------- */
+  .desktop-table{position:relative;}
+  .sticky-table-header{
+    position:fixed;
+    top:0;
+    left:0;
+    z-index:60;
+    width:0;
+    visibility:hidden;
+    opacity:0;
+    pointer-events:none;
+    background:var(--bg);
+    box-shadow:0 1px 0 var(--status-border),0 8px 14px rgba(20,23,28,.28);
+    transition:opacity .10s ease;
+  }
+  .sticky-table-header.is-active{
+    visibility:visible;
+    opacity:1;
+  }
+  .sticky-table-header-viewport{
+    width:100%;
+    overflow:hidden;
+    background:var(--bg);
+  }
+  .sticky-table-header-table{
+    width:auto;
+    min-width:0;
+    table-layout:fixed;
+    border-collapse:collapse;
+    background:var(--bg);
+    transform:translateX(0);
+    will-change:transform;
+  }
+  .sticky-table-header thead th{
+    background:var(--bg);
+  }
+  /* The frozen header is a visual label clone only. Hide help controls there
+     so it never presents duplicate/non-semantic interactive controls. */
+  .sticky-table-header .info-dot,
+  .sticky-table-header .fx-dot{
+    display:none;
+  }
+  @media (max-width:760px){
+    .sticky-table-header{display:none !important;}
+  }
+
+  /* detail / ledger receipt row */
+  tr.detail-row{display:none;}
+  tr.detail-row.open{display:table-row;}
+  tr.detail-row td{padding:0;border-bottom:1px solid rgba(58,63,71,.6);}
+  .receipt{
+    background:rgba(0,0,0,.18);
+    padding:20px 28px 22px;
+    font-family:'IBM Plex Mono',monospace;
+    font-size:13px;
+  }
+  .receipt-title{
+    color:var(--text-secondary);
+    font-size:10.5px;
+    letter-spacing:.1em;
+    text-transform:uppercase;
+    margin-bottom:12px;
+  }
+  .receipt-sections{display:flex;flex-direction:column;gap:18px;}
+  .receipt-section{min-width:0;}
+  .receipt-section + .receipt-section{
+    padding-top:16px;
+    border-top:1px solid rgba(58,63,71,.72);
+  }
+  .receipt-section-title{
+    margin:0 0 9px;
+    font-family:'IBM Plex Mono',monospace;
+    font-size:9.5px;
+    letter-spacing:.10em;
+    text-transform:uppercase;
+    color:var(--text-secondary);
+    font-weight:500;
+  }
+  .receipt-section-title.purchase{color:var(--text-secondary);}
+  .receipt-section-title.forecast{color:var(--forecast-primary);}
+  .receipt-grid{
+    display:grid;
+    grid-template-columns:repeat(4, minmax(0,1fr));
+    gap:8px 38px;
+  }
+  @media (max-width:1150px){
+    .receipt-grid{grid-template-columns:repeat(3,minmax(0,1fr));}
+  }
+  @media (max-width:850px){
+    .receipt-grid{grid-template-columns:repeat(2,minmax(0,1fr));}
+  }
+  @media (max-width:560px){
+    .receipt-grid{grid-template-columns:1fr;}
+  }
+  .mp-detail-section{margin-top:16px;}
+  .mp-detail-section:first-of-type{margin-top:10px;}
+  .mp-detail-section + .mp-detail-section{
+    padding-top:14px;
+    border-top:1px solid rgba(58,63,71,.72);
+  }
+  .mp-detail-section-title{
+    margin:0 0 5px;
+    font-family:'IBM Plex Mono',monospace;
+    font-size:9.5px;
+    letter-spacing:.10em;
+    text-transform:uppercase;
+    color:var(--text-secondary);
+  }
+  .mp-detail-section-title.purchase{color:var(--text-secondary);}
+  .mp-detail-section-title.forecast{color:var(--forecast-primary);}
+  .receipt-line{
+    display:flex;
+    align-items:flex-start;
+    gap:6px;
+    color:#B2AEAA;
+    border-bottom:1px dotted rgba(168,166,160,.35);
+    padding:3px 0;
+    min-width:0;
+  }
+  .receipt-line .rl-label{white-space:normal;overflow-wrap:break-word;}
+  .receipt-line .rl-fill{flex:1;min-width:8px;}
+  .receipt-line .rl-val{color:var(--text-primary);font-weight:500;white-space:nowrap;flex-shrink:0;}
+  .receipt-line.predicted-line{border-bottom:1px dashed rgba(114,165,194,.55);}
+  .receipt-line.predicted-line .rl-label{color:#608AA2;}
+  .receipt-line.predicted-line .rl-val{color:var(--forecast-primary);font-style:italic;}
+
+
+  /* ---------- Formula transparency / show-the-math ---------- */
+  .math-tools{
+    margin-top:16px;
+    padding-top:12px;
+    border-top:1px dotted rgba(168,166,160,.28);
+  }
+  .math-toggle{
+    appearance:none;
+    border:0;
+    background:none;
+    padding:0;
+    color:var(--text-secondary);
+    font-family:'IBM Plex Mono',monospace;
+    font-size:11.5px;
+    letter-spacing:.02em;
+    cursor:pointer;
+  }
+  .math-toggle:hover{text-decoration:underline;text-underline-offset:3px;}
+  .math-toggle .math-fx{
+    display:inline-block;
+    margin-left:5px;
+    padding:1px 4px;
+    border:1px solid rgba(168,166,160,.55);
+    border-radius:2px;
+    font-size:9px;
+    line-height:1.15;
+    text-decoration:none;
+  }
+  .math-panel{
+    display:none;
+    margin-top:14px;
+    max-width:920px;
+  }
+  .math-panel.open{display:block;}
+  .math-note{
+    margin:0 0 12px;
+    color:var(--text-secondary);
+    font-family:'Instrument Sans',sans-serif;
+    font-size:12px;
+    line-height:1.5;
+    max-width:760px;
+  }
+  .math-group-title{
+    margin:16px 0 7px;
+    font-family:'IBM Plex Mono',monospace;
+    font-size:9.5px;
+    letter-spacing:.09em;
+    text-transform:uppercase;
+    color:var(--text-secondary);
+  }
+  .math-item{
+    padding:10px 0;
+    border-top:1px solid rgba(58,63,71,.58);
+  }
+  .math-item:last-child{border-bottom:1px solid rgba(58,63,71,.58);}
+  .math-name{
+    color:var(--text-primary);
+    font-family:'Instrument Sans',sans-serif;
+    font-size:13px;
+    font-weight:600;
+    margin-bottom:2px;
+  }
+  .math-meaning{
+    color:#B2AEAA;
+    font-family:'Instrument Sans',sans-serif;
+    font-size:12.5px;
+    line-height:1.45;
+    margin-bottom:5px;
+  }
+  .math-formula,
+  .math-example{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:11.5px;
+    line-height:1.55;
+    overflow-wrap:anywhere;
+  }
+  .math-formula{color:var(--text-secondary);}
+  .math-example{color:#B2AEAA;margin-top:2px;}
+  .math-example strong{color:var(--text-primary);font-weight:600;}
+  .math-kicker{color:var(--text-secondary);}
+  .math-item.predicted-math .math-name,
+  .math-item.predicted-math .math-kicker{color:var(--forecast-primary);}
+  .math-item.predicted-math{border-top-style:dashed;}
+  .mp-actions{flex-wrap:wrap;row-gap:10px;}
+  .mp-math-panel{margin-top:8px;}
+
+  /* ---------- Decline note ---------- */
+  .decline-note{
+    margin-top:26px;
+    font-size:14px;
+    color:#B2AEAA;
+    padding-top:18px;
+    border-top:1px solid var(--status-border);
+  }
+  .decline-note b{color:var(--text-primary);}
+  details.why{margin-top:10px;}
+  details.why summary{
+    cursor:pointer;
+    color:var(--text-secondary);
+    font-family:'IBM Plex Mono',monospace;
+    font-size:12.5px;
+    letter-spacing:.03em;
+  }
+  details.why[open] summary{margin-bottom:14px;}
+  .why-body{
+    font-size:13.5px;
+    color:#B2AEAA;
+    max-width:680px;
+  }
+  .why-body p{margin:0 0 12px;}
+  .why-body p:last-child{margin-bottom:0;}
+  .example-line{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:13px;
+    color:#B2AEAA;
+    background:rgba(168,166,160,0.06);
+    border:1px solid var(--status-border);
+    border-left:3px solid var(--text-secondary);
+    padding:10px 14px;
+    margin:14px 0;
+    line-height:1.6;
+  }
+  .example-line div{margin:2px 0;}
+  .example-line .eq{color:var(--text-secondary);}
+  .why-conclusion{
+    margin:14px 0 0;
+    padding:12px 14px;
+    background:rgba(168,166,160,0.08);
+    border-left:3px solid var(--text-secondary);
+    font-size:13.5px;
+  }
+  .curve-wrap{margin:16px 0;}
+  .curve-caption{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:10.5px;
+    color:var(--text-secondary);
+    letter-spacing:.04em;
+  }
+  .curve-method-note{
+    margin-top:8px;
+    max-width:680px;
+    font-family:'Instrument Sans',sans-serif;
+    font-size:11.5px;
+    line-height:1.5;
+    color:var(--text-secondary);
+  }
+
+  /* ---------- Leverage explainer ---------- */
+  .lev-wrap{margin:18px 0 6px;display:flex;flex-direction:column;gap:18px;}
+  .lev-row{display:flex;align-items:center;gap:16px;flex-wrap:wrap;}
+  .lev-label{width:150px;flex-shrink:0;font-size:13px;color:#B2AEAA;}
+  .lev-label b{color:var(--text-primary);display:block;font-size:13.5px;}
+  .lev-track{position:relative;height:22px;background:rgba(255,255,255,0.05);border-radius:2px;}
+  .lev-base{position:absolute;top:0;left:0;height:100%;background:rgba(168,166,160,0.18);border:1px solid rgba(168,166,160,0.4);border-radius:2px;box-sizing:border-box;}
+  .lev-gain{position:absolute;top:0;height:100%;background:var(--text-secondary);border-radius:0 2px 2px 0;}
+  .lev-tag{font-family:'IBM Plex Mono',monospace;font-size:12.5px;color:var(--text-secondary);white-space:nowrap;font-weight:600;}
+  .lev-tag span{color:var(--text-secondary);font-weight:400;}
+  .lev-punch{font-size:13.5px;color:#B2AEAA;max-width:680px;margin-top:2px;}
+  .lev-punch b{color:var(--text-primary);}
+  .lev-copy{font-size:13.5px;line-height:1.6;color:#B2AEAA;max-width:680px;margin:0 0 10px;}
+  .lev-copy b{color:var(--text-primary);}
+  .lev-driver{
+    display:inline-block;
+    font-family:'IBM Plex Mono',monospace;
+    font-size:12.5px;
+    color:var(--text-secondary);
+    border:1px solid rgba(168,166,160,.5);
+    background:rgba(168,166,160,.08);
+    border-radius:3px;
+    padding:6px 10px;
+    margin:2px 0 14px;
+  }
+
+  /* Close control for the appreciation-breakdown popover and the "why does
+     the return shrink" explainer — collapses the box and scrolls the view
+     back to the control that opened it. */
+  .close-box-btn{
+    appearance:none;
+    display:inline-flex;
+    align-items:center;
+    gap:5px;
+    background:none;
+    border:1px solid rgba(168,166,160,.5);
+    border-radius:3px;
+    color:var(--text-secondary);
+    font-family:'IBM Plex Mono',monospace;
+    font-size:11px;
+    letter-spacing:.02em;
+    padding:5px 10px;
+    cursor:pointer;
+    flex-shrink:0;
+    transition:background .12s ease, color .12s ease, border-color .12s ease;
+  }
+  .close-box-btn:hover{
+    background:rgba(168,166,160,.12);
+    color:#B2AEAA;
+    border-color:rgba(168,166,160,.8);
+  }
+  .lev-detail-head{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:16px;
+    margin-bottom:12px;
+  }
+  .lev-detail-head .receipt-title{margin-bottom:0;}
+  .lev-detail-head.solo{justify-content:flex-end;}
+  .why-close-row{
+    display:flex;
+    margin-top:18px;
+    padding-top:14px;
+    border-top:1px dotted rgba(168,166,160,.28);
+  }
+
+  /* ---------- Mobile property list ---------- */
+  .mobile-property-list{display:none;}
+  .mp-card{
+    border-top:1px solid var(--status-border);
+    padding:18px 2px 20px;
+  }
+  .mp-card:last-child{border-bottom:1px solid var(--status-border);}
+  .mp-row1{display:flex;align-items:center;justify-content:space-between;gap:10px;}
+  .mp-state{font-family:'Instrument Sans',sans-serif;font-size:15px;font-weight:600;color:var(--text-primary);}
+  .mp-state .mp-id{font-family:'IBM Plex Mono',monospace;color:var(--text-secondary);}
+  .mp-state .mp-id-sep{color:var(--text-secondary);font-weight:400;}
+  .mp-row2{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:11.5px;
+    color:var(--text-secondary);
+    margin-top:8px;
+  }
+  .mp-metrics{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:10px 16px;
+    margin-top:14px;
+  }
+  .mp-metric-label{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:9px;
+    letter-spacing:.08em;
+    text-transform:uppercase;
+    color:var(--text-secondary);
+    display:block;
+    margin-bottom:3px;
+  }
+  .mp-metric-val{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:17px;
+    font-weight:600;
+    color:var(--actual-primary);
+  }
+  .mp-metric-sub{
+    display:block;
+    margin-top:2px;
+    font-family:'IBM Plex Mono',monospace;
+    font-size:10.5px;
+    color:rgba(114,183,137,.78);
+    white-space:nowrap;
+  }
+  .mp-modeled{
+    margin-top:14px;
+    display:flex;
+    align-items:baseline;
+    justify-content:space-between;
+    font-family:'IBM Plex Mono',monospace;
+  }
+  .mp-modeled-label{
+    font-size:10.5px;
+    letter-spacing:.06em;
+    text-transform:uppercase;
+    color:var(--text-secondary);
+  }
+  .mp-modeled-val{font-size:17px;font-weight:600;color:var(--text-primary);}
+  .mp-modeled-split{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:11px;
+    margin-top:3px;
+  }
+  .mp-modeled-split .mp-a{color:var(--actual-primary);font-weight:600;}
+  .mp-modeled-split .mp-a-w{color:rgba(114,183,137,.65);}
+  .mp-modeled-split .mp-f{color:var(--forecast-primary);font-weight:600;}
+  .mp-modeled-split .mp-f-w{color:rgba(114,165,194,.7);}
+  .mp-bar{width:100%;max-width:180px;height:6px;border-radius:3px;overflow:hidden;display:flex;background:rgba(255,255,255,0.06);margin-top:8px;}
+  .mp-bar .tr-actual, .mp-bar .tr-predicted{height:100%;}
+  .mp-actions{
+    display:flex;
+    gap:22px;
+    margin-top:14px;
+  }
+  .mp-action{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:11.5px;
+    background:none;
+    border:none;
+    padding:0;
+    cursor:pointer;
+  }
+  .mp-action.underwriting{color:var(--text-secondary);}
+  .mp-action.forecast{color:var(--forecast-primary);}
+  .mp-detail{display:none;margin-top:14px;font-family:'IBM Plex Mono',monospace;font-size:12.5px;}
+  .mp-detail.open{display:block;}
+  .mp-detail-line{
+    display:flex;
+    justify-content:space-between;
+    gap:10px;
+    border-bottom:1px dotted rgba(168,166,160,.35);
+    padding:6px 0;
+    color:#B2AEAA;
+  }
+  .mp-detail-line.predicted{border-bottom:1px dashed rgba(114,165,194,.55);}
+  .mp-detail-line.predicted .mp-dl-label{color:#608AA2;}
+  .mp-detail-line.predicted .mp-dl-val{color:var(--forecast-primary);font-style:italic;}
+  .mp-detail-line .mp-dl-val{color:var(--text-primary);font-weight:500;white-space:nowrap;}
+  .mp-lev .lev-label{width:auto;}
+  .mp-lev .lev-row{flex-direction:column;align-items:flex-start;gap:6px;}
+  .mp-lev .lev-track{width:100% !important;max-width:100%;}
+
+  /* ---------- FAQ ---------- */
+  .faq-section{
+    margin-top:52px;
+    padding-top:32px;
+    border-top:1px solid var(--status-border);
+  }
+  .faq-heading{
+    font-family:'Fraunces',serif;
+    font-weight:500;
+    font-size:clamp(24px,3vw,32px);
+    color:var(--text-primary);
+    margin:0 0 8px;
+  }
+  .faq-sub{
+    font-size:14px;
+    color:var(--text-secondary);
+    max-width:640px;
+    margin:0 0 28px;
+  }
+  details.faq-item{
+    border-top:1px solid var(--status-border);
+    padding:16px 0;
+  }
+  details.faq-item:last-child{border-bottom:1px solid var(--status-border);}
+  details.faq-item summary{
+    cursor:pointer;
+    list-style:none;
+    font-family:'Instrument Sans',sans-serif;
+    font-weight:600;
+    font-size:15.5px;
+    color:var(--text-primary);
+    display:flex;
+    align-items:baseline;
+    gap:10px;
+  }
+  details.faq-item summary::-webkit-details-marker{display:none;}
+  details.faq-item summary::before{
+    content:"+";
+    font-family:'IBM Plex Mono',monospace;
+    color:var(--text-secondary);
+    font-weight:400;
+    flex-shrink:0;
+    width:14px;
+  }
+  details.faq-item[open] summary::before{content:"–";}
+  details.faq-item[open] summary{margin-bottom:14px;}
+  .faq-body{
+    font-size:14.5px;
+    line-height:1.65;
+    color:#B2AEAA;
+    max-width:720px;
+    padding-left:24px;
+  }
+  .faq-body p{margin:0 0 12px;}
+  .faq-body p:last-child{margin-bottom:0;}
+  .faq-body strong{color:var(--text-primary);}
+  .faq-body ul{margin:0 0 12px;padding-left:20px;}
+  .faq-body li{margin-bottom:8px;}
+  .faq-body li:last-child{margin-bottom:0;}
+
+  /* ---------- Footer ---------- */
+  @media (max-width:900px){
+    .page{padding-left:20px;padding-right:20px;}
+  }
+  @media (max-width:640px){
+    .page{padding:36px 16px 60px;}
+    .count-note{margin-left:0;}
+  }
+
+  @media (max-width:760px){
+    .desktop-table{display:none;}
+    .mobile-property-list{display:block;}
+    h1{font-size:38px;}
+    .controls{align-items:flex-start;}
+    .control-group{width:100%;}
+    .chips{flex-wrap:wrap;}
+    select#sortSelect{width:100%;min-width:0;}
+    .count-note{margin-left:0;order:99;width:100%;padding-bottom:0;padding-top:4px;}
+  }
+
+  .artemis-mark{
+    display:block;
+    width:164px;
+    height:auto;
+    margin:0 0 14px 0;
+    animation:artemis-fade-in .5s ease-out;
+  }
+  @media (max-width:900px){
+    .artemis-mark{width:144px;}
+  }
+  @media (max-width:640px){
+    .artemis-mark{width:124px;margin-bottom:12px;}
+  }
+  .artemis-faq-mark{
+    display:block;
+    width:28px;
+    height:auto;
+    margin:0 auto 16px;
+    opacity:.45;
+    animation:artemis-fade-in .5s ease-out;
+  }
+  .artemis-footer-mark{
+    display:block;
+    width:42px;
+    height:auto;
+    margin:48px auto 8px;
+    opacity:.62;
+    animation:artemis-fade-in .5s ease-out;
+  }
+  @media (max-width:640px){
+    .artemis-footer-mark{
+      width:36px;
+      margin-top:40px;
+      opacity:.62;
+    }
+  }
+  @keyframes artemis-fade-in{
+    from{opacity:0;}
+  }
+
+
+/* ===== 2026-09-04 unified site color system + exact table/callout grid ===== */
+body{background:var(--bg);color:var(--text-primary);}
+h1{color:#EEEAE4;} /* brand wordmark: intentionally unchanged */
+
+/* One muted text gray site-wide. */
+.lede,
+.masthead-disclosure > summary,
+.ledger-note,
+.legend-row,
+.click-hint,
+.control-label,
+.chip,
+.count-note,
+.payoff-subtitle,
+.table-scroll-hint,
+thead th,
+.th-unit-sub,
+.tr-modeled-label,
+.receipt-section-title,
+.mp-detail-section-title,
+.receipt-line,
+.math-note,
+.math-group-title,
+.math-meaning,
+.math-formula,
+.math-example,
+.decline-note,
+.why-body,
+.curve-caption,
+.curve-method-note,
+.lev-label,
+.lev-punch,
+.lev-copy,
+.mp-row2,
+.mp-metric-label,
+.mp-modeled-label,
+.mp-detail-line,
+.faq-sub,
+.faq-body{color:var(--text-secondary);}
+
+.lede b,
+.ledger-note strong,
+.decline-note b,
+.why-body strong,
+.lev-label b,
+.lev-punch b,
+.lev-copy b,
+.faq-body strong,
+.math-name,
+.math-example strong{color:var(--text-primary);}
+
+.masthead-disclosure > summary::before,
+.ledger-note .label,
+details.methodology-more summary,
+.property-page-link,
+.mp-property-page-link,
+tr.data-row.open .chevron,
+.fx-dot,
+.tip .tip-label,
+.receipt-title,
+.receipt-section-title.purchase,
+.mp-detail-section-title.purchase,
+.math-toggle,
+.math-kicker,
+details.why summary,
+details.faq-item summary::before{color:var(--text-secondary);}
+
+.property-page-link:hover,
+.mp-property-page-link:hover,
+.chip:hover{color:var(--text-primary);}
+
+.methodology-disclosure > summary,
+.ledger-note,
+.example-line,
+.why-conclusion{border-left-color:var(--status-border);background:transparent;}
+
+.chip{border-color:var(--status-border);background:transparent;}
+.chip:hover{border-color:var(--text-secondary);}
+.chip.active{background:var(--status-fill);border-color:var(--text-secondary);color:var(--text-secondary);}
+select#sortSelect{background:var(--bg);color:var(--text-primary);border-color:var(--status-border);}
+
+.info-dot{border-color:var(--text-secondary);color:var(--text-secondary);}
+.fx-dot{border-color:var(--status-border);}
+.info-dot .tip,.fx-dot .tip{background:var(--bg);border-color:var(--status-border);color:var(--text-secondary);}
+.fx-dot .tip{border-color:var(--status-border);}
+
+/* Actual operating data = green. */
+.legend-dot.actual,
+.payoff-mini-bars .actual,
+.tr-actual{background:var(--actual-primary);}
+.payoff-card.cash,
+.payoff-card.principal{background:var(--actual-fill);border-color:var(--actual-border);}
+.payoff-card.cash .payoff-card-name,
+.payoff-card.principal .payoff-card-name,
+.payoff-card.cash .payoff-arrow,
+.payoff-card.principal .payoff-arrow,
+.num-mid,
+.return-pair .rp-month,
+.tr-split .tr-a-num,
+.mp-metric-val,
+.mp-modeled-split .mp-a{color:var(--actual-primary);}
+.payoff-card.cash .payoff-card-copy,
+.payoff-card.principal .payoff-card-copy,
+.return-pair .rp-year,
+.tr-split .tr-a-word,
+.mp-metric-sub,
+.mp-modeled-split .mp-a-w{color:var(--actual-secondary);}
+
+/* Forecast appreciation = blue everywhere. */
+.legend-dot.predicted,
+.tr-predicted{
+  background:repeating-linear-gradient(135deg,var(--forecast-primary),var(--forecast-primary) 2px,var(--forecast-secondary) 2px,var(--forecast-secondary) 4px);
+  border-color:var(--forecast-border);
+}
+thead th.th-predicted,
+th.th-predicted .info-dot,
+th.th-predicted .fx-dot,
+th.th-predicted .tip .tip-label,
+.payoff-card.appreciation .payoff-card-name,
+.payoff-card.appreciation .payoff-arrow,
+.predicted-cell .pv,
+.tr-split .tr-f-num,
+.th-modeled-sub,
+.receipt-section-title.forecast,
+.mp-detail-section-title.forecast,
+.receipt-line.predicted-line .rl-val,
+.math-item.predicted-math .math-name,
+.math-item.predicted-math .math-kicker,
+.mp-modeled-split .mp-f,
+.mp-action.forecast,
+.mp-detail-line.predicted .mp-dl-val{color:var(--forecast-primary);}
+.payoff-card.appreciation{background:var(--forecast-fill);border:1px dashed var(--forecast-border);}
+.payoff-card.appreciation .payoff-card-copy,
+.predicted-cell .pc-caret,
+.predicted-cell .ps,
+.tr-split .tr-f-word,
+.receipt-line.predicted-line .rl-label,
+.mp-modeled-split .mp-f-w,
+.mp-detail-line.predicted .mp-dl-label{color:var(--forecast-secondary);}
+.predicted-cell{background:var(--forecast-fill);border-color:var(--forecast-border);}
+.predicted-cell:hover,.predicted-cell.open{background:var(--forecast-fill);}
+th.th-predicted .info-dot,
+th.th-predicted .fx-dot,
+th.th-predicted .info-dot .tip,
+th.th-predicted .fx-dot .tip{border-color:var(--forecast-border);}
+.receipt-line.predicted-line,
+.mp-detail-line.predicted{border-bottom-color:var(--forecast-border);}
+
+/* Modeled return and key identifying data stay primary, not data-color coded. */
+.payoff-card.modeled{background:var(--status-fill);border-color:var(--status-border);}
+.payoff-card.modeled .payoff-card-name,
+.payoff-card.modeled .payoff-arrow,
+.state-cell,
+.id-cell,
+.tr-num,
+.mp-state,
+.mp-state .mp-id,
+.mp-modeled-val{color:var(--text-primary);}
+.payoff-card.modeled .payoff-card-copy{color:var(--text-secondary);}
+.payoff-mini-bars .forecast{background:var(--forecast-primary);}
+.tr-bar,.mp-bar{background:var(--status-fill);}
+
+/* Neutral status badges: identical treatment for every state. */
+.status-badge{
+  font-size:10px;
+  background:var(--status-fill);
+  color:var(--status-text);
+  border:1px solid var(--status-border);
+}
+.status-closed,
+.status-under_contract,
+.status-proposed{
+  background:var(--status-fill);
+  color:var(--status-text);
+  border:1px solid var(--status-border);
+}
+.desktop-table .status-badge{margin-right:12px;}
+
+/* Forecast/leverage explainer follows the blue system. */
+.lev-base{background:var(--forecast-fill);border-color:var(--forecast-border);}
+.lev-gain{background:var(--forecast-primary);}
+.lev-tag,.lev-driver{color:var(--forecast-primary);}
+.lev-tag span{color:var(--forecast-secondary);}
+.lev-driver{border-color:var(--forecast-border);background:var(--forecast-fill);}
+.close-box-btn{border-color:var(--status-border);color:var(--text-secondary);}
+.close-box-btn:hover{background:var(--status-fill);color:var(--text-primary);border-color:var(--text-secondary);}
+
+/* Chart: neutral benchmark + blue modeled rental curve. */
+.curve-wrap svg line{stroke:var(--status-border);}
+.curve-wrap svg polyline{stroke:var(--forecast-primary);}
+.curve-wrap svg circle{fill:var(--forecast-primary);}
+
+/* One exact column definition powers both callouts and the real header. */
+.desktop-table{
+  --table-columns:24px 124px 52px 128px 86px 90px 146px 114px 114px 110px 140px 154px;
+  --table-width:1282px;
+}
+.table-wrap > table{width:var(--table-width);min-width:var(--table-width);table-layout:fixed;}
+.table-wrap > table col.chevron-col{width:24px;}
+.table-wrap > table col.id-col{width:52px;}
+.table-wrap > table col.state-col{width:128px;}
+.table-wrap > table col.status-col{width:124px;}
+.table-wrap > table col.price-col{width:86px;}
+.table-wrap > table col.down-col{width:90px;}
+.table-wrap > table col.invested-col{width:146px;}
+.table-wrap > table col.rent-col{width:114px;}
+.table-wrap > table col.cash-return-col{width:114px;}
+.table-wrap > table col.principal-return-col{width:110px;}
+.table-wrap > table col.appreciation-col{width:140px;}
+.table-wrap > table col.modeled-return-col{width:154px;}
+thead .payoff-intro-row,
+thead .payoff-box-row,
+thead .column-header-row{
+  display:grid;
+  grid-template-columns:var(--table-columns);
+  width:var(--table-width);
+}
+thead .payoff-intro-row > th:first-child{grid-column:1 / 9;}
+thead .payoff-intro-row > th:last-child{grid-column:9 / 13;}
+thead .payoff-box-row > th:first-child{grid-column:1 / 9;}
+thead .payoff-box-row > th.cash-return-col{grid-column:9;}
+thead .payoff-box-row > th.principal-return-col{grid-column:10;}
+thead .payoff-box-row > th.appreciation-col{grid-column:11;}
+thead .payoff-box-row > th.modeled-return-col{grid-column:12;}
+.payoff-arrow{left:50%;transform:translateX(-50%);}
+
+
+/* ===== 2026-09-04 requested payoff/table refinements ===== */
+/* Put the operating/forecast key directly between the payoff subtitle and cards. */
+thead .payoff-intro-row > th:first-child{grid-column:1 / 13;}
+thead .payoff-intro-row > th:last-child{display:none;}
+.payoff-inline-legend{
+  display:flex;
+  flex-wrap:wrap;
+  align-items:center;
+  gap:5px 24px;
+  margin-top:8px;
+  max-width:100%;
+  font-family:'IBM Plex Mono',monospace;
+  font-size:10.5px;
+  line-height:1.35;
+  color:var(--text-secondary);
+}
+.payoff-inline-legend .legend-swatch{gap:7px;}
+.payoff-inline-legend .legend-dot{width:9px;height:9px;}
+
+/* Let each callout begin slightly left of its data column while keeping its arrow
+   centered over the data below. The appreciation card is intentionally a little
+   shorter on the right than the other three. */
+.payoff-card{
+  width:calc(100% - 1px);
+  margin-left:-4px;
+  margin-right:0;
+}
+.payoff-card .payoff-arrow{left:calc(50% + 5px);}
+.payoff-card.appreciation{width:calc(100% - 10px);}
+.payoff-card.appreciation .payoff-arrow{left:calc(50% + 9px);}
+.payoff-card.appreciation .payoff-op{right:-24px;}
+
+/* Show the same + + = relationship on every desktop data row. */
+tbody tr.data-row td.cash-return-col,
+tbody tr.data-row td.principal-return-col,
+tbody tr.data-row td.appreciation-col{position:relative;}
+tbody tr.data-row td.cash-return-col::after,
+tbody tr.data-row td.principal-return-col::after,
+tbody tr.data-row td.appreciation-col::after{
+  position:absolute;
+  right:-8px;
+  top:50%;
+  transform:translateY(-50%);
+  z-index:4;
+  width:16px;
+  height:16px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  border:1px solid var(--status-border);
+  border-radius:50%;
+  background:var(--bg);
+  color:var(--text-secondary);
+  font-family:'IBM Plex Mono',monospace;
+  font-size:10px;
+  line-height:1;
+  pointer-events:none;
+}
+tbody tr.data-row td.cash-return-col::after,
+tbody tr.data-row td.principal-return-col::after{content:'+';}
+tbody tr.data-row td.appreciation-col::after{content:'=';}
+tbody tr.data-row td.principal-return-col,
+tbody tr.data-row td.appreciation-col,
+tbody tr.data-row td.modeled-return-col{padding-left:13px;}
+
+/* Center the status treatment inside its column. */
+tbody tr.data-row td.status-cell{text-align:center;}
+tbody tr.data-row td.status-cell .property-page-link{
+  margin-left:auto;
+  margin-right:auto;
+}
+
+/* Property-page links use the exact amber/gold used by the Open Book mark. */
+.property-page-link,
+.mp-property-page-link{color:#B5A585;}
+.property-page-link:hover,
+.mp-property-page-link:hover{color:#C8BDA5;}
+
+/* ===== Availability-first status hierarchy + logo sizing ===== */
+.status-proposed{
+  background:rgba(181,165,133,.10);
+  color:#B5A585;
+  border-color:rgba(181,165,133,.58);
+  font-weight:600;
+  white-space:normal;
+  line-height:1.18;
+  text-align:center;
+  min-width:108px;
+}
+.desktop-table .status-badge{margin-right:0;}
+.chip.chip-recommended{
+  color:#B5A585;
+  border-color:rgba(181,165,133,.55);
+}
+.chip.chip-recommended.active{
+  color:#C8BDA5;
+  background:rgba(181,165,133,.10);
+  border-color:rgba(181,165,133,.72);
+}
+tbody tr.data-row.status-proposed-row{
+  background:linear-gradient(90deg,rgba(181,165,133,.085),rgba(181,165,133,.025) 23%,rgba(20,23,28,0) 48%);
+}
+tbody tr.data-row.status-proposed-row:hover{
+  background:linear-gradient(90deg,rgba(181,165,133,.13),rgba(181,165,133,.045) 25%,rgba(168,166,160,.025) 52%);
+}
+tbody tr.data-row.status-proposed-row td:first-child{
+  box-shadow:inset 3px 0 0 #B5A585;
+}
+.artemis-mark{width:328px;}
+.artemis-faq-mark,
+.artemis-footer-mark{width:164px;}
+@media (max-width:900px){
+  .artemis-mark{width:288px;}
+  .artemis-faq-mark,
+  .artemis-footer-mark{width:144px;}
+}
+@media (max-width:640px){
+  .artemis-mark{width:248px;}
+  .artemis-faq-mark,
+  .artemis-footer-mark{width:124px;}
+}
+
+
+/* ===== 2026-09-04 user-approved payoff equation layout ===== */
+/* Dedicated equation columns make every + and = sit exactly halfway between
+   the values it connects, with no overlap or ambiguous ownership. */
+.desktop-table{
+  --table-columns:24px 124px 52px 128px 86px 90px 146px 114px 104px 28px 104px 28px 124px 28px 136px;
+  --table-width:1316px;
+}
+.table-wrap > table col.cash-return-col{width:104px;}
+.table-wrap > table col.principal-return-col{width:104px;}
+.table-wrap > table col.appreciation-col{width:124px;}
+.table-wrap > table col.modeled-return-col{width:136px;}
+.table-wrap > table col.equation-operator-col{width:28px;}
+th.cash-return-col,td.cash-return-col{width:104px;}
+th.principal-return-col,td.principal-return-col{width:104px;}
+th.appreciation-col,td.appreciation-col{width:124px;}
+th.modeled-return-col,td.modeled-return-col{width:136px;}
+th.equation-operator-col,td.equation-operator-col{width:28px;min-width:28px;max-width:28px;}
+
+thead .payoff-box-row,
+thead .column-header-row{
+  display:grid;
+  grid-template-columns:var(--table-columns);
+  width:var(--table-width);
+}
+thead .payoff-box-row > .payoff-copy-cell{grid-column:1 / 9;}
+thead .payoff-box-row > .cash-return-col{grid-column:9;}
+thead .payoff-box-row > .op-one{grid-column:10;}
+thead .payoff-box-row > .principal-return-col{grid-column:11;}
+thead .payoff-box-row > .op-two{grid-column:12;}
+thead .payoff-box-row > .appreciation-col{grid-column:13;}
+thead .payoff-box-row > .op-three{grid-column:14;}
+thead .payoff-box-row > .modeled-return-col{grid-column:15;}
+
+thead .payoff-box-row th{
+  position:relative;
+  padding:0 0 20px;
+  vertical-align:top;
+  border-bottom:0;
+  text-transform:none;
+  letter-spacing:normal;
+  overflow:visible;
+}
+.payoff-copy-cell{
+  display:flex;
+  align-items:center;
+  padding:0 24px 20px 5px !important;
+}
+.payoff-copy{max-width:610px;}
+.payoff-title{font-size:16px;line-height:1.25;font-weight:600;color:var(--text-primary);}
+.payoff-subtitle{margin-top:4px;font-size:12.5px;line-height:1.35;color:var(--text-primary);}
+.payoff-inline-legend{margin-top:9px;gap:4px 22px;font-size:10px;line-height:1.4;}
+
+/* Cards and arrows are centered on the data columns beneath them. */
+.payoff-card,
+.payoff-card.appreciation{
+  width:calc(100% - 8px);
+  min-height:96px;
+  margin:0 4px;
+  padding:9px 7px 10px;
+  border-radius:7px;
+}
+.payoff-card .payoff-arrow,
+.payoff-card.appreciation .payoff-arrow{
+  left:50%;
+  bottom:-17px;
+  width:10px;
+  height:6px;
+  transform:translateX(-50%);
+  border:0;
+  background:currentColor;
+  clip-path:polygon(0 0,100% 0,50% 100%);
+}
+.payoff-card.cash .payoff-arrow,
+.payoff-card.principal .payoff-arrow{color:var(--actual-primary);}
+.payoff-card.appreciation .payoff-arrow{color:var(--forecast-primary);}
+.payoff-card.modeled .payoff-arrow{
+  color:transparent;
+  background:linear-gradient(90deg,var(--actual-primary),var(--forecast-primary));
+}
+
+/* The top Modeled return box and every Modeled return value box share the same
+   restrained green-to-blue fill and outline. There is deliberately no glow. */
+.payoff-card.modeled,
+.tr-wrap{
+  border:1px solid transparent;
+  background:
+    linear-gradient(90deg,rgba(114,183,137,.060) 0%,rgba(114,183,137,.025) 44%,rgba(114,165,194,.025) 56%,rgba(114,165,194,.060) 100%) padding-box,
+    linear-gradient(90deg,rgba(114,183,137,.82),rgba(114,165,194,.82)) border-box;
+  box-shadow:none;
+}
+.payoff-card.modeled .payoff-card-name{color:var(--text-primary);}
+.payoff-card.modeled .payoff-card-copy{color:var(--text-secondary);}
+.tr-wrap{
+  width:100%;
+  gap:3px;
+  padding:6px 8px 7px;
+  border-radius:7px;
+}
+.tr-modeled-label{display:none;}
+.tr-bar{width:100%;height:5px;margin-top:2px;}
+
+/* Bright green + signs; a green/blue hybrid = sign. */
+.payoff-equation-operator{
+  padding:0 0 20px !important;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+}
+.equation-operator-cell{
+  padding:0 !important;
+  text-align:center;
+  vertical-align:middle;
+}
+.equation-operator-cell .equation-op{vertical-align:middle;}
+.equation-op{
+  width:21px;
+  height:21px;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  border-radius:50%;
+  background:var(--bg);
+  font-family:'IBM Plex Mono',monospace;
+  font-size:14px;
+  font-weight:600;
+  line-height:1;
+  box-sizing:border-box;
+}
+.payoff-equation-operator .equation-op{width:24px;height:24px;font-size:17px;}
+.equation-op.plus{
+  color:var(--actual-primary);
+  border:1px solid rgba(114,183,137,.82);
+}
+.equation-op.equal{
+  color:#B2AEAA;
+  border:1px solid transparent;
+  background:
+    linear-gradient(var(--bg),var(--bg)) padding-box,
+    linear-gradient(135deg,var(--actual-primary),var(--forecast-primary)) border-box;
+}
+
+/* Retire the old floating pseudo-operators now that the signs have real columns. */
+tbody tr.data-row td.cash-return-col::after,
+tbody tr.data-row td.principal-return-col::after,
+tbody tr.data-row td.appreciation-col::after{content:none !important;display:none !important;}
+tbody tr.data-row td.principal-return-col,
+tbody tr.data-row td.appreciation-col,
+tbody tr.data-row td.modeled-return-col{padding-left:5px;}
+tbody tr.data-row td.modeled-return-col{padding:7px 4px;}
+tbody tr.data-row td.equation-operator-cell{border-bottom:1px solid rgba(58,63,71,.6);}
+
+
+/* ===== 2026-09-04 payoff layout correction v2 ===== */
+/* Keep the real table rows as table rows. The explainer equation gets its own
+   internal grid instead of turning a <tr> into a CSS grid, which caused the
+   browser to stack the cells diagonally. */
+thead .payoff-box-row,
+thead .column-header-row{
+  display:table-row !important;
+  width:auto !important;
+  grid-template-columns:none !important;
+}
+thead .payoff-box-row > th,
+thead .column-header-row > th{
+  display:table-cell !important;
+}
+thead .payoff-box-row > .payoff-equation-shell{
+  padding:0 0 22px !important;
+  border-bottom:0 !important;
+  overflow:visible !important;
+}
+.payoff-equation-grid{
+  display:grid;
+  grid-template-columns:var(--table-columns);
+  grid-template-rows:auto;
+  width:var(--table-width);
+  align-items:start;
+  overflow:visible;
+}
+.payoff-equation-grid > *{grid-row:1;}
+.payoff-equation-grid > .payoff-copy-cell{
+  grid-column:1 / 9;
+  min-height:96px;
+  display:flex;
+  align-items:center;
+  padding:0 28px 0 5px !important;
+}
+.payoff-grid-cash{grid-column:9;}
+.payoff-grid-op1{grid-column:10;}
+.payoff-grid-principal{grid-column:11;}
+.payoff-grid-op2{grid-column:12;}
+.payoff-grid-appreciation{grid-column:13;}
+.payoff-grid-op3{grid-column:14;}
+.payoff-grid-modeled{grid-column:15;}
+
+/* All four cards live on the same baseline and each arrow is the exact center
+   of the data column beneath it. */
+.payoff-equation-grid > .payoff-card,
+.payoff-equation-grid > .payoff-card.appreciation{
+  width:calc(100% - 8px);
+  min-height:96px;
+  margin:0 4px;
+  padding:9px 7px 10px;
+  align-self:start;
+}
+.payoff-equation-grid .payoff-arrow,
+.payoff-equation-grid .payoff-card.appreciation .payoff-arrow{
+  left:50% !important;
+  transform:translateX(-50%) !important;
+  bottom:-17px;
+}
+.payoff-equation-grid > .payoff-equation-operator{
+  height:96px;
+  padding:0 !important;
+  margin:0 !important;
+  display:flex !important;
+  align-items:center;
+  justify-content:center;
+  align-self:start;
+}
+
+/* The hybrid box should read like the modeled-return cells, not like a bright
+   gradient tile. The fill is deliberately dark; only the tint and outline move
+   from green on the left to blue on the right. */
+.payoff-card.modeled,
+.tr-wrap{
+  border:1px solid transparent !important;
+  background:
+    linear-gradient(90deg,#172019 0%,#171e1b 46%,#151d20 54%,#142029 100%) padding-box,
+    linear-gradient(90deg,rgba(114,183,137,.88),rgba(114,165,194,.88)) border-box !important;
+  box-shadow:none !important;
+}
+.payoff-card.modeled .payoff-card-name,
+.tr-num{color:var(--text-primary) !important;}
+.payoff-card.modeled .payoff-card-copy{color:var(--text-secondary) !important;}
+
+/* Keep the row operators as real table cells and center the symbol within the
+   dedicated gap column. */
+tbody td.equation-operator-cell{
+  display:table-cell !important;
+  padding:0 !important;
+  text-align:center !important;
+  vertical-align:middle !important;
+}
+
+/* Bright green + signs. The equals sign itself and its ring are both hybrid. */
+.equation-op.plus{
+  color:var(--actual-primary) !important;
+  border-color:rgba(114,183,137,.92) !important;
+}
+.equation-op.equal{
+  color:transparent !important;
+  font-size:0 !important;
+  border:1px solid transparent !important;
+  background:
+    linear-gradient(var(--bg),var(--bg)) padding-box,
+    linear-gradient(90deg,var(--actual-primary),var(--forecast-primary)) border-box !important;
+}
+.equation-op.equal::after{
+  content:'=';
+  font-family:'IBM Plex Mono',monospace;
+  font-size:14px;
+  font-weight:600;
+  line-height:1;
+  background:linear-gradient(90deg,var(--actual-primary),var(--forecast-primary));
+  -webkit-background-clip:text;
+  background-clip:text;
+  color:transparent;
+}
+.payoff-equation-operator .equation-op.equal::after{font-size:17px;}
+
+/* Full-property-page CTA shown only when the sheet supplies a property page slug. */
+.receipt-property-page-cta-wrap{
+  grid-column:1 / -1;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  min-width:0;
+}
+@media (min-width:1151px){
+  .receipt-property-page-cta-wrap{grid-column:3 / 5;}
+}
+.receipt-property-page-cta,
+.mp-property-page-cta{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  box-sizing:border-box;
+  border:1px solid #B5A585;
+  border-radius:0;
+  background:rgba(181,165,133,.025);
+  color:#B5A585;
+  font-family:'IBM Plex Mono',monospace;
+  font-size:11.5px;
+  font-weight:500;
+  line-height:1.2;
+  text-align:center;
+  text-decoration:none;
+  transition:background .12s ease,color .12s ease,border-color .12s ease;
+}
+.receipt-property-page-cta{
+  width:80%;
+  min-height:36px;
+  padding:8px 14px;
+}
+.receipt-property-page-cta:hover,
+.mp-property-page-cta:hover{
+  color:#C8BDA5;
+  border-color:#C8BDA5;
+  background:rgba(181,165,133,.07);
+}
+.mp-property-page-cta-wrap{margin-top:12px;}
+.mp-property-page-cta{
+  width:100%;
+  min-height:38px;
+  padding:9px 12px;
+}
+
+
+/* ===== 2026-09-04 approved explainer polish v3 ===== */
+/* The explainer is intentionally independent from the table-column grid. This lets
+   the equation stay compact while four explicit guide arrows terminate at the exact
+   centers of Cash Flow, Principal, Appreciation, and Modeled Return. */
+.desktop-table{
+  --table-columns:24px 124px 52px 128px 86px 90px 146px 114px 104px 28px 104px 28px 112px 28px 148px;
+  --table-width:1316px;
+}
+.table-wrap > table col.appreciation-col{width:112px;}
+.table-wrap > table col.modeled-return-col{width:148px;}
+th.appreciation-col,td.appreciation-col{width:112px;}
+th.modeled-return-col,td.modeled-return-col{width:148px;}
+.table-wrap > table{margin-right:18px;}
+
+thead .payoff-box-row > .payoff-equation-shell{
+  position:relative;
+  height:176px;
+  padding:0 !important;
+  overflow:visible !important;
+}
+.payoff-equation-grid{
+  position:relative !important;
+  display:block !important;
+  width:var(--table-width) !important;
+  height:176px !important;
+  overflow:visible !important;
+}
+.payoff-equation-grid > *{grid-row:auto !important;grid-column:auto !important;}
+.payoff-equation-grid > .payoff-copy-cell{
+  position:absolute;
+  left:5px;
+  top:4px;
+  width:555px;
+  min-height:112px;
+  display:flex;
+  align-items:flex-start;
+  padding:4px 28px 0 0 !important;
+  box-sizing:border-box;
+}
+.payoff-copy{max-width:540px;}
+.payoff-inline-legend{
+  margin-top:9px;
+  gap:4px 20px;
+  font-size:9.8px;
+  color:rgba(168,166,160,.72) !important;
+}
+.payoff-inline-legend .legend-swatch{opacity:.82;}
+
+/* Compact equation placement from the approved mockup. The boxes no longer have
+   to sit directly over their data columns because the arrows make the mapping explicit. */
+.payoff-equation-grid > .payoff-card,
+.payoff-equation-grid > .payoff-card.appreciation{
+  position:absolute !important;
+  top:0;
+  height:120px;
+  min-height:120px;
+  margin:0 !important;
+  padding:10px 10px 11px;
+  box-sizing:border-box;
+  border-radius:7px;
+  z-index:3;
+}
+.payoff-grid-cash{left:600px;width:132px !important;}
+.payoff-grid-principal{left:778px;width:154px !important;}
+.payoff-grid-appreciation{left:976px;width:142px !important;}
+.payoff-grid-modeled{left:1162px;width:148px !important;}
+.payoff-card-name{line-height:1.18;}
+.payoff-card-copy{margin-top:6px;line-height:1.34;}
+.payoff-card-note{font-size:9.4px;color:var(--actual-secondary);white-space:nowrap;}
+
+.payoff-equation-grid > .payoff-equation-operator{
+  position:absolute !important;
+  top:0;
+  width:28px;
+  height:120px;
+  padding:0 !important;
+  margin:0 !important;
+  display:flex !important;
+  align-items:center;
+  justify-content:center;
+  z-index:4;
+}
+.payoff-grid-op1{left:742px;}
+.payoff-grid-op2{left:940px;}
+.payoff-grid-op3{left:1126px;}
+.payoff-equation-operator .equation-op{
+  width:26px;
+  height:26px;
+  font-size:18px;
+}
+.payoff-equation-operator .equation-op.equal::after{font-size:18px;}
+
+/* Exactly four arrows. The first two originate at the lower-right edge of their
+   boxes and travel diagonally to the correct labels. Appreciation and Modeled
+   Return are already nearly aligned, so their arrows are vertical. */
+.payoff-equation-grid .payoff-arrow{display:none !important;}
+.payoff-guide-arrows{
+  position:absolute;
+  left:0;
+  top:0;
+  width:var(--table-width);
+  height:176px;
+  overflow:visible;
+  pointer-events:none;
+  z-index:2;
+}
+.payoff-guide-line{
+  fill:none;
+  stroke-width:2.2;
+  stroke-linecap:round;
+  vector-effect:non-scaling-stroke;
+}
+.cash-guide,.principal-guide{stroke:var(--actual-primary);}
+.appreciation-guide{stroke:var(--forecast-primary);}
+.modeled-guide{stroke:#B2AEAA;}
+
+
+/* ===== 2026-09-04 compact dropdown filtering + clickable column sorting ===== */
+.filter-toolbar{
+  position:relative;
+  z-index:70;
+  display:flex;
+  align-items:center;
+  gap:14px;
+  min-height:42px;
+  margin:2px 0 16px;
+  padding:0 0 12px;
+  border-bottom:1px solid var(--status-border);
+}
+.filter-toolbar .count-note{
+  margin-left:auto;
+  align-self:center;
+  padding:0;
+}
+.filter-dropdown{position:relative;}
+.filter-dropdown > summary{
+  list-style:none;
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  min-height:36px;
+  padding:7px 11px;
+  border:1px solid var(--status-border);
+  border-radius:4px;
+  background:transparent;
+  color:var(--text-primary);
+  font-family:'Instrument Sans',sans-serif;
+  font-size:12.5px;
+  font-weight:500;
+  line-height:1;
+  cursor:pointer;
+  user-select:none;
+  transition:border-color .12s ease,background .12s ease;
+}
+.filter-dropdown > summary::-webkit-details-marker{display:none;}
+.filter-dropdown > summary::marker{display:none;content:'';}
+.filter-dropdown > summary:hover,
+.filter-dropdown[open] > summary{
+  border-color:rgba(168,166,160,.72);
+  background:rgba(168,166,160,.045);
+}
+.filter-trigger-icon{
+  width:15px;
+  height:15px;
+  fill:none;
+  stroke:currentColor;
+  stroke-width:1.4;
+  stroke-linejoin:round;
+}
+.filter-caret{
+  color:var(--text-secondary);
+  font-family:'IBM Plex Mono',monospace;
+  font-size:12px;
+  transform:translateY(-1px);
+  transition:transform .12s ease;
+}
+.filter-dropdown[open] .filter-caret{transform:rotate(180deg) translateY(1px);}
+.filter-active-count{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  min-width:18px;
+  height:18px;
+  padding:0 5px;
+  border:1px solid rgba(181,165,133,.58);
+  border-radius:100px;
+  background:rgba(181,165,133,.09);
+  color:#B5A585;
+  font-family:'IBM Plex Mono',monospace;
+  font-size:9.5px;
+  font-weight:600;
+}
+.filter-active-count[hidden]{display:none;}
+.filter-panel{
+  position:absolute;
+  top:calc(100% + 8px);
+  left:0;
+  width:min(720px,calc(100vw - 64px));
+  padding:16px;
+  border:1px solid var(--status-border);
+  border-radius:4px;
+  background:#171a1f;
+  box-shadow:0 18px 45px rgba(0,0,0,.42);
+  z-index:120;
+}
+.filter-panel-grid{
+  display:grid;
+  grid-template-columns:1.15fr 1.15fr 1fr;
+  gap:16px 20px;
+  align-items:start;
+}
+.filter-section{
+  min-width:0;
+  margin:0;
+  padding:0;
+  border:0;
+}
+.filter-section legend{
+  width:100%;
+  margin:0 0 8px;
+  padding:0;
+  color:var(--text-secondary);
+  font-family:'IBM Plex Mono',monospace;
+  font-size:9.5px;
+  font-weight:500;
+  letter-spacing:.09em;
+  text-transform:uppercase;
+}
+.filter-state-section{grid-row:span 2;}
+.filter-status-section{grid-row:span 2;}
+.filter-check-list{
+  display:grid;
+  gap:6px;
+  max-height:170px;
+  overflow:auto;
+  padding-right:4px;
+}
+.filter-check{
+  display:flex;
+  align-items:flex-start;
+  gap:7px;
+  color:var(--text-primary);
+  font-family:'Instrument Sans',sans-serif;
+  font-size:12px;
+  line-height:1.3;
+  cursor:pointer;
+}
+.filter-check input{
+  margin:1px 0 0;
+  accent-color:var(--text-secondary);
+  cursor:pointer;
+  flex:0 0 auto;
+}
+.filter-check.recommended span{color:#B5A585;}
+.filter-range-row{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:8px;
+}
+.filter-range-row label{display:block;min-width:0;}
+.filter-range-row label > span{
+  display:block;
+  margin-bottom:4px;
+  color:var(--text-secondary);
+  font-family:'IBM Plex Mono',monospace;
+  font-size:9px;
+}
+.filter-input{
+  width:100%;
+  min-width:0;
+  height:34px;
+  padding:6px 8px;
+  border:1px solid var(--status-border);
+  border-radius:3px;
+  outline:none;
+  background:var(--bg);
+  color:var(--text-primary);
+  font-family:'IBM Plex Mono',monospace;
+  font-size:11.5px;
+}
+.filter-input:focus{border-color:var(--text-secondary);}
+.filter-input::placeholder{color:rgba(168,166,160,.52);}
+.filter-panel-actions{
+  display:flex;
+  align-items:center;
+  justify-content:flex-end;
+  gap:10px;
+  margin-top:16px;
+  padding-top:12px;
+  border-top:1px solid var(--status-border);
+}
+.filter-clear,
+.filter-apply{
+  min-height:34px;
+  padding:7px 12px;
+  border-radius:3px;
+  font-family:'Instrument Sans',sans-serif;
+  font-size:11.5px;
+  font-weight:500;
+  cursor:pointer;
+}
+.filter-clear{
+  border:1px solid transparent;
+  background:transparent;
+  color:var(--text-secondary);
+}
+.filter-clear:hover{color:var(--text-primary);}
+.filter-apply{
+  border:1px solid #B5A585;
+  background:#B5A585;
+  color:#141619;
+}
+.filter-apply:hover{background:#C8BDA5;border-color:#C8BDA5;}
+
+thead th.sortable .th-title-row{
+  cursor:pointer;
+  user-select:none;
+}
+thead th.sortable .th-title-row::after{
+  content:'↕';
+  display:inline-block;
+  margin-left:1px;
+  color:var(--text-secondary);
+  font-size:9px;
+  line-height:1;
+  opacity:0;
+  transition:opacity .12s ease,color .12s ease;
+}
+thead th.sortable:hover .th-title-row::after{opacity:.58;}
+thead th.sortable[data-sort-direction="asc"] .th-title-row::after{
+  content:'↑';
+  opacity:1;
+  color:var(--text-primary);
+}
+thead th.sortable[data-sort-direction="desc"] .th-title-row::after{
+  content:'↓';
+  opacity:1;
+  color:var(--text-primary);
+}
+thead th.sortable:focus-visible{
+  outline:1px solid var(--text-secondary);
+  outline-offset:-2px;
+}
+.sticky-table-header{pointer-events:auto;}
+
+@media (max-width:900px){
+  .filter-panel-grid{grid-template-columns:1fr 1fr;}
+  .filter-state-section,.filter-status-section{grid-row:auto;}
+}
+@media (max-width:760px){
+  .filter-toolbar{
+    align-items:center;
+    margin-bottom:12px;
+  }
+  .filter-toolbar .count-note{
+    width:auto;
+    margin-left:auto;
+    order:0;
+    padding:0;
+    text-align:right;
+  }
+  .filter-panel{
+    width:calc(100vw - 32px);
+    max-width:none;
+    padding:14px;
+  }
+  .filter-panel-grid{grid-template-columns:1fr;gap:15px;}
+  .filter-check-list{max-height:none;}
+}
+@media (max-width:520px){
+  .filter-toolbar{gap:8px;}
+  .filter-dropdown > summary{padding-left:9px;padding-right:9px;}
+  .filter-toolbar .count-note{font-size:10.5px;}
+}
+
+
+
+/* ===== 2026-09-04 consolidated explanatory popups ===== */
+.info-dot .tip{
+  width:min(440px,calc(100vw - 32px));
+  max-height:min(72vh,620px);
+  overflow-y:auto;
+  text-align:left;
+  pointer-events:auto;
+}
+.comparison-info .tip{width:min(500px,calc(100vw - 32px));}
+.tip .tip-heading{
+  display:block;
+  color:var(--text-primary);
+  font-family:'Instrument Sans',sans-serif;
+  font-size:12.5px;
+  font-weight:600;
+  line-height:1.4;
+  margin:0 0 5px;
+  text-transform:none;
+  letter-spacing:normal;
+}
+.tip .tip-heading-spaced{margin-top:13px;}
+.tip .tip-paragraph,
+.tip .tip-bullet,
+.tip .tip-formula{
+  display:block;
+  margin-top:7px;
+  color:var(--text-secondary);
+  font-family:'Instrument Sans',sans-serif;
+  font-size:12.5px;
+  line-height:1.5;
+  font-weight:400;
+  text-transform:none;
+  letter-spacing:normal;
+}
+.tip .tip-bullet{margin-top:3px;padding-left:2px;}
+.tip .tip-formula{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:11.5px;
+  color:var(--text-primary);
+}
+.tip .tip-formula-spaced{margin-top:8px;}
+.tip strong{color:var(--text-primary);font-weight:600;}
+
+.comparison-section{
+  margin-top:34px;
+  padding-top:26px;
+  border-top:1px solid var(--status-border);
+  max-width:760px;
+}
+.comparison-title-row{
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+.comparison-title{
+  margin:0;
+  color:var(--text-primary);
+  font-family:'Fraunces',serif;
+  font-size:clamp(20px,2.5vw,27px);
+  line-height:1.2;
+  font-weight:500;
+}
+.comparison-info{flex:0 0 auto;}
+.comparison-sub{
+  margin:7px 0 14px;
+  max-width:660px;
+  color:var(--text-secondary);
+  font-size:13px;
+  line-height:1.5;
+}
+.comparison-curve{max-width:680px;margin:8px 0 0;}
+@media (max-width:640px){
+  .comparison-title-row{align-items:flex-start;}
+  .comparison-title{font-size:22px;}
+  .comparison-curve svg{height:auto;}
+}
+
+
+
+/* ===== Table loading resilience + unclipped click popups ===== */
+.table-message-row td{
+  height:72px;
+  padding:18px 8px;
+  border-bottom:1px solid var(--status-border);
+}
+.table-load-message,
+.mobile-load-message{
+  color:var(--text-secondary);
+  font-family:'IBM Plex Mono',monospace;
+  font-size:11.5px;
+  letter-spacing:.01em;
+}
+.mobile-load-message{
+  padding:20px 2px;
+  border-top:1px solid var(--status-border);
+  border-bottom:1px solid var(--status-border);
+}
+.table-load-message.is-error,
+.mobile-load-message.is-error{color:#d6b77a;}
+.info-dot.clicked-open .tip,
+.fx-dot.clicked-open .tip{z-index:9999;}
+
+
+
+/* ===== CAGR chart clarity redesign ===== */
+.comparison-legend{
+  display:flex;
+  flex-wrap:wrap;
+  gap:10px 22px;
+  margin:0 0 8px;
+  color:var(--text-secondary);
+  font-family:'IBM Plex Mono',monospace;
+  font-size:10.5px;
+}
+.comparison-legend-item{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+}
+.comparison-legend-line{
+  width:28px;
+  height:0;
+  border-top:3px solid #72A5C2;
+}
+.comparison-legend-line.benchmark{
+  border-top:2px dashed #B2AEAA;
+}
+.comparison-curve svg{
+  display:block;
+  overflow:visible;
+}
+@media (max-width:640px){
+  .comparison-legend{gap:7px 16px;font-size:10px;}
+  .comparison-curve svg{min-width:620px;}
+  .comparison-curve{overflow-x:auto;padding-bottom:4px;}
+}
+
+
+
+/* ===== Collapsible CAGR section ===== */
+.comparison-section{
+  padding-top:0;
+}
+.comparison-details{
+  border-top:1px solid var(--status-border);
+  border-bottom:1px solid var(--status-border);
+}
+.comparison-summary{
+  list-style:none;
+  cursor:pointer;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:20px;
+  padding:22px 0;
+  color:var(--text-primary);
+  font-family:'Cormorant Garamond',serif;
+  font-size:30px;
+  font-weight:600;
+  line-height:1.05;
+  user-select:none;
+}
+.comparison-summary::-webkit-details-marker{display:none;}
+.comparison-summary-chevron{
+  color:var(--text-secondary);
+  font-family:'Instrument Sans',sans-serif;
+  font-size:22px;
+  transition:transform .18s ease;
+  transform-origin:center;
+}
+.comparison-details[open] .comparison-summary-chevron{transform:rotate(180deg);}
+.comparison-content{
+  padding:0 0 30px;
+}
+.comparison-content .comparison-sub{
+  margin-top:-4px;
+  margin-bottom:18px;
+}
+.comparison-explainer{
+  max-width:880px;
+  margin:18px 0 0;
+  padding-top:18px;
+  border-top:1px solid var(--status-border);
+  color:var(--text-secondary);
+  font-family:'Instrument Sans',sans-serif;
+  font-size:14px;
+  line-height:1.55;
+}
+.comparison-explainer h3{
+  margin:0 0 8px;
+  color:var(--text-primary);
+  font-size:14px;
+  font-weight:600;
+}
+.comparison-explainer h3:not(:first-child){margin-top:22px;}
+.comparison-explainer p{margin:0 0 10px;}
+.comparison-explainer strong{color:var(--text-primary);font-weight:600;}
+@media (max-width:640px){
+  .comparison-summary{font-size:24px;padding:18px 0;}
+  .comparison-content{padding-bottom:24px;}
+  .comparison-explainer{font-size:13.5px;}
+}
+
+</style>
+<link rel="icon" href="assets/artemis-favicon.svg" type="image/svg+xml">
+<link rel="icon" href="assets/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="48x48" href="assets/artemis-favicon-48.png">
+<link rel="icon" type="image/png" sizes="32x32" href="assets/artemis-favicon-32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="assets/artemis-favicon-16.png">
+<link rel="apple-touch-icon" sizes="180x180" href="assets/apple-touch-icon.png">
+<link id="instrument-sans-font" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link id="refined-theme-css" rel="stylesheet" href="refined-theme.css?v=20260904-5">
+</head>
+<body>
+<div class="page">
+
+  <img class="artemis-mark" src="assets/artemis-mark.svg" alt="" aria-hidden="true">
+  <h1>The Open Book</h1>
+  <details class="masthead-disclosure intro-disclosure">
+    <summary>About this track record →</summary>
+    <p class="lede">Here's every buy-and-hold rental I've closed on, have under contract, or have finished evaluating and currently recommend as available opportunities — some I bought for my own portfolio, some I helped an investor buy. No flips, no wholesale deals, just properties meant to be held and rented. <b>A lower number here doesn't mean a weaker deal</b> — a Texas property banking on long-term growth and a stable Oklahoma rental can both be right, for different reasons. For closed properties, operating numbers are actual; for pipeline properties, they're underwritten. Appreciation assumptions are forecasts. Neither tells the whole story. Click any row for the numbers behind it.</p>
+  </details>
+
+
+  <div class="filter-toolbar">
+    <details class="filter-dropdown" id="filterDropdown">
+      <summary class="filter-trigger" aria-label="Filter properties">
+        <svg class="filter-trigger-icon" viewBox="0 0 20 20" aria-hidden="true">
+          <path d="M3 4h14l-5.4 6.2v4.7l-3.2 1.6v-6.3L3 4Z"></path>
+        </svg>
+        <span>Filter properties</span>
+        <span class="filter-active-count" id="filterActiveCount" hidden>0</span>
+        <span class="filter-caret" aria-hidden="true">⌄</span>
+      </summary>
+
+      <div class="filter-panel" role="group" aria-label="Property filters">
+        <div class="filter-panel-grid">
+          <fieldset class="filter-section filter-state-section">
+            <legend>State</legend>
+            <div class="filter-check-list" id="stateFilterOptions"></div>
+          </fieldset>
+
+          <fieldset class="filter-section filter-status-section">
+            <legend>Status</legend>
+            <div class="filter-check-list" id="statusFilterOptions"></div>
+          </fieldset>
+
+          <fieldset class="filter-section">
+            <legend>Price range</legend>
+            <div class="filter-range-row">
+              <label><span>Min</span><input class="filter-input" id="filterPriceMin" type="number" min="0" step="1000" inputmode="numeric" placeholder="$"></label>
+              <label><span>Max</span><input class="filter-input" id="filterPriceMax" type="number" min="0" step="1000" inputmode="numeric" placeholder="$"></label>
+            </div>
+          </fieldset>
+
+          <fieldset class="filter-section">
+            <legend>Cash flow / mo</legend>
+            <div class="filter-range-row">
+              <label><span>Min</span><input class="filter-input" id="filterCashMin" type="number" step="25" inputmode="numeric" placeholder="$"></label>
+              <label><span>Max</span><input class="filter-input" id="filterCashMax" type="number" step="25" inputmode="numeric" placeholder="$"></label>
+            </div>
+          </fieldset>
+
+          <fieldset class="filter-section">
+            <legend>Modeled return</legend>
+            <div class="filter-range-row">
+              <label><span>Min</span><input class="filter-input" id="filterReturnMin" type="number" step="0.5" inputmode="decimal" placeholder="%"></label>
+              <label><span>Max</span><input class="filter-input" id="filterReturnMax" type="number" step="0.5" inputmode="decimal" placeholder="%"></label>
+            </div>
+          </fieldset>
+        </div>
+
+        <div class="filter-panel-actions">
+          <button type="button" class="filter-clear" id="clearFilters">Clear filters</button>
+          <button type="button" class="filter-apply" id="applyFilters">Apply filters</button>
+        </div>
+      </div>
+    </details>
+    <div class="count-note" id="countNote"></div>
+  </div>
+
+  <div class="desktop-table">
+  <div class="sticky-table-header" aria-hidden="true">
+    <div class="sticky-table-header-viewport">
+      <table class="sticky-table-header-table"></table>
+    </div>
+  </div>
+  <div class="table-wrap">
+    <table>
+      <colgroup>
+        <col class="chevron-col"><col class="status-col"><col class="id-col"><col class="state-col">
+        <col class="price-col"><col class="down-col"><col class="invested-col"><col class="rent-col">
+        <col class="cash-return-col"><col class="equation-operator-col"><col class="principal-return-col"><col class="equation-operator-col"><col class="appreciation-col"><col class="equation-operator-col"><col class="modeled-return-col">
+      </colgroup>
+      <thead>
+        
+<tr class="payoff-box-row user-approved-payoff-row">
+  <th colspan="15" class="payoff-equation-shell">
+    <div class="payoff-equation-grid">
+      <div class="payoff-copy-cell">
+        <div class="payoff-copy">
+          <div class="payoff-title">How this kind of real estate pays you</div>
+          <div class="payoff-subtitle">3 real levers add up to the modeled return.</div>
+          <div class="payoff-inline-legend">
+            <span class="legend-swatch"><span class="legend-dot actual"></span> Operating — actual when closed, underwritten when pipeline</span>
+            <span class="legend-swatch"><span class="legend-dot predicted"></span> Forecast — appreciation assumption, not guaranteed</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="payoff-card cash payoff-grid-cash">
+        <span class="payoff-card-name">Cash flow</span>
+        <span class="payoff-card-copy">Money left in your<br>account each month</span>
+        <span class="payoff-arrow" aria-hidden="true"></span>
+      </div>
+
+      <div class="payoff-equation-operator payoff-grid-op1" aria-hidden="true">
+        <span class="equation-op plus">+</span>
+      </div>
+
+      <div class="payoff-card principal payoff-grid-principal">
+        <span class="payoff-card-name">Principal (loan debt)</span>
+        <span class="payoff-card-copy">Tenant pays down your<br>loan debt<br><span class="payoff-card-note">(in addition to interest owed)</span></span>
+        <span class="payoff-arrow" aria-hidden="true"></span>
+      </div>
+
+      <div class="payoff-equation-operator payoff-grid-op2" aria-hidden="true">
+        <span class="equation-op plus">+</span>
+      </div>
+
+      <div class="payoff-card appreciation payoff-grid-appreciation">
+        <span class="payoff-card-name">Appreciation</span>
+        <span class="payoff-card-copy">Increase in property value<br>over time (e.g. 3%/yr,<br>amplified by using a mortgage)</span>
+        <span class="payoff-arrow" aria-hidden="true"></span>
+      </div>
+
+      <div class="payoff-equation-operator payoff-grid-op3" aria-hidden="true">
+        <span class="equation-op equal">=</span>
+      </div>
+
+      <div class="payoff-card modeled payoff-grid-modeled">
+        <span class="payoff-card-name">Modeled return</span>
+        <span class="payoff-card-copy">The 3 components<br>combined</span>
+        <span class="payoff-arrow" aria-hidden="true"></span>
+      </div>
+    </div>
+    <svg class="payoff-guide-arrows" viewBox="0 0 1316 176" preserveAspectRatio="none" aria-hidden="true">
+      <defs>
+        <marker id="payoffArrowGreen" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto" markerUnits="strokeWidth">
+          <path d="M0,0 L7,3.5 L0,7 Z" fill="var(--actual-primary)"></path>
+        </marker>
+        <marker id="payoffArrowBlue" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto" markerUnits="strokeWidth">
+          <path d="M0,0 L7,3.5 L0,7 Z" fill="var(--forecast-primary)"></path>
+        </marker>
+        <marker id="payoffArrowHybrid" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto" markerUnits="strokeWidth">
+          <path d="M0,0 L7,3.5 L0,7 Z" fill="#B2AEAA"></path>
+        </marker>
+      </defs>
+      <line class="payoff-guide-line cash-guide" x1="730" y1="120" x2="816" y2="169" marker-end="url(#payoffArrowGreen)"></line>
+      <line class="payoff-guide-line principal-guide" x1="930" y1="120" x2="948" y2="169" marker-end="url(#payoffArrowGreen)"></line>
+      <line class="payoff-guide-line appreciation-guide" x1="1084" y1="120" x2="1084" y2="169" marker-end="url(#payoffArrowBlue)"></line>
+      <line class="payoff-guide-line modeled-guide" x1="1242" y1="120" x2="1242" y2="169" marker-end="url(#payoffArrowHybrid)"></line>
+    </svg>
+  </th>
+</tr>
+<tr class="column-header-row">
+<th class="chevron-col"></th>
+<th class="status-col">
+  <span class="th-title-row">Status
+    <span class="info-dot" tabindex="0">i<span class="tip"><span class="tip-heading">What it means</span><span class="tip-paragraph"><strong>Closed</strong> — The property has been purchased and is operating as a rental. Operating figures shown for closed properties are actual.</span><span class="tip-paragraph"><strong>Under Contract</strong> — The property is in the purchase process for another investor. Operating figures are underwritten until the property closes and begins operating.</span><span class="tip-paragraph"><strong>Recommended + Available</strong> — I have fully evaluated the property, selected it as one I would currently recommend, and it is still available for consideration. Operating figures are underwritten.</span><span class="tip-paragraph">Appreciation is a forecast regardless of property status.</span></span></span>
+  </span>
+</th>
+<th class="id-col"><span class="th-title-row">ID</span></th>
+<th class="state-col"><span class="th-title-row">State</span></th>
+<th class="price-col"><span class="th-title-row">Price</span></th>
+<th class="down-col">
+  <span class="th-title-row">Down Pmt
+    <span class="info-dot" tabindex="0">i<span class="tip"><span class="tip-heading">What it means</span><span class="tip-paragraph">The portion of the purchase price paid with cash rather than financed with the mortgage.</span><span class="tip-paragraph">This is not the same as <strong>Total Invested</strong>. Total Invested also includes closing costs and any upfront capital expenses.</span><span class="tip-heading tip-heading-spaced">Calculation</span><span class="tip-formula">Down payment = purchase price − original loan amount</span></span></span>
+  </span>
+</th>
+<th class="invested-col">
+  <span class="th-title-row">Total Invested
+    <span class="info-dot" tabindex="0">i<span class="tip"><span class="tip-heading">What it means</span><span class="tip-paragraph">The total cash actually put into the property at purchase — not just the down payment.</span><span class="tip-paragraph">It includes the down payment, closing costs, and any upfront capital expenses.</span><span class="tip-paragraph">This is the cash basis used for the return percentages shown elsewhere in the table.</span><span class="tip-heading tip-heading-spaced">Calculation</span><span class="tip-formula">Total invested = down payment + closing costs + upfront capital expenses</span></span></span>
+  </span>
+</th>
+<th class="rent-col">
+  <span class="th-title-row">Rent (avg)
+    <span class="info-dot" tabindex="0">i<span class="tip"><span class="tip-heading">What it means</span><span class="tip-paragraph">The average monthly rent used for underwriting <strong>after allowing for vacancy</strong>.</span><span class="tip-paragraph">The base rent is reduced to reflect approximately one vacant month between average 30-month tenancies. This is a long-run underwriting allowance, not a prediction that every property will be vacant for exactly 30 days.</span><span class="tip-paragraph">When projecting rent, I also try to use a rent at which I believe a good tenant should be obtainable in roughly 30 days, rather than simply using the highest advertised rent I can find.</span><span class="tip-paragraph">In the track record shown here, most properties have either leased in less than 30 days, rented for more than originally projected, or both. Some have not — including two that took about two months — and those misses remain in the record.</span><span class="tip-heading tip-heading-spaced">Calculation</span><span class="tip-formula">Vacancy-adjusted rent = base monthly rent × 30 occupied months ÷ 31 total months</span></span></span>
+  </span>
+</th>
+<th class="cash-return-col">
+  <span class="th-title-row">Cash Flow
+    <span class="info-dot" tabindex="0">i<span class="tip"><span class="tip-heading">What it means</span><span class="tip-paragraph">The <strong>top number</strong> is the estimated cash left each month after the recurring expenses included in this model.</span><span class="tip-paragraph">The <strong>bottom number</strong> converts that monthly cash flow into an annual cash-on-cash return based on Total Invested.</span><span class="tip-heading tip-heading-spaced">Already deducted</span><span class="tip-bullet">• Mortgage principal and interest</span><span class="tip-bullet">• Property taxes</span><span class="tip-bullet">• Insurance</span><span class="tip-bullet">• HOA, when applicable</span><span class="tip-bullet">• A 10% property-management fee</span><span class="tip-bullet">• The vacancy allowance already reflected in Rent (avg)</span><span class="tip-heading tip-heading-spaced">Not included</span><span class="tip-bullet">• Leasing or tenant-placement fees</span><span class="tip-bullet">• Repairs</span><span class="tip-bullet">• Tenant-turnover expenses</span><span class="tip-bullet">• Future capital-replacement reserves</span><span class="tip-paragraph">All properties shown here are new construction, so early repair exposure is lower and most issues are covered by a builder warranty. Repairs are nevertheless <strong>not</strong> included in the cash-flow calculation.</span><span class="tip-heading tip-heading-spaced">Calculations</span><span class="tip-formula">Monthly cash flow = vacancy-adjusted rent − mortgage P&amp;I − property taxes ÷ 12 − insurance ÷ 12 − HOA ÷ 12 − 10% management fee</span><span class="tip-formula tip-formula-spaced">Cash-on-cash return = monthly cash flow × 12 ÷ total invested</span></span></span>
+  </span>
+</th>
+<th class="equation-operator-col" aria-hidden="true"></th>
+<th class="principal-return-col">
+  <span class="th-title-row">Principal
+    <span class="info-dot" tabindex="0">i<span class="tip"><span class="tip-heading">What it means</span><span class="tip-paragraph">The <strong>top number</strong> is the portion of the monthly mortgage payment that pays down loan principal.</span><span class="tip-paragraph">That money does not go into your bank account like cash flow does. Instead, it reduces the mortgage balance and increases your equity in the property.</span><span class="tip-paragraph">The <strong>bottom number</strong> shows that annual principal paydown as a percentage of Total Invested so it can be compared with the other return components.</span><span class="tip-paragraph">The amount of principal paid each month comes from the property's mortgage amortization schedule and changes over time.</span><span class="tip-heading tip-heading-spaced">Calculation</span><span class="tip-formula">Principal return contribution = monthly principal paid × 12 ÷ total invested</span></span></span>
+  </span>
+</th>
+<th class="equation-operator-col" aria-hidden="true"></th>
+<th class="th-predicted appreciation-col">
+  <span class="th-title-row">Appreciation*
+    <span class="info-dot" tabindex="0">i<span class="tip"><span class="tip-heading">What it means</span><span class="tip-paragraph">This is my underwriting assumption for the property's annual value growth in its specific submarket.</span><span class="tip-paragraph">It is <strong>not</strong> a historical market average, an appraisal, a realized return, or a guarantee.</span><span class="tip-paragraph">I intentionally use a conservative long-term assumption rather than a best-case appreciation forecast. Appreciation remains a forecast even for properties that have already closed.</span><span class="tip-paragraph">I still model appreciation because leaving it out completely would also give an incomplete picture of leveraged real estate. But I do not think you should buy a property simply because the appreciation assumption makes the total-return number look exciting.</span><span class="tip-paragraph">When evaluating a deal, I want you to look at it at <strong>0% appreciation first</strong>: What does the property produce from rent? How much principal is being paid down? Are you still comfortable owning it if its value goes nowhere for several years?</span><span class="tip-paragraph">Because the property is partly financed with a mortgage, a change in the value of the entire property can represent a much larger percentage of the cash originally invested. That effect is leverage.</span><span class="tip-paragraph">The calculation uses <strong>effective leverage</strong>, which compares the property's purchase price with Total Invested. Closing costs and capital expenses increase Total Invested and therefore reduce the leverage multiplier.</span><span class="tip-paragraph">Click an individual property's appreciation value to see the exact calculation for that property.</span><span class="tip-heading tip-heading-spaced">Calculations</span><span class="tip-formula">Effective leverage = purchase price ÷ total invested</span><span class="tip-formula tip-formula-spaced">Modeled appreciation contribution = annual appreciation assumption × effective leverage</span></span></span>
+  </span>
+</th>
+<th class="equation-operator-col" aria-hidden="true"></th>
+<th class="modeled-return-col">
+  <span class="th-title-row">Modeled Return
+    <span class="info-dot" tabindex="0">i<span class="tip"><span class="tip-heading">What it means</span><span class="tip-paragraph">Modeled Return combines the three ways this analysis treats the property as producing a return:</span><span class="tip-bullet">1. Cash-on-cash return</span><span class="tip-bullet">2. Mortgage principal paydown</span><span class="tip-bullet">3. Modeled appreciation</span><span class="tip-paragraph">For <strong>closed properties</strong>, cash flow and principal paydown are based on actual operating results for the period shown.</span><span class="tip-paragraph">For <strong>pipeline properties</strong>, those operating figures are underwritten.</span><span class="tip-paragraph">Appreciation is always a forecast.</span><span class="tip-paragraph">This number is a <strong>snapshot</strong>, not a promise that the property will earn this percentage every year. In particular, the vacancy allowance and appreciation assumption are stabilized long-run underwriting assumptions rather than literal predictions for one specific 12-month period.</span><span class="tip-paragraph">It is also not an IRR or a multi-year CAGR.</span><span class="tip-paragraph">Tax benefits such as depreciation are <strong>not included</strong>. Those can materially affect an investor's actual after-tax return, but they depend on the investor's individual tax situation.</span><span class="tip-paragraph">Over a long holding period, percentage returns can also change as the mortgage is paid down and the investor owns more equity. The property does not necessarily have to perform worse for the percentage return on equity to decline — leverage is simply providing less of a boost.</span><span class="tip-heading tip-heading-spaced">Calculation</span><span class="tip-formula">Modeled Return = cash-on-cash return + principal return contribution + modeled appreciation contribution</span></span></span>
+  </span>
+  <span class="th-modeled-sub">Operating + Forecast</span>
+</th>
+        </tr>
+      </thead>
+      <tbody id="tableBody"><tr class="table-message-row"><td colspan="15"><div class="table-load-message">Loading properties…</div></td></tr></tbody>
+    </table>
+  </div>
+  </div>
+
+  <div id="mobilePropertyList" class="mobile-property-list"><div class="mobile-load-message">Loading properties…</div></div>
+
+  <section class="comparison-section">
+    <details class="comparison-details">
+      <summary class="comparison-summary">
+        <span>Illustrative rental CAGR vs. S&amp;P 500</span>
+        <span class="comparison-summary-chevron" aria-hidden="true">⌄</span>
+      </summary>
+
+      <div class="comparison-content">
+        <p class="comparison-sub">How modeled rental returns compare with a 9% illustrative stock-market benchmark over time.</p>
+
+        <div class="comparison-legend" aria-hidden="true">
+          <span class="comparison-legend-item"><span class="comparison-legend-line rental"></span>Modeled rental CAGR (reinvesting cash flow)</span>
+          <span class="comparison-legend-item"><span class="comparison-legend-line benchmark"></span>S&amp;P 500 benchmark (9% annually)</span>
+        </div>
+
+        <div class="curve-wrap comparison-curve">
+          <svg viewBox="0 0 760 330" width="100%" height="330" preserveAspectRatio="xMidYMid meet" role="img" aria-labelledby="cagrChartTitle cagrChartDesc">
+            <title id="cagrChartTitle">Illustrative modeled rental CAGR compared with a 9 percent S&amp;P 500 benchmark</title>
+            <desc id="cagrChartDesc">The modeled rental CAGR declines from about 22 percent at year one to about 12 percent at year twenty. A gray dashed S&amp;P 500 benchmark remains at 9 percent.</desc>
+
+            <g stroke="#2b2f34" stroke-width="1">
+              <line x1="86" y1="34" x2="724" y2="34"/>
+              <line x1="86" y1="76" x2="724" y2="76"/>
+              <line x1="86" y1="118" x2="724" y2="118"/>
+              <line x1="86" y1="160" x2="724" y2="160"/>
+              <line x1="86" y1="202" x2="724" y2="202"/>
+              <line x1="86" y1="244" x2="724" y2="244"/>
+            </g>
+
+            <line x1="86" y1="34" x2="86" y2="244" stroke="#62666b" stroke-width="1"/>
+            <line x1="86" y1="244" x2="724" y2="244" stroke="#62666b" stroke-width="1"/>
+
+            <g fill="#B2AEAA" font-family="IBM Plex Mono" font-size="10" text-anchor="end">
+              <text x="72" y="38">25%</text>
+              <text x="72" y="80">20%</text>
+              <text x="72" y="122">15%</text>
+              <text x="72" y="164">10%</text>
+              <text x="72" y="206">5%</text>
+              <text x="72" y="248">0%</text>
+            </g>
+
+            <g stroke="#62666b" stroke-width="1">
+              <line x1="86" y1="244" x2="86" y2="250"/>
+              <line x1="220" y1="244" x2="220" y2="250"/>
+              <line x1="388" y1="244" x2="388" y2="250"/>
+              <line x1="556" y1="244" x2="556" y2="250"/>
+              <line x1="724" y1="244" x2="724" y2="250"/>
+            </g>
+            <g fill="#B2AEAA" font-family="IBM Plex Mono" font-size="10" text-anchor="middle">
+              <text x="86" y="267">1</text>
+              <text x="220" y="267">5</text>
+              <text x="388" y="267">10</text>
+              <text x="556" y="267">15</text>
+              <text x="724" y="267">20</text>
+            </g>
+
+            <text x="405" y="300" fill="#B2AEAA" font-family="IBM Plex Sans" font-size="11" text-anchor="middle">Holding period (years)</text>
+            <text x="20" y="139" fill="#B2AEAA" font-family="IBM Plex Sans" font-size="11" text-anchor="middle" transform="rotate(-90 20 139)">Compound annual growth rate (CAGR)</text>
+
+            <line x1="86" y1="168.4" x2="724" y2="168.4" stroke="#B2AEAA" stroke-width="2" stroke-dasharray="8,7"/>
+            <text x="708" y="187" fill="#c5c3bd" font-family="IBM Plex Mono" font-size="10" text-anchor="end">S&amp;P 500 benchmark · 9%</text>
+            <text x="724" y="164" fill="#EEEAE4" font-family="IBM Plex Mono" font-size="11" text-anchor="end">9%</text>
+
+            <path d="M 86 59 C 185 88, 302 112, 420 128 C 530 141, 626 144, 724 143" fill="none" stroke="#72A5C2" stroke-width="3" stroke-linecap="round"/>
+            <circle cx="86" cy="59" r="4" fill="#72A5C2"/>
+            <circle cx="724" cy="143" r="4" fill="#72A5C2"/>
+
+            <text x="99" y="51" fill="#72A5C2" font-family="IBM Plex Mono" font-size="11">22%</text>
+            <text x="724" y="132" fill="#72A5C2" font-family="IBM Plex Mono" font-size="11" text-anchor="end">12%</text>
+          </svg>
+        </div>
+
+        <div class="comparison-explainer">
+          <h3>What this chart shows</h3>
+          <p>This is an illustrative comparison of <strong>compound annual growth rate (CAGR)</strong> over different holding periods.</p>
+          <p><strong>Blue solid line:</strong> the modeled rental-property strategy. It begins at the current modeled return level and declines over longer holding periods as leverage contributes less to percentage returns while investor equity grows.</p>
+          <p><strong>Gray dashed line:</strong> an illustrative 9% annual S&amp;P 500 total-return benchmark with dividends reinvested.</p>
+          <p>CAGR answers: “What constant annual return would compound the starting investment to the ending value over this holding period?”</p>
+          <p>Both sides assume returns are reinvested and compounded rather than spent.</p>
+          <p>The 9% S&amp;P 500 figure is a benchmark for illustration, <strong>not a prediction</strong>. The rental line is also a model, not a guaranteed future return.</p>
+
+          <h3>Why the rental percentage declines</h3>
+          <p>Early in a leveraged real-estate investment, a relatively small amount of investor cash controls a much larger asset. As the mortgage is paid down and equity grows, the same dollar change in property value represents a smaller percentage return on the investor's growing equity.</p>
+          <p>That does not necessarily mean the property is performing worse. It means leverage is providing less of a percentage-return boost.</p>
+        </div>
+      </div>
+    </details>
+  </section>
+
+  <div class="faq-section">
+    <img class="artemis-faq-mark" src="assets/artemis-mark.svg" alt="" aria-hidden="true">
+    <h2 class="faq-heading">Questions Investors Ask</h2>
+
+    <details class="faq-item">
+      <summary>What's the criteria for picking these properties — what do they all have in common?</summary>
+      <div class="faq-body">
+        <p>I don't start with a house. I start with the market, then the submarket, then the neighborhood, the community, and only then the property, layout, lot and finishes.</p>
+        <p>I'm looking for the same basic combination every time: a 3–4 bedroom single-family home or duplex, usually new construction from an established builder, in an affordable part of a large and economically diversified metro. I want population and job growth, a rental market with real tenant depth, good schools, manageable new supply, landlord-friendly rules, and property managers I'd be comfortable trusting with my own house. I want a layout with as broad as possible of an appeal, and a lot with no big flaws.</p>
+        <p>But checking boxes isn't enough. The numbers still have to work.</p>
+        <p>A beautiful house in a great market doesn't make the cut if the rent is too weak for the price. A high-cash-flow property doesn't make the cut if I think the neighborhood, supply picture, builder, or tenant base creates too much long-term risk.</p>
+        <p>The important part of the process is actually what gets rejected. I look at far more properties than I recommend, usually dozens for every one selected. When there is nothing I like that is available I will let you know that too.</p>
+      </div>
+    </details>
+
+    <details class="faq-item">
+      <summary>How do you know these markets so well if you don't live in them?</summary>
+      <div class="faq-body">
+        <p>I don't think research from a laptop is enough to tell someone else where to put $50,000–$100,000.</p>
+        <p>I only recommend markets where I am personally invested. I manage my own rentals directly, including leasing, which means I experience the tenant market firsthand: what applicants ask for, which neighborhoods they respond to, what rent actually gets attention, how seasonality changes demand, and how long a house really takes to lease.</p>
+        <p>That operating experience sits on top of the research: employment growth, employers moving in or out, infrastructure, development plans, construction permits, schools, rents, property taxes, insurance, housing supply and everything else that can change the long-term economics of the submarket.</p>
+        <p>And there's an important order to this: <strong>I become comfortable putting my own money into a market before I become comfortable recommending that market to somebody else.</strong></p>
+        <p>That doesn't mean I can't be wrong. It means when I recommend a market, I'm exposed to many of the same things you are — and I'm learning from the same tenant pool with my own properties.</p>
+      </div>
+    </details>
+
+    <details class="faq-item">
+      <summary>How do I know these numbers are real?</summary>
+      <div class="faq-body">
+        <p>Fair question — I'd ask it too. Chances are you got to me through someone who already owns a property on this list. Ask them to find their deal by purchase price and state and check their numbers against these.</p>
+        <p>Please feel free to ask for documentation on any other number. I'm happy to share anything of my own and most other investors are happy to share theirs as well - our accumulated experience base helps us all.</p>
+      </div>
+    </details>
+
+    <details class="faq-item">
+      <summary>Were there bad deals? Disappointments? Misses?</summary>
+      <div class="faq-body">
+        <p>Absolutely. This isn't a highlight reel.</p>
+        <p>One property rented for $25 a month under my low estimate. Two sat vacant for two full months. One had a hidden electric sewage pump — found out about it when I paid $4,325 to replace it at the two-year mark. That one still stings a little. One lost a tenant at month three and had to go through a second vacancy in the same year.</p>
+        <p>These are the outliers, not the pattern — and I work hard to keep the surprises on the happy side. None of them were bad enough to break the underlying logic of the deal. Every single miss taught me something that's made the next deal sharper.</p>
+      </div>
+    </details>
+
+    <details class="faq-item">
+      <summary>Why is this heavily clustered in Arkansas?</summary>
+      <div class="faq-body">
+        <p>The concentration isn't intentional. Right now, Arkansas is simply where I'm finding the best combination of purchase price, achievable rent, growth trajectory, property taxes, builder incentives and manageable supply. You can see the result of that in the cash-flow and cash-on-cash numbers in the table.</p>
+        <p>That can change quickly. Rent being too low relative to price is the most common reason I reject a market or property. I've backed away from parts of Raleigh because I didn't like the amount of new supply coming in, and Texas property taxes make it much harder for a deal there to cash flow. Even within a market I like, I'll reject individual houses because of the layout or a particular lot.</p>
+        <p>So I'm not trying to build an Arkansas portfolio. Arkansas is just where the filter has been producing the most interesting properties lately. If that changes, the next purchases will change with it.</p>
+      </div>
+    </details>
+
+
+    <details class="faq-item">
+      <summary>What does the process actually look like?</summary>
+      <div class="faq-body">
+        <p>The transaction usually runs: sourcing → financing → inspection → closing → property management → tenant → accounting → taxes → repairs.</p>
+        <p>My formal role is your buyer's agent through closing. After closing, the legal transaction is finished — but owning the investment obviously isn't.</p>
+        <p>I'll help you get through the handoff to property management, tenant placement, rent decisions and the other unfamiliar pieces until you feel comfortable. Existing clients also continue to contact me about renewals, managers, repairs, rents and future purchases, and I'm happy to remain a resource.</p>
+      </div>
+    </details>
+
+    <details class="faq-item">
+      <summary>How do you represent me, and how do you get paid?</summary>
+      <div class="faq-body">
+        <p>When you hire me to represent you, I'm your buyer's agent under a written representation agreement for that transaction.</p>
+        <p>Before you sign it, you'll see exactly what I'm being paid, who is expected to pay it, what I owe you, how long the agreement lasts, and how either of us can end the relationship.</p>
+        <p>The exact legal duties vary somewhat by state and by the agreement we're using, but the basic principle is simple: <strong>I'm representing you, not the builder.</strong></p>
+        <p>That includes duties such as confidentiality, disclosure of material information, reasonable care, following your lawful instructions and putting your interests ahead of my own within the agency relationship.</p>
+        <p>There is also an economic reality worth saying out loud: I normally get paid when you buy a property. That gives me a financial interest in a transaction closing.</p>
+        <p>A fiduciary relationship doesn't make that incentive disappear. It means I have a duty not to let that incentive dictate the advice I give you, and am dead serious in performing it. Full stop.</p>
+        <p>In residential real estate right now, it's most common for the seller to pay commission for both agents — the one representing them and the one representing the buyer. With new construction, that means the builder typically covers my commission, not you. You'll always know upfront if that's the case and exactly how much it is.</p>
+        <p>I don't charge you anything on top of that, and I don't take money or gifts from anyone else I connect you with. If money is moving in relation to your deal, you'll know about it.</p>
+      </div>
+    </details>
+
+
+    <details class="faq-item">
+      <summary>When is it clear I shouldn't buy an investment like this?</summary>
+      <div class="faq-body">
+        <p>While my own personal financials are heavily reliant on these properties as long term investments, it's definitely not necessarily the right move for everyone. Some scenarios in which it certainly isn't:</p>
+        <ul>
+          <li>If a single property would be more than something like 10% of your net worth. That's not diversified, and no investment here is risk-free.</li>
+          <li>If you're going to need that money back soon. Your down payment, and most of your return, is stuck in the house until you sell or refinance — and doing either one at the wrong time can cost you.</li>
+          <li>If you're counting on the monthly cash flow for anything essential. A late tenant or a vacancy can make that number go quiet, or negative, without much warning.</li>
+        </ul>
+      </div>
+    </details>
+  </div>
+
+  <img class="artemis-footer-mark" src="assets/artemis-mark.svg" alt="" aria-hidden="true">
+
+  </div>
+
+<script>
+// ===== PULLED FROM GOOGLE SHEETS =====
+const SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRj8OtOmCYZGVMYb1VSEgCmlVMcZC9b7Ie-Y_pPvcXzc1-D9ba_amLBxLFiDtXRfL0N7WCnVW-nZP45/pub?gid=0&single=true&output=csv";
+
+let DATA = [];
+
+// Turns values such as "45%", "$1,250", "x4", "4x", or "45" into a plain number.
+// If your Sheet columns are formatted as Percent, Google may export them as a
+// decimal (0.0524 instead of 5.24) with no % sign — if numbers on the page look
+// 100x too small, that's why. Open SHEET_CSV_URL directly in a browser tab to see
+// exactly what values are coming through, then tell me and I'll adjust.
+function num(v){
+  if(v === undefined || v === null) return NaN;
+  const cleaned = String(v).replace(/[%,$\sx]/gi,"");
+  return cleaned === "" ? NaN : Number(cleaned);
+}
+
+// Turns a Status cell into one of the four codes the page understands.
+function normalizeStatus(raw){
+  const s = String(raw||"").trim().toLowerCase();
+  if(s.includes("hide")) return "hide";
+  if(s.includes("under")) return "under_contract";
+  if(s.includes("propos")) return "proposed";
+  return "closed";
+}
+
+// Turns a Purchase Date cell into a sortable "2023-03" key and a "Mar 2023" label.
+function parseDateLabel(raw){
+  const s = String(raw||"").trim();
+  const d = new Date(s);
+  if(isNaN(d.getTime())) return {date:s, label:s};
+  const MONTHS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+  const mm = String(d.getMonth()+1).padStart(2,"0");
+  return {date:`${d.getFullYear()}-${mm}`, label:`${MONTHS[d.getMonth()]} ${d.getFullYear()}`};
+}
+
+const LEGACY_PROPERTY_IDS = Object.freeze({
+  "ubrilded":"AL-01",
+  "cannes":"AL-02",
+  "travertine":"OK-01",
+  "crockett":"AR-01",
+  "tracys":"OK-02",
+  "s. foley":"AL-03",
+  "h. foley":"AL-04",
+  "renfro 408":"TX-01",
+  "renfro 407":"TX-02",
+  "j. kathleens":"OK-03",
+  "black poplar":"OK-04",
+  "gray horse":"AL-05",
+  "paige":"NC-01",
+  "s.gussy":"AR-02",
+  "our gussy":"AR-03",
+  "a. warwick":"AR-04",
+  "n. rambling":"AR-05",
+  "m. warwick":"AR-06",
+  "i warwick":"AR-08",
+  "our warwick":"AR-07",
+  "midland kinsley":"AR-09",
+  "brinkley coles winston":"NC-02",
+  "cypress cottage walk":"AR-11",
+  "overland julia":"AL-06",
+  "laurelbrook ryder":"AL-07",
+  "midland lowell":"AR-10"
+});
+
+// Maps YOUR sheet's exact column headers to the fields this page needs.
+function rowToRecord(row){
+  const {date, label} = parseDateLabel(row["Purchase Date"]);
+
+  const price = num(row["Purchase Price"]);
+  const down = num(row["Down Payment"]);
+  const invested = num(row["Total Invested"]);
+  const coc = num(row["Cash on Cash after management"]);
+  const principalPct = num(row["Principal returned % of invest"]);
+  const apprPct = num(row["appreciation expectations"]);
+
+  // Effective leverage is based on ALL cash the investor has in the deal,
+  // not just the down payment. This automatically accounts for the fact that
+  // closing costs and capex add cash invested without increasing purchase price.
+  // Example: $250k property / $75k total invested = 3.33× effective leverage.
+  const effectiveLeverage = Number.isFinite(price) && Number.isFinite(invested) && invested > 0
+    ? price / invested
+    : NaN;
+
+  // Appreciation is earned on the full property value, then expressed as a
+  // percentage of total cash invested. Deriving it here prevents malformed or
+  // stale leverage cells in the source sheet from producing values such as NaNx.
+  const apprContribution = Number.isFinite(apprPct) && Number.isFinite(effectiveLeverage)
+    ? apprPct * effectiveLeverage
+    : NaN;
+
+  // The displayed Modeled Return is authoritative from the spreadsheet's
+  // "Total returns this year" column (AO). Component calculations remain here
+  // only for the visual operating/principal/appreciation breakdown.
+  const totalReturn = num(row["Total returns this year"]);
+
+  return {
+    date, label,
+    state: String(row["State"]||"").trim(),
+    status: normalizeStatus(row["Status"]),
+    id: String(
+      row["Open Book ID"] ||
+      LEGACY_PROPERTY_IDS[String(row["Property ID"]||"").trim().toLowerCase()] ||
+      ""
+    ).trim(),
+    pageSlug: String(row["Property Page Slug"]||"").trim(),
+    price,
+    down,
+    downPctSource: num(row["% down"]),
+    invested,
+    rent: num(row["Avg Rent considering avg vacancy (month)"]),
+    cashflow: num(row["Cash remaining after management (month)"]),
+    coc,
+    principal: num(row["Principal returned (month)"]),
+    principalPct,
+    apprPct,
+    leverage: effectiveLeverage,
+    apprContribution,
+    totalReturn,
+    daysToRentStart: row["Days from closing to first tenant"],
+    detail: {
+      rate: num(row["Intrest rate"]),
+      points: num(row["Points"]),
+      closing: num(row["Total Closing Costs"]),
+      capex: num(row["Capex"]),
+      rentBase: num(row["Rent"]),
+      taxY: num(row["Taxes/y"]),
+      insY: num(row["Insurance/y"]),
+      hoaY: num(row["HOA/y"]),
+      mortPI: num(row["Mortgage P&I (month)"])
+    }
+  };
+}
+
+const STATUS_LABEL = {closed:"Closed", under_contract:"Under Contract", proposed:"Recommended + Available"};
+const fmtNumber0 = n => Number.isFinite(n) ? n.toLocaleString("en-US",{minimumFractionDigits:0,maximumFractionDigits:0}) : "—";
+const fmt$ = n => Number.isFinite(n) ? "$" + fmtNumber0(n) : "—";
+const fmtPct = n => Number.isFinite(n) ? n.toFixed(1) + "%" : "—";
+const fmt1 = n => Number.isFinite(n) ? n.toFixed(1) : "—";
+const fmt0 = n => Number.isFinite(n) ? n.toFixed(0) : "—";
+const fmtLev = n => Number.isFinite(n) ? n.toFixed(1) : "—";
+
+// Turns a full state name into its two-letter abbreviation, e.g. "Arkansas" -> "AR".
+// Falls back gracefully if a sheet ever uses a state this map doesn't know.
+const STATE_ABBR = {alabama:"AL",alaska:"AK",arizona:"AZ",arkansas:"AR",california:"CA",colorado:"CO",connecticut:"CT",delaware:"DE",florida:"FL",georgia:"GA",hawaii:"HI",idaho:"ID",illinois:"IL",indiana:"IN",iowa:"IA",kansas:"KS",kentucky:"KY",louisiana:"LA",maine:"ME",maryland:"MD",massachusetts:"MA",michigan:"MI",minnesota:"MN",mississippi:"MS",missouri:"MO",montana:"MT",nebraska:"NE",nevada:"NV","new hampshire":"NH","new jersey":"NJ","new mexico":"NM","new york":"NY","north carolina":"NC","north dakota":"ND",ohio:"OH",oklahoma:"OK",oregon:"OR",pennsylvania:"PA","rhode island":"RI","south carolina":"SC","south dakota":"SD",tennessee:"TN",texas:"TX",utah:"UT",vermont:"VT",virginia:"VA",washington:"WA","west virginia":"WV",wisconsin:"WI",wyoming:"WY","district of columbia":"DC"};
+function stateAbbrev(stateName){
+  const key = String(stateName||"").trim().toLowerCase();
+  if(STATE_ABBR[key]) return STATE_ABBR[key];
+  const s = String(stateName||"").trim();
+  return (s.length<=3 ? s : s.slice(0,2)).toUpperCase();
+}
+
+// Assigns each property a permanent ID (STATE-## chronological within state).
+// Runs once, right after the sheet loads — sorting/filtering afterward never
+// touches d.id, so an ID stays attached to its property no matter how the
+// table is currently sorted or filtered, and IDs are never recycled.
+function assignPropertyIds(data){
+  const byState = {};
+  data.forEach(d=>{ (byState[d.state] = byState[d.state] || []).push(d); });
+  Object.keys(byState).forEach(state=>{
+    const list = byState[state].slice().sort((a,b)=> String(a.date||"").localeCompare(String(b.date||"")));
+    list.forEach((d,i)=>{ d.id = `${stateAbbrev(state)}-${String(i+1).padStart(2,"0")}`; });
+  });
+}
+
+// Website label reads "Days from closing to rent start" even though the source
+// column is "Days from closing to first tenant" — only the display changes.
+function rentStartDaysLabel(d){
+  const closed = d.status === "closed";
+  if(!closed) return "Not yet leased";
+  const value = d.daysToRentStart;
+  if(value === null || value === undefined || String(value).trim() === ""){
+    return "Data pending";
+  }
+  const n = Number(value);
+  if(!Number.isFinite(n)) return "Data pending";
+  return n === 1 ? "1 day" : `${n} days`;
+}
+
+// $0 of capex reads as "None" rather than "$0" — presentation only, the
+// underlying numeric value (used in calculations) is never touched.
+function formatCapex(value){
+  const n = Number(value);
+  if(Number.isFinite(n) && n === 0) return "None";
+  return fmt$(n);
+}
+
+// Operating figures (cash-on-cash, cash flow, principal paydown) are real
+// "actual" numbers only once a property has closed — before that they're
+// underwriting projections, so the label used across the page follows status.
+function operatingLabel(d){
+  return d.status === "closed" ? "actual" : "underwritten";
+}
+
+function propertyPageHref(d){
+  if(!d.pageSlug) return "";
+  return `properties/${encodeURIComponent(d.pageSlug)}/?from=openbook`;
+}
+
+function propertyPageLinkHTML(d, mobile=false){
+  const href = propertyPageHref(d);
+  if(!href) return "";
+  const cls = mobile ? "mp-property-page-link" : "property-page-link";
+  return `<a class="${cls}" href="${href}" onclick="event.stopPropagation()">View property →</a>`;
+}
+
+function propertyPageDetailLinkHTML(d, mobile=false){
+  const href = propertyPageHref(d);
+  if(!href) return "";
+  const wrapCls = mobile ? "mp-property-page-cta-wrap" : "receipt-property-page-cta-wrap";
+  const cls = mobile ? "mp-property-page-cta" : "receipt-property-page-cta";
+  return `<div class="${wrapCls}"><a class="${cls}" href="${href}" onclick="event.stopPropagation()">View full property page →</a></div>`;
+}
+
+// Shared heading text for a property's expanded underwriting/details panel,
+// used on both desktop and mobile so the wording always matches.
+function detailHeadingText(d){
+  const dateTag = d.status === "closed" ? "Purchase Date" : "Expected Closing Date";
+  const desc = d.status === "closed" ? "actual operating details" : "projected underwriting";
+  return `${d.id} · ${dateTag}: ${d.label} · ${d.state} — ${desc}`;
+}
+
+const RENT_START_TOOLTIP = "Calendar days from closing until the first day the tenant began owing rent — not the date the lease was signed.";
+
+// The "Days from closing to rent start" line for the desktop receipt grid.
+function daysToRentStartReceiptLineHTML(d){
+  return `<div class="receipt-line"><span class="rl-label">Days from closing to rent start<span class="info-dot" tabindex="0">i<span class="tip">${RENT_START_TOOLTIP}</span></span></span><span class="rl-fill"></span><span class="rl-val">${rentStartDaysLabel(d)}</span></div>`;
+}
+
+// The same line, styled for the mobile detail list.
+function daysToRentStartMobileLineHTML(d){
+  return `<div class="mp-detail-line"><span class="mp-dl-label">Days from closing to rent start<span class="info-dot" tabindex="0">i<span class="tip">${RENT_START_TOOLTIP}</span></span></span><span class="mp-dl-val">${rentStartDaysLabel(d)}</span></div>`;
+}
+
+// ---------- Formula transparency helpers ----------
+// The main table stays visually quiet. These helpers expose both the plain-English
+// meaning and the actual arithmetic for a specific property only when requested.
+const MANAGEMENT_RATE = 0.10;
+const OCCUPIED_MONTHS_PER_TURN = 30;
+const TOTAL_MONTHS_PER_TURN = 31;
+
+function fmtMathMoney(n){
+  if(!Number.isFinite(n)) return "—";
+  const formatted = Math.abs(n).toLocaleString("en-US",{minimumFractionDigits:0,maximumFractionDigits:0});
+  return n < 0 ? `−$${formatted}` : `$${formatted}`;
+}
+
+function mathItemHTML(name, meaning, formula, example, predicted=false){
+  return `
+    <div class="math-item${predicted ? ' predicted-math' : ''}">
+      <div class="math-name">${name}</div>
+      <div class="math-meaning">${meaning}</div>
+      <div class="math-formula"><span class="math-kicker">Formula:</span> ${formula}</div>
+      <div class="math-example"><span class="math-kicker">This property:</span> ${example}</div>
+    </div>`;
+}
+
+function propertyMathHTML(d){
+  const det = d.detail;
+  const monthlyTax = det.taxY / 12;
+  const monthlyIns = det.insY / 12;
+  const monthlyHoa = det.hoaY / 12;
+  const management = d.rent * MANAGEMENT_RATE;
+  const calculatedRent = det.rentBase * OCCUPIED_MONTHS_PER_TURN / TOTAL_MONTHS_PER_TURN;
+  const calculatedCashFlow = d.rent - det.mortPI - monthlyTax - monthlyIns - monthlyHoa - management;
+  const calculatedCoc = d.cashflow * 12 / d.invested * 100;
+  const calculatedPrincipalPct = d.principal * 12 / d.invested * 100;
+
+  const capexMath = Number(det.capex) === 0 ? '$0' : fmtMathMoney(det.capex);
+  const totalInvestedExample = `${fmtMathMoney(d.down)} + ${fmtMathMoney(det.closing)} + ${capexMath} = <strong>${fmtMathMoney(d.invested)}</strong>`;
+  const rentExample = `${fmtMathMoney(det.rentBase)} × 30 ÷ 31 ≈ <strong>${fmtMathMoney(d.rent)}/mo</strong>`;
+  const cashFlowExample = `${fmtMathMoney(d.rent)} − ${fmtMathMoney(det.mortPI)} P&amp;I − ${fmtMathMoney(monthlyTax)} tax − ${fmtMathMoney(monthlyIns)} insurance − ${fmtMathMoney(monthlyHoa)} HOA − ${fmtMathMoney(management)} management ≈ <strong>${fmtMathMoney(d.cashflow)}/mo</strong>`;
+  const cocExample = `(${fmtMathMoney(d.cashflow)} × 12) ÷ ${fmtMathMoney(d.invested)} ≈ <strong>${fmt1(d.coc)}%</strong>`;
+  const principalExample = `(${fmtMathMoney(d.principal)} × 12) ÷ ${fmtMathMoney(d.invested)} ≈ <strong>${fmt1(d.principalPct)}%</strong>`;
+  const leverageExample = `${fmtMathMoney(d.price)} ÷ ${fmtMathMoney(d.invested)} = <strong>${fmtLev(d.leverage)}×</strong>`;
+  const appreciationExample = `${fmt1(d.apprPct)}% × ${fmtLev(d.leverage)}× ≈ <strong>${fmt1(d.apprContribution)}%</strong>`;
+  const totalExample = `${fmt1(d.coc)}% + ${fmt1(d.principalPct)}% + ${fmt1(d.apprContribution)}% = <strong>${fmt1(d.totalReturn)}%</strong>`;
+
+  return `
+    <div class="math-panel">
+      <p class="math-note">The words tell you what each number means; the line beneath shows the formula and this property's actual inputs. Values on the page are rounded for readability, so formulas marked ≈ can differ slightly from hand arithmetic using the displayed rounded numbers.</p>
+      <div class="math-group-title">Cash in &amp; monthly operations</div>
+      ${mathItemHTML('Total invested','All upfront cash in the deal, not just the down payment.','Down payment + closing costs + capex',totalInvestedExample)}
+      ${mathItemHTML('Vacancy-adjusted rent','The base rent reduced by the underwriting vacancy allowance.','Base rent × 30 occupied months ÷ 31 total months',rentExample)}
+      ${mathItemHTML('Cash flow','What remains each month after financing, property expenses and management.','Vacancy-adjusted rent − mortgage P&amp;I − taxes/12 − insurance/12 − HOA/12 − 10% management fee',cashFlowExample)}
+      <div class="math-group-title">Return math</div>
+      ${mathItemHTML('Cash-on-cash return','Annual cash flow expressed as a percentage of all cash invested.','(Monthly cash flow × 12) ÷ total invested',cocExample)}
+      ${mathItemHTML('Principal return contribution','The mortgage principal paid down over a year, expressed as a percentage of total cash invested. The monthly principal amount comes from the mortgage amortization.','(Monthly principal × 12) ÷ total invested',principalExample)}
+      ${mathItemHTML('Effective leverage','How much property value each $1 of total investor cash controls. Closing costs and capex reduce it.','Purchase price ÷ total invested',leverageExample,true)}
+      ${mathItemHTML('Modeled appreciation contribution','The appreciation assumption translated into a return on the investor\'s total cash using effective leverage.','Appreciation assumption × effective leverage',appreciationExample,true)}
+      ${mathItemHTML('Modeled Return','The three return components shown on the page added together.','Cash-on-cash + principal return contribution + modeled appreciation contribution',totalExample,true)}
+    </div>`;
+}
+
+function mathToolsHTML(d, mobile=false){
+  return `
+    <div class="math-tools${mobile ? ' mp-math-tools' : ''}">
+      <button class="math-toggle" type="button" aria-expanded="false">Show the math <span class="math-fx">ƒx</span></button>
+      ${propertyMathHTML(d).replace('class="math-panel"', `class="math-panel${mobile ? ' mp-math-panel' : ''}"`)}
+    </div>`;
+}
+
+function wireMathToggle(scope){
+  const btn = scope.querySelector('.math-toggle');
+  const panel = scope.querySelector('.math-panel');
+  if(!btn || !panel) return;
+  btn.addEventListener('click', (e)=>{
+    e.stopPropagation();
+    const open = !panel.classList.contains('open');
+    panel.classList.toggle('open', open);
+    btn.setAttribute('aria-expanded', String(open));
+    btn.innerHTML = `${open ? 'Hide' : 'Show'} the math <span class="math-fx">ƒx</span>`;
+  });
+}
+
+// One shared $-to-pixel scale for the leverage bars, based on the priciest
+// property in the whole dataset — so a bar's length always means the same
+// number of dollars no matter which property's box you click.
+const LEV_MAX_PX = 460;
+let LEV_SCALE = 0; // recalculated once data loads, see loadData()
+
+function leverageDetailHTML(d){
+  const downPct = d.down / d.price * 100;
+  const purchaseLeverage = d.price / d.down;
+  const effectiveLeverage = d.leverage;
+  const gainDollar = d.price * d.apprPct / 100;
+  const returnOnCash = d.apprContribution;
+  const extraCash = d.invested - d.down;
+  const houseW = Math.max(6, d.price * LEV_SCALE);
+  const cashW = Math.max(6, d.invested * LEV_SCALE);
+  const gainW = Math.max(3, gainDollar * LEV_SCALE);
+  const verb = d.status === "closed" ? "was purchased" : d.status === "under_contract" ? "is under contract to be purchased" : "is currently recommended and available to purchase";
+  const costsText = extraCash >= 0 ? `${fmt$(extraCash)} of closing costs/capex` : `${fmt$(Math.abs(extraCash))} of net credits after closing costs/capex`;
+  return `
+    <div class="receipt lev-detail">
+      <div class="lev-detail-head">
+        <div class="receipt-title">${d.label} · ${d.state} — how the appreciation number breaks down</div>
+        <button type="button" class="close-box-btn lev-close-btn" aria-label="Close appreciation breakdown">Close ✕</button>
+      </div>
+      <p class="lev-copy">This property ${verb} for <b>${fmt$(d.price)}</b>. The investor put down <b>${fmt$(d.down)}</b> — <b>${fmt0(downPct)}%</b> of the price — and had <b>${fmt$(d.invested)}</b> of total cash invested after closing costs and capex.</p>
+      <div class="lev-driver">${fmt0(downPct)}% down is about <b>${fmt0(purchaseLeverage)}×</b> purchase leverage. After ${costsText}, the more useful number is <b>${fmtLev(effectiveLeverage)}× effective leverage</b> (${fmt$(d.price)} purchase price ÷ ${fmt$(d.invested)} total invested).</div>
+      <p class="lev-copy">At a ${fmt1(d.apprPct)}% appreciation assumption, the house gains about <b>${fmt$(gainDollar)}</b> this year on the full ${fmt$(d.price)} property value. Measured against the investor's total cash in the deal, that is a <b>${fmt1(returnOnCash)}%</b> modeled appreciation contribution.</p>
+      <div class="lev-wrap">
+        <div class="lev-row">
+          <div class="lev-label"><b>Purchase price</b>${fmt$(d.price)}</div>
+          <div class="lev-track" style="width:${houseW}px;"><div class="lev-base" style="width:${houseW}px;"></div><div class="lev-gain" style="width:${gainW}px;left:${Math.max(0,houseW-gainW)}px;"></div></div>
+          <div class="lev-tag">+${fmt$(gainDollar)} <span>→ ${fmt1(d.apprPct)}% of the price</span></div>
+        </div>
+        <div class="lev-row">
+          <div class="lev-label"><b>Total cash invested</b>${fmt$(d.invested)}</div>
+          <div class="lev-track" style="width:${cashW}px;"><div class="lev-base" style="width:${cashW}px;"></div><div class="lev-gain" style="width:${gainW}px;left:${Math.max(0,cashW-gainW)}px;"></div></div>
+          <div class="lev-tag">+${fmt$(gainDollar)} <span>→ ${fmt1(returnOnCash)}% of the cash</span></div>
+        </div>
+      </div>
+      <p class="lev-punch"><b>Effective leverage = purchase price ÷ total cash invested.</b> A smaller down payment usually increases it; closing costs and capex reduce it because they add investor cash without increasing the property's purchase price. Leverage also magnifies losses if the property falls in value.</p>
+    </div>
+  `;
+}
+
+// Tooltip "i" icons only respond to hover, and hover doesn't exist on a
+// touchscreen — there's no mouse to hold still over the icon. This single
+// listener makes them work on tap too: tapping an icon toggles it open,
+// tapping anywhere else closes whatever's open.
+function resetClickedTip(dot){
+  if(!dot) return;
+  dot.classList.remove("clicked-open");
+  const tip = dot.querySelector(".tip");
+  if(!tip) return;
+  ["position","left","top","right","bottom","transform","zIndex"].forEach(prop=> tip.style[prop] = "");
+}
+
+function positionClickedTip(dot){
+  const tip = dot && dot.querySelector(".tip");
+  if(!tip) return;
+  dot.classList.add("clicked-open");
+  tip.style.position = "fixed";
+  tip.style.left = "16px";
+  tip.style.top = "16px";
+  tip.style.right = "auto";
+  tip.style.bottom = "auto";
+  tip.style.transform = "none";
+  tip.style.zIndex = "9999";
+
+  requestAnimationFrame(()=>{
+    if(!dot.classList.contains("open")) return;
+    const anchor = dot.getBoundingClientRect();
+    const box = tip.getBoundingClientRect();
+    const gap = 8;
+    const edge = 12;
+    let left = anchor.left + anchor.width/2 - box.width/2;
+    left = Math.max(edge, Math.min(left, window.innerWidth - box.width - edge));
+    let top = anchor.bottom + gap;
+    if(top + box.height > window.innerHeight - edge){
+      top = anchor.top - box.height - gap;
+    }
+    top = Math.max(edge, Math.min(top, window.innerHeight - box.height - edge));
+    tip.style.left = `${Math.round(left)}px`;
+    tip.style.top = `${Math.round(top)}px`;
+  });
+}
+
+document.addEventListener("click", (e)=>{
+  if(e.target.closest(".tip")){ e.stopPropagation(); return; }
+  const dot = e.target.closest(".info-dot, .fx-dot");
+  document.querySelectorAll(".info-dot.open, .fx-dot.open").forEach(el=>{
+    if(el!==dot){ el.classList.remove("open"); resetClickedTip(el); }
+  });
+  if(dot){
+    e.stopPropagation();
+    const opening = !dot.classList.contains("open");
+    dot.classList.toggle("open", opening);
+    if(opening) positionClickedTip(dot);
+    else resetClickedTip(dot);
+  }
+});
+
+window.addEventListener("resize", ()=>{
+  document.querySelectorAll(".info-dot.open.clicked-open, .fx-dot.open.clicked-open").forEach(positionClickedTip);
+});
+
+// Closes the "why does the return shrink" explainer from its own Close
+// button and scrolls back up to the toggle that opened it.
+const whyDetails = document.getElementById("whyDetails");
+if(whyDetails){
+  const whyCloseBtn = whyDetails.querySelector(".why-close-btn");
+  if(whyCloseBtn){
+    whyCloseBtn.addEventListener("click", (e)=>{
+      e.preventDefault();
+      whyDetails.open = false;
+      whyDetails.scrollIntoView({behavior:"smooth", block:"start"});
+    });
+  }
+}
+
+let activeStates = new Set();
+let activeStatuses = new Set(["closed","under_contract","proposed"]);
+let filterRanges = {
+  minPrice:null,
+  maxPrice:null,
+  minCash:null,
+  maxCash:null,
+  minReturn:null,
+  maxReturn:null
+};
+
+const FILTER_STATUS_CODES = ["proposed","under_contract","closed"];
+const STATUS_SORT_ORDER = {proposed:0, under_contract:1, closed:2};
+let sortKey = "status";
+let sortDirection = "asc";
+
+function makeFilterCheckbox(container, kind, value, labelText, checked, recommended=false){
+  const label = document.createElement("label");
+  label.className = "filter-check" + (recommended ? " recommended" : "");
+
+  const input = document.createElement("input");
+  input.type = "checkbox";
+  input.value = value;
+  input.dataset.filterKind = kind;
+  input.checked = checked;
+
+  const text = document.createElement("span");
+  text.textContent = labelText;
+
+  label.appendChild(input);
+  label.appendChild(text);
+  container.appendChild(label);
+}
+
+function readNullableNumber(id){
+  const el = document.getElementById(id);
+  if(!el) return null;
+  const raw = el.value.trim();
+  if(raw === "") return null;
+  const value = Number(raw);
+  return Number.isFinite(value) ? value : null;
+}
+
+function writeNullableNumber(id, value){
+  const el = document.getElementById(id);
+  if(el) el.value = value === null || value === undefined ? "" : String(value);
+}
+
+function syncFilterPanel(){
+  document.querySelectorAll('#stateFilterOptions input[type="checkbox"]').forEach(input=>{
+    input.checked = activeStates.has(input.value);
+  });
+  document.querySelectorAll('#statusFilterOptions input[type="checkbox"]').forEach(input=>{
+    input.checked = activeStatuses.has(input.value);
+  });
+
+  writeNullableNumber("filterPriceMin", filterRanges.minPrice);
+  writeNullableNumber("filterPriceMax", filterRanges.maxPrice);
+  writeNullableNumber("filterCashMin", filterRanges.minCash);
+  writeNullableNumber("filterCashMax", filterRanges.maxCash);
+  writeNullableNumber("filterReturnMin", filterRanges.minReturn);
+  writeNullableNumber("filterReturnMax", filterRanges.maxReturn);
+}
+
+function activeFilterCategoryCount(){
+  const allStateCount = new Set(DATA.map(d=>d.state)).size;
+  let count = 0;
+  if(activeStates.size !== allStateCount) count += 1;
+  if(activeStatuses.size !== FILTER_STATUS_CODES.length) count += 1;
+  if(filterRanges.minPrice !== null || filterRanges.maxPrice !== null) count += 1;
+  if(filterRanges.minCash !== null || filterRanges.maxCash !== null) count += 1;
+  if(filterRanges.minReturn !== null || filterRanges.maxReturn !== null) count += 1;
+  return count;
+}
+
+function updateFilterButtonState(){
+  const badge = document.getElementById("filterActiveCount");
+  if(!badge) return;
+  const count = activeFilterCategoryCount();
+  badge.textContent = String(count);
+  badge.hidden = count === 0;
+}
+
+function applyFiltersFromPanel(){
+  activeStates = new Set(
+    [...document.querySelectorAll('#stateFilterOptions input[type="checkbox"]:checked')].map(input=>input.value)
+  );
+  activeStatuses = new Set(
+    [...document.querySelectorAll('#statusFilterOptions input[type="checkbox"]:checked')].map(input=>input.value)
+  );
+
+  filterRanges = {
+    minPrice:readNullableNumber("filterPriceMin"),
+    maxPrice:readNullableNumber("filterPriceMax"),
+    minCash:readNullableNumber("filterCashMin"),
+    maxCash:readNullableNumber("filterCashMax"),
+    minReturn:readNullableNumber("filterReturnMin"),
+    maxReturn:readNullableNumber("filterReturnMax")
+  };
+
+  render();
+  const dropdown = document.getElementById("filterDropdown");
+  if(dropdown) dropdown.open = false;
+}
+
+function clearAllFilters(){
+  activeStates = new Set(DATA.map(d=>d.state));
+  activeStatuses = new Set(FILTER_STATUS_CODES);
+  filterRanges = {
+    minPrice:null,
+    maxPrice:null,
+    minCash:null,
+    maxCash:null,
+    minReturn:null,
+    maxReturn:null
+  };
+  syncFilterPanel();
+  render();
+}
+
+function buildFilterControls(){
+  const stateWrap = document.getElementById("stateFilterOptions");
+  const statusWrap = document.getElementById("statusFilterOptions");
+  if(!stateWrap || !statusWrap) return;
+
+  stateWrap.innerHTML = "";
+  statusWrap.innerHTML = "";
+
+  [...new Set(DATA.map(d=>d.state))]
+    .sort((a,b)=>a.localeCompare(b))
+    .forEach(state=> makeFilterCheckbox(stateWrap,"state",state,state,activeStates.has(state)));
+
+  FILTER_STATUS_CODES.forEach(status=>{
+    makeFilterCheckbox(
+      statusWrap,
+      "status",
+      status,
+      STATUS_LABEL[status],
+      activeStatuses.has(status),
+      status === "proposed"
+    );
+  });
+
+  syncFilterPanel();
+  updateFilterButtonState();
+
+  const applyBtn = document.getElementById("applyFilters");
+  const clearBtn = document.getElementById("clearFilters");
+  const dropdown = document.getElementById("filterDropdown");
+  const panel = dropdown ? dropdown.querySelector(".filter-panel") : null;
+
+  if(applyBtn && !applyBtn.dataset.wired){
+    applyBtn.dataset.wired = "true";
+    applyBtn.addEventListener("click", applyFiltersFromPanel);
+  }
+  if(clearBtn && !clearBtn.dataset.wired){
+    clearBtn.dataset.wired = "true";
+    clearBtn.addEventListener("click", clearAllFilters);
+  }
+  if(panel && !panel.dataset.wired){
+    panel.dataset.wired = "true";
+    panel.addEventListener("keydown", e=>{
+      if(e.key === "Enter" && e.target.matches(".filter-input")){
+        e.preventDefault();
+        applyFiltersFromPanel();
+      }
+    });
+  }
+  if(dropdown && !dropdown.dataset.wired){
+    dropdown.dataset.wired = "true";
+    dropdown.addEventListener("keydown", e=>{
+      if(e.key === "Escape"){
+        dropdown.open = false;
+        const summary = dropdown.querySelector("summary");
+        if(summary) summary.focus();
+      }
+    });
+    document.addEventListener("click", e=>{
+      if(dropdown.open && !dropdown.contains(e.target)) dropdown.open = false;
+    });
+  }
+}
+
+function matchesFilters(d){
+  if(!activeStates.has(d.state) || !activeStatuses.has(d.status)) return false;
+  if(filterRanges.minPrice !== null && d.price < filterRanges.minPrice) return false;
+  if(filterRanges.maxPrice !== null && d.price > filterRanges.maxPrice) return false;
+  if(filterRanges.minCash !== null && d.cashflow < filterRanges.minCash) return false;
+  if(filterRanges.maxCash !== null && d.cashflow > filterRanges.maxCash) return false;
+  if(filterRanges.minReturn !== null && d.totalReturn < filterRanges.minReturn) return false;
+  if(filterRanges.maxReturn !== null && d.totalReturn > filterRanges.maxReturn) return false;
+  return true;
+}
+
+function sortRows(rows){
+  const direction = sortDirection === "asc" ? 1 : -1;
+
+  return [...rows].sort((a,b)=>{
+    let cmp = 0;
+
+    if(sortKey === "status"){
+      cmp = (STATUS_SORT_ORDER[a.status] ?? 99) - (STATUS_SORT_ORDER[b.status] ?? 99);
+      if(cmp !== 0) return cmp * direction;
+      return String(b.date||"").localeCompare(String(a.date||""));
+    }
+
+    if(sortKey === "id" || sortKey === "state"){
+      cmp = String(a[sortKey]||"").localeCompare(String(b[sortKey]||""), undefined, {numeric:true});
+    } else {
+      const av = Number(a[sortKey]);
+      const bv = Number(b[sortKey]);
+      const aFinite = Number.isFinite(av);
+      const bFinite = Number.isFinite(bv);
+      if(!aFinite && !bFinite) cmp = 0;
+      else if(!aFinite) return 1;
+      else if(!bFinite) return -1;
+      else cmp = av - bv;
+    }
+
+    if(cmp === 0) return String(b.date||"").localeCompare(String(a.date||""));
+    return cmp * direction;
+  });
+}
+
+function updateSortIndicators(){
+  document.querySelectorAll('.desktop-table th.sortable').forEach(th=>{
+    const active = th.dataset.sortKey === sortKey;
+    th.dataset.sortDirection = active ? sortDirection : "";
+    th.setAttribute("aria-sort", active ? (sortDirection === "asc" ? "ascending" : "descending") : "none");
+  });
+}
+
+function activateHeaderSort(key){
+  if(!key) return;
+  if(sortKey === key){
+    sortDirection = sortDirection === "asc" ? "desc" : "asc";
+  } else {
+    sortKey = key;
+    sortDirection = "asc";
+  }
+  render();
+}
+
+function initSortableHeaders(){
+  const header = document.querySelector('.column-header-row');
+  const desktop = document.querySelector('.desktop-table');
+  if(!header || !desktop) return;
+
+  const specs = [
+    ["status-col","status"],
+    ["id-col","id"],
+    ["state-col","state"],
+    ["price-col","price"],
+    ["down-col","down"],
+    ["invested-col","invested"],
+    ["rent-col","rent"],
+    ["cash-return-col","cashflow"],
+    ["principal-return-col","principal"],
+    ["appreciation-col","apprContribution"],
+    ["modeled-return-col","totalReturn"]
+  ];
+
+  specs.forEach(([className,key])=>{
+    const th = header.querySelector(`th.${className}`);
+    if(!th) return;
+    th.classList.add("sortable");
+    th.dataset.sortKey = key;
+    th.dataset.sortDirection = "";
+    th.setAttribute("tabindex","0");
+    th.setAttribute("aria-sort","none");
+  });
+
+  updateSortIndicators();
+
+  desktop.addEventListener("click", e=>{
+    if(e.target.closest(".info-dot, .fx-dot")) return;
+    const th = e.target.closest("th.sortable");
+    if(!th || !desktop.contains(th)) return;
+    activateHeaderSort(th.dataset.sortKey);
+  });
+
+  desktop.addEventListener("keydown", e=>{
+    if(e.target.closest(".info-dot, .fx-dot")) return;
+    const th = e.target.closest("th.sortable");
+    if(!th || !desktop.contains(th)) return;
+    if(e.key === "Enter" || e.key === " "){
+      e.preventDefault();
+      activateHeaderSort(th.dataset.sortKey);
+    }
+  });
+}
+
+function detailReceiptLinesHTML(d){
+  const det = d.detail;
+  return `
+    <div class="receipt-title">${detailHeadingText(d)}</div>
+
+    <div class="mp-detail-section">
+      <div class="mp-detail-section-title purchase">Purchase &amp; financing</div>
+      <div class="mp-detail-line"><span class="mp-dl-label">Purchase price</span><span class="mp-dl-val">${fmt$(d.price)}</span></div>
+      <div class="mp-detail-line"><span class="mp-dl-label">Down payment</span><span class="mp-dl-val">${fmt$(d.down)}</span></div>
+      <div class="mp-detail-line"><span class="mp-dl-label">Closing costs</span><span class="mp-dl-val">${fmt$(det.closing)}</span></div>
+      <div class="mp-detail-line"><span class="mp-dl-label">Initial capex</span><span class="mp-dl-val">${formatCapex(det.capex)}</span></div>
+      <div class="mp-detail-line"><span class="mp-dl-label">Total invested</span><span class="mp-dl-val">${fmt$(d.invested)}</span></div>
+      <div class="mp-detail-line"><span class="mp-dl-label">Interest rate</span><span class="mp-dl-val">${fmt1(det.rate)}%</span></div>
+      <div class="mp-detail-line"><span class="mp-dl-label">Points</span><span class="mp-dl-val">${fmt1(det.points)}%</span></div>
+      <div class="mp-detail-line"><span class="mp-dl-label">Effective leverage <span class="info-dot" tabindex="0">i<span class="tip">Purchase price ÷ total cash invested. Closing costs and capex reduce this multiplier because they add cash invested without increasing the purchase price.<span class="tip-heading tip-heading-spaced">Formula</span><span class="tip-formula">Effective leverage = purchase price ÷ total cash invested</span></span></span></span><span class="mp-dl-val">${fmtLev(d.leverage)}×</span></div>
+    </div>
+
+    <div class="mp-detail-section">
+      <div class="mp-detail-section-title">Leasing &amp; ongoing expenses</div>
+      <div class="mp-detail-line"><span class="mp-dl-label">Base rent (pre-vacancy)</span><span class="mp-dl-val">${fmt$(det.rentBase)}/mo</span></div>
+      ${daysToRentStartMobileLineHTML(d)}
+      <div class="mp-detail-line"><span class="mp-dl-label">Mortgage P&amp;I</span><span class="mp-dl-val">${fmt$(det.mortPI)}/mo</span></div>
+      <div class="mp-detail-line"><span class="mp-dl-label">Property tax</span><span class="mp-dl-val">${fmt$(det.taxY)}/yr</span></div>
+      <div class="mp-detail-line"><span class="mp-dl-label">Insurance</span><span class="mp-dl-val">${fmt$(det.insY)}/yr</span></div>
+      <div class="mp-detail-line"><span class="mp-dl-label">HOA</span><span class="mp-dl-val">${fmt$(det.hoaY)}/yr</span></div>
+      ${propertyPageDetailLinkHTML(d,true)}
+    </div>
+
+    <div class="mp-detail-section">
+      <div class="mp-detail-section-title forecast">Appreciation forecast</div>
+      <div class="mp-detail-line predicted"><span class="mp-dl-label">Appreciation assumption</span><span class="mp-dl-val">${fmt1(d.apprPct)}%/yr</span></div>
+      <div class="mp-detail-line predicted"><span class="mp-dl-label">Modeled appreciation contribution</span><span class="mp-dl-val">${fmt1(d.apprContribution)}%</span></div>
+    </div>
+
+    ${mathToolsHTML(d,true)}
+  `;
+}
+
+function mobileLeverageHTML(d){
+  const downPct = d.down / d.price * 100;
+  const purchaseLeverage = d.price / d.down;
+  const effectiveLeverage = d.leverage;
+  const gainDollar = d.price * d.apprPct / 100;
+  const returnOnCash = d.apprContribution;
+  const extraCash = d.invested - d.down;
+  const houseW = 100;
+  const cashW = Math.max(6, d.invested / d.price * 100);
+  const gainW = Math.max(3, gainDollar / d.price * 100);
+  const gainWCash = Math.max(3, gainDollar / d.invested * 100);
+  const verb = d.status === "closed" ? "was purchased" : d.status === "under_contract" ? "is under contract to be purchased" : "is currently recommended and available to purchase";
+  const costsText = extraCash >= 0 ? `${fmt$(extraCash)} of closing costs/capex` : `${fmt$(Math.abs(extraCash))} of net credits after closing costs/capex`;
+  return `
+    <div class="lev-detail mp-lev">
+      <div class="lev-detail-head solo">
+        <button type="button" class="close-box-btn lev-close-btn" aria-label="Close appreciation breakdown">Close ✕</button>
+      </div>
+      <p class="lev-copy">This property ${verb} for <b>${fmt$(d.price)}</b>. The investor put down <b>${fmt$(d.down)}</b> — <b>${fmt0(downPct)}%</b> of the price — with <b>${fmt$(d.invested)}</b> total cash invested.</p>
+      <div class="lev-driver">${fmt0(downPct)}% down ≈ <b>${fmt0(purchaseLeverage)}×</b> purchase leverage. After ${costsText}: <b>${fmtLev(effectiveLeverage)}× effective leverage</b>.</div>
+      <p class="lev-copy"><b>Effective leverage = purchase price ÷ total cash invested.</b> At ${fmt1(d.apprPct)}% assumed appreciation, the ${fmt$(gainDollar)} increase in property value equals a <b>${fmt1(returnOnCash)}%</b> modeled return on total cash invested.</p>
+      <div class="lev-wrap">
+        <div class="lev-row">
+          <div class="lev-label"><b>Purchase price</b>${fmt$(d.price)}</div>
+          <div class="lev-track" style="width:${houseW}%;"><div class="lev-base" style="width:100%;"></div><div class="lev-gain" style="width:${gainW}%;left:${Math.max(0,100-gainW)}%;"></div></div>
+          <div class="lev-tag">+${fmt$(gainDollar)} <span>→ ${fmt1(d.apprPct)}% of the price</span></div>
+        </div>
+        <div class="lev-row">
+          <div class="lev-label"><b>Total cash invested</b>${fmt$(d.invested)}</div>
+          <div class="lev-track" style="width:${cashW}%;"><div class="lev-base" style="width:100%;"></div><div class="lev-gain" style="width:${gainWCash}%;left:${Math.max(0,100-gainWCash)}%;"></div></div>
+          <div class="lev-tag">+${fmt$(gainDollar)} <span>→ ${fmt1(returnOnCash)}% of the cash</span></div>
+        </div>
+      </div>
+      <p class="lev-punch">A smaller down payment usually increases effective leverage; closing costs and capex reduce it. It magnifies losses too if the property falls in value.</p>
+    </div>
+  `;
+}
+
+function renderMobile(rows){
+  const list = document.getElementById("mobilePropertyList");
+  list.innerHTML = "";
+  rows.forEach(d=>{
+    const actualPct = d.coc + d.principalPct;
+    const predictedPct = d.apprContribution;
+    const barTotal = actualPct + predictedPct;
+    const actualShare = barTotal>0 ? (actualPct/barTotal*100) : 50;
+    const predictedShare = 100 - actualShare;
+
+    const card = document.createElement("div");
+    card.className = "mp-card";
+    card.innerHTML = `
+      <div class="mp-row1">
+        <span class="mp-state"><span class="mp-id">${d.id}</span><span class="mp-id-sep"> · </span>${d.state}</span>
+        <span class="status-badge status-${d.status}">${STATUS_LABEL[d.status]}</span>
+      </div>
+      <div class="mp-row2">${fmt$(d.price)} purchase · ${fmt$(d.invested)} invested</div>
+      ${propertyPageLinkHTML(d,true)}
+      <div class="mp-metrics">
+        <div>
+          <span class="mp-metric-label">Cash Flow</span>
+          <span class="mp-metric-val">${fmt$(d.cashflow)}/mo</span>
+          <span class="mp-metric-sub">${fmt1(d.coc)}% CoC/yr</span>
+        </div>
+        <div>
+          <span class="mp-metric-label">Principal</span>
+          <span class="mp-metric-val">${fmt$(d.principal)}/mo</span>
+          <span class="mp-metric-sub">${fmt1(d.principalPct)}% / yr</span>
+        </div>
+      </div>
+      <div class="mp-modeled">
+        <span class="mp-modeled-label">Modeled Return</span>
+        <span class="mp-modeled-val">${fmtPct(d.totalReturn)}</span>
+      </div>
+      <div class="mp-modeled-split"><span class="mp-a">${fmt1(actualPct)}%</span> <span class="mp-a-w">${operatingLabel(d)}</span> + <span class="mp-f">${fmt1(predictedPct)}%</span> <span class="mp-f-w">forecast</span></div>
+      <div class="mp-bar"><span class="tr-actual" style="width:${actualShare}%"></span><span class="tr-predicted" style="width:${predictedShare}%"></span></div>
+      <div class="mp-actions">
+        <button class="mp-action underwriting">View underwriting →</button>
+        <button class="mp-action forecast">Explain forecast →</button>
+      </div>
+      <div class="mp-detail mp-underwriting-detail">${detailReceiptLinesHTML(d)}</div>
+      <div class="mp-detail mp-forecast-detail">${mobileLeverageHTML(d)}</div>
+    `;
+    const uwBtn = card.querySelector(".mp-action.underwriting");
+    const fcBtn = card.querySelector(".mp-action.forecast");
+    const uwDetail = card.querySelector(".mp-underwriting-detail");
+    const fcDetail = card.querySelector(".mp-forecast-detail");
+    uwBtn.onclick = ()=> uwDetail.classList.toggle("open");
+    fcBtn.onclick = ()=> fcDetail.classList.toggle("open");
+    const fcCloseBtn = fcDetail.querySelector(".lev-close-btn");
+    if(fcCloseBtn){
+      fcCloseBtn.onclick = (e)=>{
+        e.stopPropagation();
+        fcDetail.classList.remove("open");
+        card.scrollIntoView({behavior:"smooth", block:"start"});
+      };
+    }
+    wireMathToggle(uwDetail);
+    list.appendChild(card);
+  });
+}
+
+function render(){
+  const rows = sortRows(DATA.filter(matchesFilters));
+  const body = document.getElementById("tableBody");
+  body.innerHTML = "";
+  rows.forEach((d,i)=>{
+    const actualPct = d.coc + d.principalPct;
+    const predictedPct = d.apprContribution;
+    const barTotal = actualPct + predictedPct;
+    const actualShare = barTotal>0 ? (actualPct/barTotal*100) : 50;
+    const predictedShare = 100 - actualShare;
+
+    const tr = document.createElement("tr");
+    tr.className = `data-row status-${d.status}-row`;
+    tr.innerHTML = `
+      <td><span class="chevron">▶</span></td>
+      <td class="status-cell"><span class="status-badge status-${d.status}">${STATUS_LABEL[d.status]}</span>${propertyPageLinkHTML(d)}</td>
+      <td class="id-cell id-col">${d.id}</td>
+      <td class="state-cell">${d.state}</td>
+      <td class="num num-muted">${fmt$(d.price)}</td>
+      <td class="num num-muted">${fmt$(d.down)}</td>
+      <td class="num num-muted">${fmt$(d.invested)}</td>
+      <td class="num num-muted rent-col">${fmt$(d.rent)}<span style="font-size:9px;color:var(--text-secondary);">/mo</span></td>
+      <td class="cash-return-col">
+        <div class="return-pair">
+          <span class="rp-month">${fmt$(d.cashflow)}/mo</span>
+          <span class="rp-year">${fmt1(d.coc)}% CoC/yr</span>
+        </div>
+      </td>
+      <td class="equation-operator-col equation-operator-cell" aria-hidden="true"><span class="equation-op plus">+</span></td>
+      <td class="principal-return-col">
+        <div class="return-pair">
+          <span class="rp-month">${fmt$(d.principal)}/mo</span>
+          <span class="rp-year">${fmt1(d.principalPct)}% / yr</span>
+        </div>
+      </td>
+      <td class="equation-operator-col equation-operator-cell" aria-hidden="true"><span class="equation-op plus">+</span></td>
+      <td class="appreciation-col">
+        <div class="predicted-cell">
+          <span class="pv">+${fmt1(d.apprContribution)}%</span>
+          <span class="ps">${fmt1(d.apprPct)}% × ${fmtLev(d.leverage)}×</span>
+          <span class="pc-caret">▸</span>
+        </div>
+      </td>
+      <td class="equation-operator-col equation-operator-cell" aria-hidden="true"><span class="equation-op equal">=</span></td>
+      <td class="modeled-return-col">
+        <div class="tr-wrap">
+          <span class="tr-num">${fmtPct(d.totalReturn)}</span>
+          <span class="tr-modeled-label">Modeled</span>
+          <span class="tr-split" title="${fmt1(actualPct)}% ${operatingLabel(d)} operating return + ${fmt1(predictedPct)}% forecast appreciation"><span class="tr-a-num">${fmt1(actualPct)}%</span> <span class="tr-plus">+</span> <span class="tr-f-num">${fmt1(predictedPct)}%</span></span>
+          <div class="tr-bar" title="${fmt0(actualShare)}% ${operatingLabel(d)}, ${fmt0(predictedShare)}% forecast">
+            <span class="tr-actual" style="width:${actualShare}%"></span>
+            <span class="tr-predicted" style="width:${predictedShare}%"></span>
+          </div>
+        </div>
+      </td>
+    `;
+    const levTr = document.createElement("tr");
+    levTr.className = "detail-row";
+    levTr.innerHTML = `<td colspan="15">${leverageDetailHTML(d)}</td>`;
+
+    const detailTr = document.createElement("tr");
+    detailTr.className = "detail-row";
+    const det = d.detail;
+    detailTr.innerHTML = `
+      <td colspan="15">
+        <div class="receipt">
+          <div class="receipt-title">${detailHeadingText(d)}</div>
+          <div class="receipt-sections">
+            <section class="receipt-section">
+              <div class="receipt-section-title purchase">Purchase &amp; financing</div>
+              <div class="receipt-grid">
+                <div class="receipt-line"><span class="rl-label">Purchase price</span><span class="rl-fill"></span><span class="rl-val">${fmt$(d.price)}</span></div>
+                <div class="receipt-line"><span class="rl-label">Down payment</span><span class="rl-fill"></span><span class="rl-val">${fmt$(d.down)}</span></div>
+                <div class="receipt-line"><span class="rl-label">Closing costs</span><span class="rl-fill"></span><span class="rl-val">${fmt$(det.closing)}</span></div>
+                <div class="receipt-line"><span class="rl-label">Initial capex</span><span class="rl-fill"></span><span class="rl-val">${formatCapex(det.capex)}</span></div>
+                <div class="receipt-line"><span class="rl-label">Total invested</span><span class="rl-fill"></span><span class="rl-val">${fmt$(d.invested)}</span></div>
+                <div class="receipt-line"><span class="rl-label">Interest rate</span><span class="rl-fill"></span><span class="rl-val">${fmt1(det.rate)}%</span></div>
+                <div class="receipt-line"><span class="rl-label">Points</span><span class="rl-fill"></span><span class="rl-val">${fmt1(det.points)}%</span></div>
+                <div class="receipt-line"><span class="rl-label">Effective leverage <span class="info-dot" tabindex="0">i<span class="tip">Purchase price ÷ total cash invested. Closing costs and capex reduce this multiplier because they add cash invested without increasing the purchase price.<span class="tip-heading tip-heading-spaced">Formula</span><span class="tip-formula">Effective leverage = purchase price ÷ total cash invested</span></span></span></span><span class="rl-fill"></span><span class="rl-val">${fmtLev(d.leverage)}×</span></div>
+              </div>
+            </section>
+
+            <section class="receipt-section">
+              <div class="receipt-section-title">Leasing &amp; ongoing expenses</div>
+              <div class="receipt-grid">
+                <div class="receipt-line"><span class="rl-label">Base rent (pre-vacancy)</span><span class="rl-fill"></span><span class="rl-val">${fmt$(det.rentBase)}/mo</span></div>
+                ${daysToRentStartReceiptLineHTML(d)}
+                <div class="receipt-line"><span class="rl-label">Mortgage P&amp;I</span><span class="rl-fill"></span><span class="rl-val">${fmt$(det.mortPI)}/mo</span></div>
+                <div class="receipt-line"><span class="rl-label">Property tax</span><span class="rl-fill"></span><span class="rl-val">${fmt$(det.taxY)}/yr</span></div>
+                <div class="receipt-line"><span class="rl-label">Insurance</span><span class="rl-fill"></span><span class="rl-val">${fmt$(det.insY)}/yr</span></div>
+                <div class="receipt-line"><span class="rl-label">HOA</span><span class="rl-fill"></span><span class="rl-val">${fmt$(det.hoaY)}/yr</span></div>
+                ${propertyPageDetailLinkHTML(d,false)}
+              </div>
+            </section>
+
+            <section class="receipt-section">
+              <div class="receipt-section-title forecast">Appreciation forecast</div>
+              <div class="receipt-grid">
+                <div class="receipt-line predicted-line"><span class="rl-label">Appreciation assumption</span><span class="rl-fill"></span><span class="rl-val">${fmt1(d.apprPct)}%/yr</span></div>
+                <div class="receipt-line predicted-line"><span class="rl-label">Modeled appreciation contribution</span><span class="rl-fill"></span><span class="rl-val">${fmt1(d.apprContribution)}%</span></div>
+              </div>
+            </section>
+          </div>
+          ${mathToolsHTML(d,false)}
+        </div>
+      </td>`;
+    wireMathToggle(detailTr);
+    tr.onclick = ()=>{
+      const willOpen = !tr.classList.contains("open");
+      document.querySelectorAll("tr.data-row.open").forEach(r=>r.classList.remove("open"));
+      document.querySelectorAll("tr.detail-row.open").forEach(r=>r.classList.remove("open","lev-row-open"));
+      document.querySelectorAll(".predicted-cell.open").forEach(el=>el.classList.remove("open"));
+      if(willOpen){ tr.classList.add("open"); detailTr.classList.add("open"); }
+    };
+    const predictedCell = tr.querySelector(".predicted-cell");
+    predictedCell.onclick = (e)=>{
+      e.stopPropagation();
+      const willOpen = !levTr.classList.contains("open");
+      document.querySelectorAll(".predicted-cell.open").forEach(el=>el.classList.remove("open"));
+      document.querySelectorAll("tr.detail-row.lev-row-open").forEach(r=>r.classList.remove("open","lev-row-open"));
+      if(willOpen){ predictedCell.classList.add("open"); levTr.classList.add("open","lev-row-open"); }
+    };
+    const levCloseBtn = levTr.querySelector(".lev-close-btn");
+    if(levCloseBtn){
+      levCloseBtn.onclick = (e)=>{
+        e.stopPropagation();
+        predictedCell.classList.remove("open");
+        levTr.classList.remove("open","lev-row-open");
+        tr.scrollIntoView({behavior:"smooth", block:"center"});
+      };
+    }
+    body.appendChild(tr);
+    body.appendChild(levTr);
+    body.appendChild(detailTr);
+  });
+
+  document.getElementById("countNote").textContent = `Showing ${rows.length} of ${DATA.length} properties`;
+  updateFilterButtonState();
+  updateSortIndicators();
+  renderMobile(rows);
+  requestAnimationFrame(()=>{
+    syncStickyHeaderLayout();
+    updateStickyHeaderVisibility();
+  });
+}
+
+// ===== FROZEN DESKTOP TABLE HEADER =====
+// The real table stays semantic and scrollable. A visual clone of its <thead>
+// is fixed to the top of the viewport only while the user is inside the table.
+// Its column widths and horizontal position are synchronized with the real table.
+const stickyHeaderState = {
+  initialized:false,
+  desktop:null,
+  wrap:null,
+  mainTable:null,
+  originalHead:null,
+  shell:null,
+  viewport:null,
+  stickyTable:null,
+  colgroup:null,
+  resizeObserver:null
+};
+
+function initStickyTableHeader(){
+  const desktop = document.querySelector('.desktop-table');
+  const wrap = desktop ? desktop.querySelector('.table-wrap') : null;
+  const mainTable = wrap ? wrap.querySelector('table') : null;
+  const originalHead = mainTable ? mainTable.querySelector('thead') : null;
+  const shell = desktop ? desktop.querySelector('.sticky-table-header') : null;
+  const viewport = shell ? shell.querySelector('.sticky-table-header-viewport') : null;
+  const stickyTable = shell ? shell.querySelector('.sticky-table-header-table') : null;
+
+  if(!desktop || !wrap || !mainTable || !originalHead || !shell || !viewport || !stickyTable) return;
+
+  stickyTable.innerHTML = '';
+
+  const colgroup = document.createElement('colgroup');
+  originalHead.querySelectorAll('tr:last-child th').forEach(()=> colgroup.appendChild(document.createElement('col')));
+  stickyTable.appendChild(colgroup);
+
+  const clonedHead = originalHead.cloneNode(true);
+  clonedHead.querySelectorAll('.payoff-intro-row, .payoff-box-row').forEach(row=>row.remove());
+  clonedHead.querySelectorAll('[tabindex]').forEach(el=>el.removeAttribute('tabindex'));
+  clonedHead.querySelectorAll('[id]').forEach(el=>el.removeAttribute('id'));
+  stickyTable.appendChild(clonedHead);
+
+  Object.assign(stickyHeaderState, {
+    initialized:true,
+    desktop, wrap, mainTable, originalHead, shell, viewport, stickyTable, colgroup
+  });
+
+  wrap.addEventListener('scroll', syncStickyHeaderHorizontal, {passive:true});
+  window.addEventListener('scroll', updateStickyHeaderVisibility, {passive:true});
+  window.addEventListener('resize', ()=>{
+    syncStickyHeaderLayout();
+    updateStickyHeaderVisibility();
+  }, {passive:true});
+
+  if('ResizeObserver' in window){
+    stickyHeaderState.resizeObserver = new ResizeObserver(()=>{
+      syncStickyHeaderLayout();
+      updateStickyHeaderVisibility();
+    });
+    stickyHeaderState.resizeObserver.observe(mainTable);
+    stickyHeaderState.resizeObserver.observe(wrap);
+  }
+
+  if(document.fonts && document.fonts.ready){
+    document.fonts.ready.then(()=>{
+      syncStickyHeaderLayout();
+      updateStickyHeaderVisibility();
+    });
+  }
+
+  requestAnimationFrame(()=>{
+    syncStickyHeaderLayout();
+    updateStickyHeaderVisibility();
+  });
+}
+
+function syncStickyHeaderLayout(){
+  const s = stickyHeaderState;
+  if(!s.initialized) return;
+
+  if(window.innerWidth <= 760 || getComputedStyle(s.desktop).display === 'none'){
+    s.shell.classList.remove('is-active');
+    return;
+  }
+
+  const wrapRect = s.wrap.getBoundingClientRect();
+  const originalCells = Array.from(s.originalHead.querySelectorAll('tr:last-child th'));
+  const cols = Array.from(s.colgroup.children);
+
+  if(!wrapRect.width || !originalCells.length || originalCells.length !== cols.length) return;
+
+  const widths = originalCells.map(cell=>cell.getBoundingClientRect().width);
+  const totalWidth = widths.reduce((sum,w)=>sum+w,0);
+
+  cols.forEach((col,i)=>{
+    col.style.width = `${widths[i]}px`;
+  });
+
+  s.shell.style.left = `${wrapRect.left}px`;
+  s.shell.style.width = `${s.wrap.clientWidth}px`;
+  s.viewport.style.width = `${s.wrap.clientWidth}px`;
+  s.stickyTable.style.width = `${totalWidth}px`;
+  s.stickyTable.style.minWidth = `${totalWidth}px`;
+
+  syncStickyHeaderHorizontal();
+}
+
+function syncStickyHeaderHorizontal(){
+  const s = stickyHeaderState;
+  if(!s.initialized) return;
+  s.stickyTable.style.transform = `translateX(${-s.wrap.scrollLeft}px)`;
+}
+
+function updateStickyHeaderVisibility(){
+  const s = stickyHeaderState;
+  if(!s.initialized) return;
+
+  if(window.innerWidth <= 760 || getComputedStyle(s.desktop).display === 'none'){
+    s.shell.classList.remove('is-active');
+    return;
+  }
+
+  // Keep the fixed clone horizontally aligned with the actual table as the
+  // centered page container moves at different viewport widths.
+  const wrapRect = s.wrap.getBoundingClientRect();
+  s.shell.style.left = `${wrapRect.left}px`;
+  s.shell.style.width = `${s.wrap.clientWidth}px`;
+  s.viewport.style.width = `${s.wrap.clientWidth}px`;
+
+  const headRect = s.originalHead.getBoundingClientRect();
+  const tableRect = s.mainTable.getBoundingClientRect();
+  const stickyHead = s.stickyTable.querySelector('thead');
+  const stickyHeight = stickyHead ? stickyHead.getBoundingClientRect().height : headRect.height;
+
+  // Show only after the real heading row has fully scrolled offscreen, and
+  // hide again before the fixed row would extend past the bottom of the table.
+  const shouldShow = headRect.bottom <= 0 && tableRect.bottom > stickyHeight;
+  s.shell.classList.toggle('is-active', shouldShow);
+}
+
+// ===== LOAD DATA FROM GOOGLE SHEETS, THEN BUILD THE PAGE =====
+function showDataLoadError(){
+  const body = document.getElementById("tableBody");
+  if(body){
+    body.innerHTML = '<tr class="table-message-row"><td colspan="15"><div class="table-load-message is-error">Could not load property data. Please refresh the page.</div></td></tr>';
+  }
+  const mobile = document.getElementById("mobilePropertyList");
+  if(mobile){
+    mobile.innerHTML = '<div class="mobile-load-message is-error">Could not load property data. Please refresh the page.</div>';
+  }
+  const count = document.getElementById("countNote");
+  if(count) count.textContent = "Property data unavailable";
+}
+
+function parseSheetCsv(text){
+  const rows = [];
+  let row = [];
+  let cell = '';
+  let quoted = false;
+
+  for(let i = 0; i < text.length; i++){
+    const ch = text[i];
+    if(quoted){
+      if(ch === '"'){
+        if(text[i + 1] === '"'){
+          cell += '"';
+          i += 1;
+        } else {
+          quoted = false;
+        }
+      } else {
+        cell += ch;
+      }
+    } else if(ch === '"'){
+      quoted = true;
+    } else if(ch === ','){
+      row.push(cell);
+      cell = '';
+    } else if(ch === '\n'){
+      row.push(cell);
+      rows.push(row);
+      row = [];
+      cell = '';
+    } else if(ch !== '\r'){
+      cell += ch;
+    }
+  }
+
+  if(cell !== '' || row.length){
+    row.push(cell);
+    rows.push(row);
+  }
+
+  if(!rows.length) return [];
+  const headers = rows.shift().map(h => String(h || '').trim());
+  return rows
+    .filter(values => values.some(value => String(value || '').trim() !== ''))
+    .map(values => {
+      const record = {};
+      headers.forEach((header, i) => { record[header] = values[i] ?? ''; });
+      return record;
+    });
+}
+
+const PROPERTY_DATA_SNAPSHOT_URL = "property-data.csv";
+const PROPERTY_DATA_CACHE_KEY = "openBookPropertyDataCsvV2";
+
+function applyPropertyDataCsv(csvText, source){
+  const rawRows = parseSheetCsv(csvText);
+  const nextData = rawRows.map(rowToRecord).filter(d=>d.status !== "hide" && d.state && !isNaN(d.price) && d.price > 0);
+  if(!nextData.length) throw new Error(`No usable property rows in ${source}.`);
+
+  DATA = nextData;
+  console.log(`Loaded ${DATA.length} properties from ${source}.`);
+  activeStates = new Set(DATA.map(d=>d.state));
+  LEV_SCALE = LEV_MAX_PX / Math.max(...DATA.map(d=>d.price));
+  buildFilterControls();
+  render();
+}
+
+async function fetchPropertySnapshot(){
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), 8000);
+  try{
+    const response = await fetch(`${PROPERTY_DATA_SNAPSHOT_URL}?v=${Date.now()}`, {
+      method:'GET',
+      cache:'no-store',
+      credentials:'same-origin',
+      signal:controller.signal
+    });
+    if(!response.ok) throw new Error(`Snapshot request returned ${response.status}`);
+    const text = await response.text();
+    if(!text || text.length < 20) throw new Error('Property snapshot was empty.');
+    return text;
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
+async function loadData(){
+  let snapshotError = null;
+  try{
+    const csvText = await fetchPropertySnapshot();
+    applyPropertyDataCsv(csvText, 'same-origin snapshot');
+    try{ localStorage.setItem(PROPERTY_DATA_CACHE_KEY, csvText); }catch(_err){}
+    return;
+  } catch(err){
+    snapshotError = err;
+    console.warn('Same-origin property snapshot failed; trying browser cache.', err);
+  }
+
+  try{
+    const cached = localStorage.getItem(PROPERTY_DATA_CACHE_KEY);
+    if(cached){
+      applyPropertyDataCsv(cached, 'browser cache');
+      return;
+    }
+  } catch(cacheError){
+    console.warn('Property-data browser cache was unavailable.', cacheError);
+  }
+
+  console.error('Could not load property data:', snapshotError);
+  showDataLoadError();
+  if(stickyHeaderState.initialized){
+    stickyHeaderState.shell.classList.remove('is-active');
+  }
+}
+
+initSortableHeaders();
+initStickyTableHeader();
+loadData();
+</script>
+<script id="property-flow-script" src="property-flow.js?v=20260904-1"></script>
+</body>
+</html>
