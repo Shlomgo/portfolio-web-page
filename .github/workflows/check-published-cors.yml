@@ -15,6 +15,7 @@ jobs:
         run: |
           python - <<'PY'
           import re, pathlib, urllib.request
+          from urllib.parse import urlparse
           html=pathlib.Path('open-book.html').read_text()
           url=re.search(r'const SHEET_CSV_URL = "([^"]+)"',html).group(1)
           for method in ['GET','HEAD']:
@@ -24,7 +25,7 @@ jobs:
             })
             try:
               with urllib.request.urlopen(req,timeout=25) as res:
-                print('Method',method,'Status',res.status,'Final domain',urllib.request.urlparse(res.url).hostname)
+                print('Method',method,'Status',res.status,'Final domain',urlparse(res.url).hostname)
                 print('CORS allow origin',res.headers.get('Access-Control-Allow-Origin'))
                 print('Content type',res.headers.get('Content-Type'))
                 print('Bytes',len(res.read()) if method=='GET' else 'HEAD')
