@@ -1,0 +1,32 @@
+name: One-time Open Book published CSV accessibility check
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/check-published-cors.yml'
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check browser CORS headers on published Google Sheet
+        run: |
+          python - <<'PY'
+          import re, pathlib, urllib.request
+          html=pathlib.Path('open-book.html').read_text()
+          url=re.search(r'const SHEET_CSV_URL = "([^"]+)"',html).group(1)
+          for method in ['GET','HEAD']:
+            req=urllib.request.Request(url,method=method,headers={
+              'Origin':'https://shlomgo.github.io',
+              'User-Agent':'Mozilla/5.0',
+            })
+            try:
+              with urllib.request.urlopen(req,timeout=25) as res:
+                print('Method',method,'Status',res.status,'Final domain',urllib.request.urlparse(res.url).hostname)
+                print('CORS allow origin',res.headers.get('Access-Control-Allow-Origin'))
+                print('Content type',res.headers.get('Content-Type'))
+                print('Bytes',len(res.read()) if method=='GET' else 'HEAD')
+            except Exception as e: print(method,'failed:',repr(e))
+          PY
