@@ -5,6 +5,12 @@ on:
   # four minutes after the last edit.
   workflow_dispatch:
 
+  # Run when this workflow changes so corrections can be verified immediately.
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/sync-property-data.yml'
+
   # Low-frequency safety net in case the spreadsheet trigger ever fails.
   schedule:
     - cron: '17 7 * * *'
@@ -28,10 +34,10 @@ jobs:
           from pathlib import Path
           import csv, io, re, urllib.request
 
-          html = Path('index.html').read_text()
+          html = Path('open-book.html').read_text()
           match = re.search(r'const SHEET_CSV_URL = "([^"]+)";', html)
           if not match:
-              raise SystemExit('Could not find SHEET_CSV_URL in index.html')
+              raise SystemExit('Could not find SHEET_CSV_URL in open-book.html')
 
           import time
 
