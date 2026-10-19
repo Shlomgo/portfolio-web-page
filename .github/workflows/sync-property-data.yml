@@ -11,9 +11,11 @@ on:
     paths:
       - '.github/workflows/sync-property-data.yml'
 
-  # Low-frequency safety net in case the spreadsheet trigger ever fails.
+  # Periodic fallback: keep the live page current even if the Apps Script
+  # edit trigger is missing, broken, or formula-only recalculations occur.
+  # GitHub scheduled runs can be delayed; this is not a real-time guarantee.
   schedule:
-    - cron: '17 7 * * *'
+    - cron: '7,22,37,52 * * * *'
 
 permissions:
   contents: write
