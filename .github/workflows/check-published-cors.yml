@@ -11,6 +11,20 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - name: Check Open Book JavaScript syntax
+        run: |
+          node - <<'JS'
+          const fs = require('fs');
+          const vm = require('vm');
+          const html = fs.readFileSync('open-book.html', 'utf8');
+          const scripts = [...html.matchAll(/<script(?:\\s[^>]*)?>([\\s\\S]*?)<\\/script>/gi)];
+          if (!scripts.length) throw new Error('No inline Open Book script found');
+          for (const match of scripts) if (match[1].trim()) new vm.Script(match[1], {filename:'open-book.html'});
+          new vm.Script(fs.readFileSync('property-flow.js','utf8'), {filename:'property-flow.js'});
+          if (!html.includes('fetchPublishedSheet()')) throw new Error('Google refresh missing');
+          if (!html.includes('openbook:data-refreshed')) throw new Error('Refresh state hook missing');
+          console.log('Passed: Open Book inline JS and property-flow.js parse correctly');
+          JS
       - name: Check browser CORS headers on published Google Sheet
         run: |
           python - <<'PY'
