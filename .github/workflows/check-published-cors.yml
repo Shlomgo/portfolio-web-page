@@ -17,9 +17,10 @@ jobs:
           const fs = require('fs');
           const vm = require('vm');
           const html = fs.readFileSync('open-book.html', 'utf8');
-          const scripts = [...html.matchAll(/<script(?:\\s[^>]*)?>([\\s\\S]*?)<\\/script>/gi)];
-          if (!scripts.length) throw new Error('No inline Open Book script found');
-          for (const match of scripts) if (match[1].trim()) new vm.Script(match[1], {filename:'open-book.html'});
+          const start = html.indexOf('<script>');
+          const end = html.indexOf('</script>', start);
+          if (start < 0 || end < 0) throw new Error('No inline Open Book script found');
+          new vm.Script(html.slice(start + '<script>'.length, end), {filename:'open-book.html'});
           new vm.Script(fs.readFileSync('property-flow.js','utf8'), {filename:'property-flow.js'});
           if (!html.includes('fetchPublishedSheet()')) throw new Error('Google refresh missing');
           if (!html.includes('openbook:data-refreshed')) throw new Error('Refresh state hook missing');
