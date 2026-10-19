@@ -3899,7 +3899,9 @@ function render(){
     body.appendChild(detailTr);
   });
 
-  document.getElementById("countNote").textContent = `Showing ${rows.length} of ${DATA.length} properties`;
+  const countNote = document.getElementById("countNote");
+  countNote.dataset.baseText = `Showing ${rows.length} of ${DATA.length} properties`;
+  countNote.textContent = countNote.dataset.baseText + " · " + dataSourceLabel;
   updateFilterButtonState();
   updateSortIndicators();
   renderMobile(rows);
@@ -4113,65 +4115,196 @@ function parseSheetCsv(text){
 
 const PROPERTY_DATA_SNAPSHOT_URL = "property-data.csv";
 const PROPERTY_DATA_CACHE_KEY = "openBookPropertyDataCsvV2";
+const REQUIRED_PROPERTY_HEADERS = ["Status", "State", "Purchase Price", "Open Book ID"];
+let propertyDataFingerprint = null;
+let liveSheetApplied = false;
+let liveSheetCheckFinished = false;
+let dataSourceLabel = "Checking Sheet…";
+
+function setDataSourceLabel(label){
+  dataSourceLabel = label;
+  const count = document.getElementById("countNote");
+  if(count && count.dataset.baseText){
+    count.textContent = count.dataset.baseText + " · " + dataSourceLabel;
+  }
+}
+
+function captureExpandedPropertyState(){
+  const desktop = document.querySelector("#tableBody tr.data-row.open");
+  const desktopForecast = document.querySelector("#tableBody .predicted-cell.open")?.closest("tr.data-row");
+  const mobile = document.querySelector("#mobilePropertyList .mp-card.preview-open");
+  const propertyId = el => el?.dataset.propertyId ||
+    el?.querySelector(".id-cell, .mp-id")?.textContent.trim() || "";
+  const mobilePanels = [...document.querySelectorAll("#mobilePropertyList .mp-card")]
+    .filter(card => card.querySelector(".mp-underwriting-detail.open, .mp-forecast-detail.open"))
+    .map(card => ({
+      id:propertyId(card),
+      underwriting:!!card.querySelector(".mp-underwriting-detail.open"),
+      forecast:!!card.querySelector(".mp-forecast-detail.open")
+    }));
+  return {
+    desktopId:propertyId(desktop),
+    desktopForecastId:propertyId(desktopForecast),
+    mobileId:propertyId(mobile),
+    mobilePanels
+  };
+}
+
+function captureFilterDraft(){
+  const dropdown = document.getElementById("filterDropdown");
+  if(!dropdown || !dropdown.open) return null;
+  const checks = selector => new Map(
+    [...document.querySelectorAll(selector)].map(input => [input.value, input.checked])
+  );
+  const ranges = new Map(
+    ["filterPriceMin","filterPriceMax","filterCashMin","filterCashMax","filterReturnMin","filterReturnMax"]
+      .map(id => [id, document.getElementById(id)?.value || ""])
+  );
+  return {
+    states:checks('#stateFilterOptions input[type="checkbox"]'),
+    statuses:checks('#statusFilterOptions input[type="checkbox"]'),
+    ranges
+  };
+}
+
+function restoreFilterDraft(draft){
+  if(!draft) return;
+  document.querySelectorAll('#stateFilterOptions input[type="checkbox"]').forEach(input => {
+    if(draft.states.has(input.value)) input.checked = draft.states.get(input.value);
+  });
+  document.querySelectorAll('#statusFilterOptions input[type="checkbox"]').forEach(input => {
+    if(draft.statuses.has(input.value)) input.checked = draft.statuses.get(input.value);
+  });
+  for(const [id, value] of draft.ranges){
+    const input = document.getElementById(id);
+    if(input) input.value = value;
+  }
+}
 
 function applyPropertyDataCsv(csvText, source){
   const rawRows = parseSheetCsv(csvText);
-  const nextData = rawRows.map(rowToRecord).filter(d=>d.status !== "hide" && d.state && !isNaN(d.price) && d.price > 0);
-  if(!nextData.length) throw new Error(`No usable property rows in ${source}.`);
+  if(!rawRows.length || !REQUIRED_PROPERTY_HEADERS.every(name => Object.hasOwn(rawRows[0], name))){
+    throw new Error("Published property data has missing or unexpected CSV headers.");
+  }
+  const nextData = rawRows.map(rowToRecord)
+    .filter(d => d.status !== "hide" && d.state && Number.isFinite(d.price) && d.price > 0);
+  if(!nextData.length) throw new Error("No usable property rows in " + source + ".");
+
+  // A matching dataset needs no DOM rebuild: keep open properties, filter drafts,
+  // scroll position, and the property preview exactly as the visitor left them.
+  const fingerprint = JSON.stringify(nextData);
+  if(fingerprint === propertyDataFingerprint) return false;
+
+  const hadData = DATA.length > 0;
+  const formerStates = new Set(DATA.map(d => d.state));
+  const nextStates = new Set(nextData.map(d => d.state));
+  const selectedAllStates = formerStates.size === activeStates.size &&
+    [...formerStates].every(state => activeStates.has(state));
+  const statesChanged = formerStates.size !== nextStates.size ||
+    [...formerStates].some(state => !nextStates.has(state));
+  const expansion = hadData ? captureExpandedPropertyState() : null;
+  const filterDraft = hadData && statesChanged ? captureFilterDraft() : null;
 
   DATA = nextData;
-  console.log(`Loaded ${DATA.length} properties from ${source}.`);
-  activeStates = new Set(DATA.map(d=>d.state));
-  LEV_SCALE = LEV_MAX_PX / Math.max(...DATA.map(d=>d.price));
-  buildFilterControls();
+  propertyDataFingerprint = fingerprint;
+  if(!hadData || selectedAllStates){
+    activeStates = new Set(nextStates);
+  } else {
+    activeStates = new Set([...activeStates].filter(state => nextStates.has(state)));
+  }
+  LEV_SCALE = LEV_MAX_PX / Math.max(...DATA.map(d => d.price));
+  if(!hadData || statesChanged){
+    buildFilterControls();
+    restoreFilterDraft(filterDraft);
+  }
   render();
+  // property-flow.js restores expanded property previews without extra analytics.
+  if(expansion) document.dispatchEvent(new CustomEvent("openbook:data-refreshed", {detail:expansion}));
+  console.log("Loaded " + DATA.length + " properties from " + source + ".");
+  return true;
 }
 
-async function fetchPropertySnapshot(){
+async function fetchPropertyCsv(url, timeoutMs, credentials){
   const controller = new AbortController();
-  const timer = setTimeout(() => controller.abort(), 8000);
+  const timer = setTimeout(() => controller.abort(), timeoutMs);
   try{
-    const response = await fetch(`${PROPERTY_DATA_SNAPSHOT_URL}?v=${Date.now()}`, {
-      method:'GET',
-      cache:'no-store',
-      credentials:'same-origin',
+    const response = await fetch(url, {
+      method:"GET",
+      cache:"no-store",
+      credentials,
       signal:controller.signal
     });
-    if(!response.ok) throw new Error(`Snapshot request returned ${response.status}`);
+    if(!response.ok) throw new Error("Property CSV request returned " + response.status);
     const text = await response.text();
-    if(!text || text.length < 20) throw new Error('Property snapshot was empty.');
+    if(!text || text.length < 20) throw new Error("Property CSV response was empty.");
     return text;
   } finally {
     clearTimeout(timer);
   }
 }
 
+function savePropertyCache(csvText){
+  try{ localStorage.setItem(PROPERTY_DATA_CACHE_KEY, csvText); }catch(_err){}
+}
+
+async function fetchPropertySnapshot(){
+  return fetchPropertyCsv(PROPERTY_DATA_SNAPSHOT_URL + "?v=" + Date.now(), 8000, "same-origin");
+}
+
+async function fetchPublishedSheet(){
+  // Fetch only the already-published Worksheet CSV, not the underlying workbook.
+  // Cache-busting avoids a stale browser/CDN copy; Google's own publishing delay
+  // can still make the published feed lag behind a recent spreadsheet edit.
+  const separator = SHEET_CSV_URL.includes("?") ? "&" : "?";
+  return fetchPropertyCsv(SHEET_CSV_URL + separator + "_fresh=" + Date.now(), 10000, "omit");
+}
+
+async function refreshFromPublishedSheet(){
+  try{
+    const csvText = await fetchPublishedSheet();
+    applyPropertyDataCsv(csvText, "published Google Sheet");
+    liveSheetApplied = true;
+    savePropertyCache(csvText);
+    setDataSourceLabel("Published Sheet checked");
+  } catch(err){
+    // Never replace the fast GitHub snapshot with an error or a partial sheet.
+    console.warn("Published Google Sheet refresh unavailable; keeping saved data.", err);
+    if(DATA.length) setDataSourceLabel("Last synced figures");
+  } finally {
+    liveSheetCheckFinished = true;
+  }
+}
+
 async function loadData(){
-  let snapshotError = null;
+  // Both requests start immediately. Whichever usable source responds first can
+  // display results; a late GitHub response cannot overwrite a successful live read.
+  const liveRequest = refreshFromPublishedSheet();
   try{
     const csvText = await fetchPropertySnapshot();
-    applyPropertyDataCsv(csvText, 'same-origin snapshot');
-    try{ localStorage.setItem(PROPERTY_DATA_CACHE_KEY, csvText); }catch(_err){}
-    return;
-  } catch(err){
-    snapshotError = err;
-    console.warn('Same-origin property snapshot failed; trying browser cache.', err);
-  }
-
-  try{
-    const cached = localStorage.getItem(PROPERTY_DATA_CACHE_KEY);
-    if(cached){
-      applyPropertyDataCsv(cached, 'browser cache');
-      return;
+    if(!liveSheetApplied){
+      applyPropertyDataCsv(csvText, "same-origin GitHub snapshot");
+      savePropertyCache(csvText);
+      setDataSourceLabel(liveSheetCheckFinished ? "Last synced figures" : "Checking Sheet…");
     }
-  } catch(cacheError){
-    console.warn('Property-data browser cache was unavailable.', cacheError);
+  } catch(err){
+    console.warn("GitHub snapshot unavailable; trying browser cache.", err);
+    if(!liveSheetApplied){
+      try{
+        const cached = localStorage.getItem(PROPERTY_DATA_CACHE_KEY);
+        if(cached){
+          applyPropertyDataCsv(cached, "browser cache");
+          setDataSourceLabel(liveSheetCheckFinished ? "Cached figures" : "Checking Sheet…");
+        }
+      } catch(cacheError){
+        console.warn("Cached property data was unavailable.", cacheError);
+      }
+    }
   }
-
-  console.error('Could not load property data:', snapshotError);
-  showDataLoadError();
-  if(stickyHeaderState.initialized){
-    stickyHeaderState.shell.classList.remove('is-active');
+  await liveRequest;
+  if(!DATA.length){
+    console.error("Could not load GitHub, Google, or cached property data.");
+    showDataLoadError();
+    if(stickyHeaderState.initialized) stickyHeaderState.shell.classList.remove("is-active");
   }
 }
 
