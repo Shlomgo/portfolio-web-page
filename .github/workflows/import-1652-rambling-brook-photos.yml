@@ -1,0 +1,76 @@
+name: Import 1652 Rambling Brook photos
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/import-1652-rambling-brook-photos.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  import:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Save the property's actual listing photos in the site
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          from urllib.request import Request, urlopen
+
+          images = {
+          "front-exterior.jpg": "https://ssl.cdn-redfin.com/photo/184/bigphoto/817/26031817_7.jpg",
+          "garage-side.jpg": "https://ssl.cdn-redfin.com/photo/184/bigphoto/817/26031817_2_4.jpg",
+          "front-angle.jpg": "https://ssl.cdn-redfin.com/photo/184/bigphoto/817/26031817_3_2.jpg",
+          "open-living.jpg": "https://ssl.cdn-redfin.com/photo/184/bigphoto/817/26031817_4_1.jpg",
+          "living-room-windows.jpg": "https://ssl.cdn-redfin.com/photo/184/bigphoto/817/26031817_5_1.jpg",
+          "living-room-other-angle.jpg": "https://ssl.cdn-redfin.com/photo/184/bigphoto/817/26031817_6_1.jpg",
+          "kitchen.jpg": "https://ssl.cdn-redfin.com/photo/184/bigphoto/817/26031817_8_1.jpg",
+          "fenced-backyard.jpg": "https://ssl.cdn-redfin.com/photo/184/bigphoto/817/26031817_29_0.jpg",
+          "rear-covered-patio.jpg": "https://ssl.cdn-redfin.com/photo/184/bigphoto/817/26031817_30_0.jpg",
+          "floor-plan.jpg": "https://ssl.cdn-redfin.com/photo/184/bigphoto/817/26031817_1_6.jpg",
+          }
+          output = Path("properties/1652-rambling-brook-drive/images")
+          output.mkdir(parents=True, exist_ok=True)
+          for name, url in images.items():
+              request = Request(url, headers={
+                  "User-Agent": "Mozilla/5.0 (compatible; PropertyPageImageArchiver/1.0)",
+                  "Referer": "https://www.redfin.com/",
+                  "Accept": "image/jpeg,image/*;q=0.9,*/*;q=0.8",
+              })
+              with urlopen(request, timeout=45) as response:
+                  data = response.read()
+                  content_type = response.headers.get("Content-Type", "")
+              if not content_type.startswith("image/") or len(data) < 10000:
+                  raise RuntimeError(f"Invalid image download: {name} ({content_type}, {len(data)} bytes)")
+              (output / name).write_bytes(data)
+              print(f"Saved {name}: {len(data)} bytes")
+
+          page_file = Path("properties/1652-rambling-brook-drive/index.html")
+          page = page_file.read_text()
+          for name, url in images.items():
+              if url not in page:
+                  raise RuntimeError(f"Cannot find image reference to replace: {url}")
+              page = page.replace(url, "images/" + name)
+          page = page.replace(
+              "Actual-home photography and floor plan are served from the original property's Redfin listing image host.",
+              "Actual-home photography and floor plan are hosted with this property page. Images sourced from the property's listing."
+          )
+          page_file.write_text(page)
+          PY
+
+      - name: Commit locally hosted images and image references
+        run: |
+          git config user.name "Property image importer"
+          git config user.email "actions@users.noreply.github.com"
+          git add properties/1652-rambling-brook-drive/
+          if git diff --cached --quiet; then
+            echo "Photos already hosted in the repository."
+            exit 0
+          fi
+          git commit -m "Host 1652 Rambling Brook property photos locally"
+          git pull --rebase origin main
+          git push origin HEAD:main
