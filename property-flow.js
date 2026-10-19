@@ -590,6 +590,48 @@ tbody tr.data-row:focus-within{background-color:rgba(168,166,160,.045);}
     analytics('property_page_opened', d, source);
   }, true);
 
+  // A background Google Sheet refresh may replace the table after a visitor
+  // has opened a property. Restore previews and open panels without recording
+  // a second click or resetting their filter/sort preferences.
+  document.addEventListener('openbook:data-refreshed', event => {
+    const state = event.detail || {};
+    enhanceAll();
+    const byId = (selector, id) => id
+      ? [...document.querySelectorAll(selector)].find(el => el.dataset.propertyId === id)
+      : null;
+
+    const desktop = byId('#tableBody tr.data-row', state.desktopId);
+    if(desktop){
+      const details = desktop.nextElementSibling?.nextElementSibling;
+      const record = getRecordById(state.desktopId);
+      if(details && record) toggleDesktopRow(desktop, record, details, true, false);
+    }
+
+    const forecast = byId('#tableBody tr.data-row', state.desktopForecastId);
+    if(forecast){
+      const cell = forecast.querySelector('.predicted-cell');
+      const panel = forecast.nextElementSibling;
+      if(cell && panel?.classList.contains('detail-row')){
+        cell.classList.add('open');
+        panel.classList.add('open', 'lev-row-open');
+      }
+    }
+
+    const mobile = byId('#mobilePropertyList .mp-card', state.mobileId);
+    if(mobile){
+      const record = getRecordById(state.mobileId);
+      if(record) toggleMobileCard(mobile, record, true, false);
+    }
+    if(Array.isArray(state.mobilePanels)){
+      state.mobilePanels.forEach(panel => {
+        const card = byId('#mobilePropertyList .mp-card', panel.id);
+        if(!card) return;
+        card.querySelector('.mp-underwriting-detail')?.classList.toggle('open', !!panel.underwriting);
+        card.querySelector('.mp-forecast-detail')?.classList.toggle('open', !!panel.forecast);
+      });
+    }
+  });
+
   const observer = new MutationObserver(queueEnhance);
   const tableBody = document.getElementById('tableBody');
   const mobileList = document.getElementById('mobilePropertyList');
