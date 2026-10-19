@@ -264,24 +264,65 @@
     document.addEventListener('click', () => document.querySelectorAll('.std-financials .std-info-btn.is-open').forEach(btn => btn.classList.remove('is-open')));
   }
 
+  function rowForPage(rows){
+    const slug = propertySlug();
+    let row = rows.find(r => txt(r['Property Page Slug']) === slug);
+    // Preserve the legacy page fallback until its spreadsheet slug is set.
+    if(!row && slug === '2253-sam-tillery-drive') row = rows[26];
+    if(!row) throw new Error('No matching property page slug: ' + (slug || '(missing)'));
+    return row;
+  }
+
+  async function fetchFinancialRows(url, published){
+    const response = await fetch(url, {cache:'no-store', credentials:published ? 'omit' : 'same-origin'});
+    if(!response.ok) throw new Error('Financial source returned ' + response.status);
+    const rows = csvParse(await response.text());
+    if(!rows.length || !Object.hasOwn(rows[0], 'Property Page Slug')) throw new Error('Invalid property-data response');
+    return rows;
+  }
+
   async function init(){
     installStyles();
     if(!renderFinancialShell()) return;
     wireInfoButtons();
     const status = document.getElementById('standardFinancialStatus');
-    try{
-      const response = await fetch(SHEET_CSV_URL, {cache:'no-store'});
-      if(!response.ok) throw new Error(`Spreadsheet request failed (${response.status})`);
-      const rows = csvParse(await response.text());
-      const slug = propertySlug();
-      let row = rows.find(r => txt(r['Property Page Slug']) === slug);
-      if(!row && slug === '2253-sam-tillery-drive') row = rows[26];
-      if(!row) throw new Error(`No spreadsheet row found for ${slug || 'this property'}`);
-      populate(row);
-      if(status) status.style.display = 'none';
-    } catch(error){
-      console.error(error);
-      if(status){ status.textContent = 'Could not load the live financial data.'; status.style.display = 'block'; }
+    let displayed = false;
+    let liveApplied = false;
+
+    const show = (row, live) => {
+      // A successful published-sheet read always replaces the fast snapshot.
+      // A slower local snapshot must not overwrite newer published data.
+      if(live || !liveApplied) {
+        populate(row);
+        displayed = true;
+        if(live) liveApplied = true;
+        if(status) status.style.display = 'none';
+      }
+    };
+
+    const snapshotUrl = '../../property-data.csv?v=' + Date.now();
+    const sheetUrl = SHEET_CSV_URL + (SHEET_CSV_URL.includes('?') ? '&' : '?') + '_fresh=' + Date.now();
+
+    // Start both requests immediately: render the fast local snapshot if it
+    // arrives first, then upgrade to the published Google Sheet when available.
+    // A published feed without the new property slug is treated as stale.
+    const snapshot = fetchFinancialRows(snapshotUrl, false)
+      .then(rows => show(rowForPage(rows), false))
+      .catch(err => console.warn('Property financial snapshot unavailable:', err));
+
+    const live = fetchFinancialRows(sheetUrl, true)
+      .then(rows => show(rowForPage(rows), true))
+      .catch(err => console.warn('Published property financials unavailable or not synchronized yet:', err));
+
+    await Promise.all([snapshot, live]);
+    if(!displayed){
+      if(status){
+        status.textContent = 'Could not load the property financial data.';
+        status.style.display = 'block';
+      }
+    } else if(!liveApplied && status){
+      status.textContent = 'Showing the last synchronized figures while the published Google Sheet catches up.';
+      status.style.display = 'block';
     }
   }
 
