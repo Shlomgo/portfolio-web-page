@@ -621,7 +621,13 @@ h2{font-size:clamp(36px,4.3vw,58px);line-height:1.03} h3{font-size:24px;line-hei
 .property-body{padding:20px} .property-meta{font-size:10px;text-transform:uppercase;letter-spacing:.11em;color:var(--green);font-weight:800}
 .property-body h3{font-size:28px;margin-top:6px} .pnums{display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid var(--line);margin-top:18px}
 .pnum{padding:10px 8px 0 0} .pnum+.pnum{padding-left:8px;border-left:1px solid var(--line)} .pnum b{font:400 16px var(--serif);display:block} .pnum span{font-size:8px;text-transform:uppercase;color:var(--muted)}
-.property-body p{font-size:13px;color:#4b4841} .current-detail-note{margin-top:22px;padding-top:15px;border-top:1px solid #aebbad;font-size:13px;color:#465047;max-width:900px} 
+.property-body p{font-size:13px;color:#4b4841}
+/* Both current-opportunity cards link to their full property analyses. */
+.property-card-link{display:block;color:inherit;text-decoration:none}
+.property-card-link:hover .property-view-link{text-decoration:underline}
+.property-card-link:focus-visible{outline:3px solid var(--work-blue);outline-offset:3px}
+.property-view-link{display:inline-block;margin-top:10px;font-size:12px;font-weight:750;color:var(--work-green)}
+ .current-detail-note{margin-top:22px;padding-top:15px;border-top:1px solid #aebbad;font-size:13px;color:#465047;max-width:900px} 
 
 /* OPEN BOOK */
 .book-head{display:grid;grid-template-columns:.72fr 1.28fr;gap:60px;align-items:start} .book-intro{font:400 23px/1.4 var(--serif);margin:0}
@@ -2636,8 +2642,38 @@ nav .links a,nav .links a:not(.cta){display:block!important;padding:11px 4px;bor
 </summary>
 <div class="work-body work-mode">
 <div class="property-grid">
-<article class="property-card"><div class="property-photo"><img alt="Current Arkansas property" src="https://raw.githubusercontent.com/Shlomgo/portfolio-web-page/main/properties/1649-rambling-brook-drive/images/1649-rambling-brook-street-view.jpg"/></div><div class="property-body"><div class="property-meta">Available · Brand-new · Arkansas</div><h3>Lower entry price</h3><div class="pnums"><div class="pnum"><b>$231,900</b><span>purchase</span></div><div class="pnum"><b>≈$63,600</b><span>cash invested</span></div><div class="pnum"><b>$1,900</b><span>expected rent</span></div><div class="pnum"><b>≈$227/mo</b><span>after management</span></div></div><p><b>Why I like it:</b> the rent-to-price relationship and straightforward new construction.</p><p><b>What I don’t love:</b> the initial cash flow is not enough to carry the investment thesis by itself.</p></div></article>
-<article class="property-card"><div class="property-photo"><img alt="Current North Carolina property" src="https://raw.githubusercontent.com/Shlomgo/portfolio-web-page/main/properties/248-colton-court/images/248-colton-exterior.jpg"/></div><div class="property-body"><div class="property-meta">Available · Brand-new · North Carolina</div><h3>Higher entry price, stronger growth case</h3><div class="pnums"><div class="pnum"><b>$365,000</b><span>purchase</span></div><div class="pnum"><b>≈$100,800</b><span>cash invested</span></div><div class="pnum"><b>$2,400</b><span>expected rent</span></div><div class="pnum"><b>≈$224/mo</b><span>after management</span></div></div><p><b>Why I like it:</b> market depth and long-term growth characteristics.</p><p><b>What I don’t love:</b> more capital is tied up for relatively modest initial cash flow.</p></div></article>
+<a class="property-card property-card-link" href="properties/1652-rambling-brook-drive/" aria-label="View full property details for 1652 Rambling Brook Drive, Benton, Arkansas">
+  <div class="property-photo"><img alt="1652 Rambling Brook Drive, Benton, Arkansas — actual home" src="properties/1652-rambling-brook-drive/images/front-exterior.jpg"/></div>
+  <div class="property-body">
+    <div class="property-meta">Available · Brand-new · Benton, Arkansas</div>
+    <h3>1652 Rambling Brook Drive</h3>
+    <div class="pnums">
+      <div class="pnum"><b>$214,900</b><span>purchase</span></div>
+      <div class="pnum"><b>≈$46,700</b><span>cash invested</span></div>
+      <div class="pnum"><b>$1,750</b><span>expected rent</span></div>
+      <div class="pnum"><b>≈$125/mo</b><span>after management</span></div>
+    </div>
+    <p><b>Why I like it:</b> an efficient three-bedroom layout, covered patio, and fenced yard in a completed Lennar home.</p>
+    <p><b>What I don’t love:</b> much of the backyard slopes. The budget also includes $2,200 for optional but recommended blinds and a glass shower door.</p>
+    <span class="property-view-link">View full property →</span>
+  </div>
+</a>
+<a class="property-card property-card-link" href="properties/248-colton-court/" aria-label="View full property details for 248 Colton Court, Kings Mountain, North Carolina">
+  <div class="property-photo"><img alt="Current North Carolina property" src="https://raw.githubusercontent.com/Shlomgo/portfolio-web-page/main/properties/248-colton-court/images/248-colton-exterior.jpg"/></div>
+  <div class="property-body">
+    <div class="property-meta">Available · Brand-new · North Carolina</div>
+    <h3>Higher entry price, stronger growth case</h3>
+    <div class="pnums">
+      <div class="pnum"><b>$365,000</b><span>purchase</span></div>
+      <div class="pnum"><b>≈$100,800</b><span>cash invested</span></div>
+      <div class="pnum"><b>$2,400</b><span>expected rent</span></div>
+      <div class="pnum"><b>≈$224/mo</b><span>after management</span></div>
+    </div>
+    <p><b>Why I like it:</b> market depth and long-term growth characteristics.</p>
+    <p><b>What I don’t love:</b> more capital is tied up for relatively modest initial cash flow.</p>
+    <span class="property-view-link">View full property →</span>
+  </div>
+</a>
 </div>
 <div class="current-detail-note">For each property I present, I show the purchase and financing assumptions, expected rent and expenses, projected returns, and the reasons I like—or don’t like—the specific property.</div>
 <div class="current-cta"><a href="#connect">Contact me for current availability →</a></div>
