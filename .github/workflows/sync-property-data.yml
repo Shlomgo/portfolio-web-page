@@ -70,12 +70,55 @@ jobs:
           print(f'Validated {len(rows)} source rows')
           PY
 
+      # This source is a second tab of the SAME Google workbook as Worksheet.
+      # Keep the Open Book sync working even if this new tab is not yet published.
+      - name: Fetch and validate published financing scenarios (optional)
+        continue-on-error: true
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import csv, io, time, urllib.request
+
+          source_url = (
+              'https://docs.google.com/spreadsheets/d/e/'
+              '2PACX-1vRj8OtOmCYZGVMYb1VSEgCmlVMcZC9b7Ie-Y_pPvcXzc1-D9ba_amLBxLFiDtXRfL0N7WCnVW-nZP45/'
+              'pub?gid=2067891785&single=true&output=csv'
+          ) + f'&_sync={int(time.time())}'
+          request = urllib.request.Request(source_url, headers={
+              'User-Agent': 'Mozilla/5.0 OpenBookFinancingSync/1.0',
+              'Cache-Control': 'no-cache',
+              'Pragma': 'no-cache',
+          })
+          with urllib.request.urlopen(request, timeout=30) as response:
+              data = response.read()
+
+          reader = csv.DictReader(io.StringIO(data.decode('utf-8-sig')))
+          required = {
+              'Property Page Slug', 'Scenario label', 'Status',
+              'Validation / website eligibility', 'Total cash invested',
+              'Mortgage P&I/month', 'Modeled total return/year'
+          }
+          missing = required.difference(reader.fieldnames or [])
+          if missing:
+              raise SystemExit(f'Financing scenarios source is not published or has wrong headers: {sorted(missing)}')
+          rows = list(reader)
+          if not any(row.get('Status') == 'Approved' and
+                     row.get('Validation / website eligibility') == 'READY'
+                     for row in rows):
+              raise SystemExit('No approved and validated financing scenarios in published source')
+          Path('financing-scenarios.csv.tmp').write_bytes(data)
+          print(f'Validated {len(rows)} financing scenario rows')
+          PY
+
       - name: Update same-origin snapshot if changed
         run: |
           mv property-data.csv.tmp property-data.csv
           git config user.name 'Open Book data sync'
           git config user.email 'actions@users.noreply.github.com'
-          git add property-data.csv
+          if [ -f financing-scenarios.csv.tmp ]; then
+            mv financing-scenarios.csv.tmp financing-scenarios.csv
+          fi
+          git add property-data.csv financing-scenarios.csv
           if git diff --cached --quiet; then
             echo 'Property data snapshot is already current.'
             exit 0

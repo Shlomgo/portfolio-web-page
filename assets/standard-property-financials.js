@@ -250,6 +250,13 @@
       if(op) op.style.width = `${operatingShare}%`;
       if(fc) fc.style.width = `${100 - operatingShare}%`;
     }
+    // Opt-in hook: finance choices reapply the selected scenario after either
+    // the local Worksheet snapshot or the fresher published Worksheet arrives.
+    if(document.body?.dataset?.financingScenarios === 'true'){
+      document.dispatchEvent(new CustomEvent('openbook:financial-baseline-updated', {
+        detail: { slug: propertySlug(), row }
+      }));
+    }
   }
 
   function wireInfoButtons(){
